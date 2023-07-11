@@ -127,6 +127,35 @@ const Gameboard = (s) => {
         return true;
     };
 
+    const deleteShip = (position) => {
+        if (!Array.isArray(position) || position.length !== 2) return;
+        if (!Number.isInteger(position[0])) return;
+        if (position[0] < 0 || position[0] >= board.length) return;
+        if (!Number.isInteger(position[1])) return;
+        if (position[1] < 0 || position[1] >= board.length) return;
+
+        if (board[position[1]][position[0]] !== 0) {
+            const nearestNeighbour = (pos) => {
+                board[pos[1]][pos[0]] = 0;
+                if (pos[1] > 0 && board[pos[1] - 1][pos[0]] !== 0)
+                    nearestNeighbour([pos[0], pos[1] - 1]);
+                if (pos[0] > 0 && board[pos[1]][pos[0] - 1] !== 0)
+                    nearestNeighbour([pos[0] - 1, pos[1]]);
+                if (
+                    pos[1] < board.length - 1 &&
+                    board[pos[1] + 1][pos[0]] !== 0
+                )
+                    nearestNeighbour([pos[0], pos[1] + 1]);
+                if (
+                    pos[0] < board.length - 1 &&
+                    board[pos[1]][pos[0] + 1] !== 0
+                )
+                    nearestNeighbour([pos[0] + 1, pos[1]]);
+            };
+            nearestNeighbour(position);
+        }
+    };
+
     const calculateShipArea = (length, position, rotation) => {
         const lengthBehind = Math.abs(Math.floor((length - 1) / 2));
         const lengthInfront = Math.abs(Math.ceil((length - 1) / 2));
@@ -172,6 +201,7 @@ const Gameboard = (s) => {
     return {
         placeShip,
         moveShip,
+        deleteShip,
         receiveAttack,
         checkDefeat,
         observeBoard,
