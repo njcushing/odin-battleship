@@ -299,3 +299,41 @@ test("Ensure board is not manipulated by invalid receiveAttack arguments", () =>
     board.receiveAttack("test");
     expect(board.observeBoard()).toStrictEqual(boardSame);
 });
+
+test("Ensure board is being manipulated correctly by valid receiveAttack arguments", () => {
+    const board = Gameboard(8);
+    board.placeShip(5, [3, 3], false);
+    board.receiveAttack([5, 2], true);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 2, 0, 0],
+        [0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    board.receiveAttack([1, 0], true);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 2, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 2, 0, 0],
+        [0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    board.receiveAttack([4, 6], true);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 2, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 2, 0, 0],
+        [0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 2, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+});
