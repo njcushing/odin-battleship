@@ -162,28 +162,115 @@ test("Ensure board is not manipulated by invalid moveShip arguments", () => {
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
     ];
-    board.moveShip(["test", 3], [3, 3]);
-    board.moveShip([3, "test"], [3, 3]);
-    board.moveShip([-1, 3], [3, 3]);
-    board.moveShip([3, -1], [3, 3]);
-    board.moveShip([7, 3], [3, 3]);
-    board.moveShip([3, 9], [3, 3]);
-    board.moveShip([10, 3], [3, 3]);
-    board.moveShip([3, 10], [3, 3]);
-    board.moveShip([2, 0.4], [3, 3]);
-    board.moveShip([0.4, 2], [3, 3]);
-    board.moveShip("test", [3, 3]);
+    board.moveShip(["test", 3], [3, 3], true);
+    board.moveShip([3, "test"], [3, 3], true);
+    board.moveShip([-1, 3], [3, 3], true);
+    board.moveShip([3, -1], [3, 3], true);
+    board.moveShip([7, 3], [3, 3], true);
+    board.moveShip([3, 9], [3, 3], true);
+    board.moveShip([10, 3], [3, 3], true);
+    board.moveShip([3, 10], [3, 3], true);
+    board.moveShip([2, 0.4], [3, 3], true);
+    board.moveShip([0.4, 2], [3, 3], true);
+    board.moveShip("test", [3, 3], true);
     expect(board.observeBoard()).toStrictEqual(boardSame);
-    board.moveShip([3, 3], ["test", 3]);
-    board.moveShip([3, 3], [3, "test"]);
-    board.moveShip([3, 3], [-1, 3]);
-    board.moveShip([3, 3], [3, -1]);
-    board.moveShip([3, 3], [7, 3]);
-    board.moveShip([3, 3], [3, 9]);
-    board.moveShip([3, 3], [10, 3]);
-    board.moveShip([3, 3], [3, 10]);
-    board.moveShip([3, 3], [2, 0.4]);
-    board.moveShip([3, 3], [0.4, 2]);
-    board.moveShip([3, 3], "test");
+    board.moveShip([3, 3], ["test", 3], true);
+    board.moveShip([3, 3], [3, "test"], true);
+    board.moveShip([3, 3], [-1, 3], true);
+    board.moveShip([3, 3], [3, -1], true);
+    board.moveShip([3, 3], [7, 3], false);
+    board.moveShip([3, 3], [3, 9], true);
+    board.moveShip([3, 3], [10, 3], true);
+    board.moveShip([3, 3], [3, 10], true);
+    board.moveShip([3, 3], [2, 0.4], true);
+    board.moveShip([3, 3], [0.4, 2], true);
+    board.moveShip([3, 3], "test", true);
     expect(board.observeBoard()).toStrictEqual(boardSame);
+    board.moveShip([3, 3], [3, 3], 2);
+    board.moveShip([3, 3], [3, 3], 0.5);
+    board.moveShip([3, 3], [3, 3], "test");
+    expect(board.observeBoard()).toStrictEqual(boardSame);
+});
+
+test("Ensure board is being manipulated correctly by valid placeShip arguments", () => {
+    const board = Gameboard(8);
+    board.placeShip(5, [3, 3], false);
+    board.moveShip([3, 3], [3, 2], false);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    board.moveShip([5, 2], [4, 4], true);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    board.moveShip([4, 0], [0, 6], true);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    board.placeShip(5, [3, 3], false);
+    board.moveShip([2, 6], [3, 3], false);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    board.moveShip([3, 3], [6, 3], false);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    board.moveShip([3, 3], [6, 3], true);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0],
+        [1, 1, 1, 1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    board.moveShip([6, 3], [6, 6], false);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0],
+        [1, 1, 1, 1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
 });
