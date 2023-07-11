@@ -274,3 +274,28 @@ test("Ensure board is being manipulated correctly by valid placeShip arguments",
         [0, 0, 0, 0, 0, 0, 0, 0],
     ]);
 });
+
+test("Ensure board is not manipulated by invalid receiveAttack arguments", () => {
+    const board = Gameboard(8);
+    board.placeShip(5, [3, 3], false);
+    const boardSame = [
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ];
+    board.receiveAttack(["test", 3]);
+    board.receiveAttack([3, "test"]);
+    board.receiveAttack([-1, 3]);
+    board.receiveAttack([3, -1]);
+    board.receiveAttack([10, 3]);
+    board.receiveAttack([3, 10]);
+    board.receiveAttack([2, 0.4]);
+    board.receiveAttack([0.4, 2]);
+    board.receiveAttack("test");
+    expect(board.observeBoard()).toStrictEqual(boardSame);
+});
