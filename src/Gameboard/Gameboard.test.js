@@ -192,7 +192,7 @@ test("Ensure board is not manipulated by invalid moveShip arguments", () => {
     expect(board.observeBoard()).toStrictEqual(boardSame);
 });
 
-test("Ensure board is being manipulated correctly by valid placeShip arguments", () => {
+test("Ensure board is being manipulated correctly by valid moveShip arguments", () => {
     const board = Gameboard(8);
     board.placeShip(5, [3, 3], false);
     board.moveShip([3, 3], [3, 2], false);
@@ -271,6 +271,92 @@ test("Ensure board is being manipulated correctly by valid placeShip arguments",
         [0, 0, 0, 0, 0, 0, 1, 0],
         [0, 0, 0, 0, 0, 0, 1, 0],
         [1, 1, 1, 1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+});
+
+test("Ensure board is not manipulated by invalid deleteShip arguments", () => {
+    const board = Gameboard(8);
+    board.placeShip(5, [3, 3], false);
+    const boardSame = [
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ];
+    board.deleteShip(["test", 3]);
+    board.deleteShip([3, "test"]);
+    board.deleteShip([-1, 3]);
+    board.deleteShip([3, -1]);
+    board.deleteShip([10, 3]);
+    board.deleteShip([3, 10]);
+    board.deleteShip([2, 0.4]);
+    board.deleteShip([0.4, 2]);
+    board.deleteShip("test");
+    expect(board.observeBoard()).toStrictEqual(boardSame);
+});
+
+test("Ensure board is being manipulated correctly by valid deleteShip arguments", () => {
+    const board = Gameboard(8);
+    board.placeShip(5, [3, 3], false);
+    board.placeShip(3, [2, 6], false);
+    board.placeShip(4, [7, 2], true);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    board.deleteShip([5, 2], true);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 1, 1, 1, 1, 1, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    board.deleteShip([1, 3], true);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    board.deleteShip([7, 4], true);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    board.deleteShip([2, 6], true);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
     ]);
 });
