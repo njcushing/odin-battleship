@@ -337,3 +337,24 @@ test("Ensure board is being manipulated correctly by valid receiveAttack argumen
         [0, 0, 0, 0, 0, 0, 0, 0],
     ]);
 });
+
+test("Check for correct return value from checkDefeat method", () => {
+    const board = Gameboard(8);
+    board.placeShip(2, [3, 3], false);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ]);
+    board.receiveAttack([5, 2], true);
+    expect(board.checkDefeat()).toBe(false);
+    board.receiveAttack([3, 3], true);
+    expect(board.checkDefeat()).toBe(false);
+    board.receiveAttack([4, 3], true);
+    expect(board.checkDefeat()).toBe(true);
+});

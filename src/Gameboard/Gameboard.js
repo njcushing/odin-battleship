@@ -156,6 +156,15 @@ const Gameboard = (s) => {
         return false;
     };
 
+    const checkDefeat = () => {
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board[i].length; j++) {
+                if (board[i][j] === 1) return false;
+            }
+        }
+        return true;
+    };
+
     const observeBoard = () => {
         return JSON.parse(JSON.stringify(board));
     };
