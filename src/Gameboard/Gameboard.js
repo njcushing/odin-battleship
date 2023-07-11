@@ -142,6 +142,20 @@ const Gameboard = (s) => {
             ];
     };
 
+    const receiveAttack = (position) => {
+        if (!Array.isArray(position) || position.length !== 2) return;
+        if (!Number.isInteger(position[0])) return;
+        if (position[0] < 0 || position[0] >= board.length) return;
+        if (!Number.isInteger(position[1])) return;
+        if (position[1] < 0 || position[1] >= board.length) return;
+
+        if (board[position[1]][position[0]] !== 2) {
+            board[position[1]][position[0]] = 2;
+            return true;
+        }
+        return false;
+    };
+
     const observeBoard = () => {
         return JSON.parse(JSON.stringify(board));
     };
@@ -149,6 +163,8 @@ const Gameboard = (s) => {
     return {
         placeShip,
         moveShip,
+        receiveAttack,
+        checkDefeat,
         observeBoard,
     };
 };
