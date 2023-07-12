@@ -1,5 +1,6 @@
 const Player = () => {
     let style = "Manual";
+    let previousHits = [];
 
     const setStyle = (s) => {
         if (s !== "Manual" && s !== "Computer") return;
@@ -10,9 +11,26 @@ const Player = () => {
         return style;
     };
 
+    const takeComputerTurnRandom = (board) => {
+        const possibleAttacks = [];
+        const boardArr = board.observeBoard();
+        for (let y = 0; y < boardArr.length; y++) {
+            for (let x = 0; x < boardArr[y].length; x++) {
+                if (boardArr[y][x] !== 2) possibleAttacks.push([x, y]);
+            }
+        }
+        const rand =
+            possibleAttacks[Math.floor(Math.random() * possibleAttacks.length)];
+        board.receiveAttack(rand);
+    };
+
+    const takeComputerTurnIntelligent = () => {};
+
     return {
         setStyle,
         getStyle,
+        takeComputerTurnRandom,
+        takeComputerTurnIntelligent,
     };
 };
 export default Player;
