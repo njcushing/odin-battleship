@@ -475,3 +475,37 @@ test("Check that the startGame method is restricting correct methods in each sta
         [0, 2, 0, 0],
     ]);
 });
+
+test("Check that the resetGame method is resetting board and gameStarted bool correctly", () => {
+    const board = Gameboard(4);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+    ]);
+    board.placeShip(2, [2, 2], false);
+    board.placeShip(2, [1, 0], false);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 1, 1, 0],
+        [0, 0, 0, 0],
+        [0, 0, 1, 1],
+        [0, 0, 0, 0],
+    ]);
+    board.startGame();
+    board.placeShip(2, [0, 2], true);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 1, 1, 0],
+        [0, 0, 0, 0],
+        [0, 0, 1, 1],
+        [0, 0, 0, 0],
+    ]);
+    board.resetGame();
+    board.placeShip(2, [1, 1], false);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0],
+        [0, 1, 1, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+    ]);
+});
