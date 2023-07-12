@@ -18,6 +18,11 @@ const Gameboard = (s) => {
         gameStarted = true;
     };
 
+    const resetGame = () => {
+        board = generateBoard();
+        gameStarted = false;
+    };
+
     const placeShip = (length, position, rotation) => {
         if (!gameStarted) {
             if (validateShipPosition(board, length, position, rotation)) {
@@ -220,6 +225,7 @@ const Gameboard = (s) => {
 
     return {
         startGame,
+        resetGame,
         placeShip,
         moveShip,
         deleteShip,
