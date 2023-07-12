@@ -18,7 +18,7 @@ const Gameboard = (s) => {
         gameStarted = true;
     };
 
-    const resetGame = () => {
+    const resetBoard = () => {
         board = generateBoard();
         gameStarted = false;
     };
@@ -225,7 +225,7 @@ const Gameboard = (s) => {
 
     return {
         startGame,
-        resetGame,
+        resetBoard,
         placeShip,
         moveShip,
         deleteShip,
