@@ -1,5 +1,6 @@
 const Gameboard = (s) => {
     let size = s;
+    let gameStarted = false;
 
     const generateBoard = () => {
         let board = [];
@@ -13,87 +14,98 @@ const Gameboard = (s) => {
     };
     let board = generateBoard();
 
+    const startGame = () => {
+        gameStarted = true;
+    };
+
     const placeShip = (length, position, rotation) => {
-        if (validateShipPosition(board, length, position, rotation)) {
-            const bounds = calculateShipArea(length, position, rotation);
-            if (rotation) {
-                for (let j = bounds[0][1]; j <= bounds[1][1]; j++) {
-                    board[j][position[0]] = 1;
-                }
-            } else {
-                for (let i = bounds[0][0]; i <= bounds[1][0]; i++) {
-                    board[position[1]][i] = 1;
+        if (!gameStarted) {
+            if (validateShipPosition(board, length, position, rotation)) {
+                const bounds = calculateShipArea(length, position, rotation);
+                if (rotation) {
+                    for (let j = bounds[0][1]; j <= bounds[1][1]; j++) {
+                        board[j][position[0]] = 1;
+                    }
+                } else {
+                    for (let i = bounds[0][0]; i <= bounds[1][0]; i++) {
+                        board[position[1]][i] = 1;
+                    }
                 }
             }
         }
     };
 
     const moveShip = (origPos, destPos, rotation) => {
-        if (!Array.isArray(origPos) || origPos.length !== 2) return;
-        if (!Number.isInteger(origPos[0])) return;
-        if (origPos[0] < 0 || origPos[0] >= board.length) return;
-        if (!Number.isInteger(origPos[1])) return;
-        if (origPos[1] < 0 || origPos[1] >= board.length) return;
-        if (!Array.isArray(destPos) || destPos.length !== 2) return;
-        if (!Number.isInteger(destPos[0])) return;
-        if (destPos[0] < 0 || destPos[0] >= board.length) return;
-        if (!Number.isInteger(destPos[1])) return;
-        if (destPos[1] < 0 || destPos[1] >= board.length) return;
-        if (typeof rotation !== "boolean") return false;
+        if (!gameStarted) {
+            if (!Array.isArray(origPos) || origPos.length !== 2) return;
+            if (!Number.isInteger(origPos[0])) return;
+            if (origPos[0] < 0 || origPos[0] >= board.length) return;
+            if (!Number.isInteger(origPos[1])) return;
+            if (origPos[1] < 0 || origPos[1] >= board.length) return;
+            if (!Array.isArray(destPos) || destPos.length !== 2) return;
+            if (!Number.isInteger(destPos[0])) return;
+            if (destPos[0] < 0 || destPos[0] >= board.length) return;
+            if (!Number.isInteger(destPos[1])) return;
+            if (destPos[1] < 0 || destPos[1] >= board.length) return;
+            if (typeof rotation !== "boolean") return false;
 
-        const ship = [];
-        const boardCopy = observeBoard();
+            const ship = [];
+            const boardCopy = observeBoard();
 
-        if (board[origPos[1]][origPos[0]] !== 0) {
-            const nearestNeighbour = (pos) => {
-                ship.push([pos, boardCopy[pos[1]][pos[0]]]);
-                boardCopy[pos[1]][pos[0]] = 0;
-                if (pos[1] > 0 && boardCopy[pos[1] - 1][pos[0]] !== 0)
-                    nearestNeighbour([pos[0], pos[1] - 1]);
-                if (pos[0] > 0 && boardCopy[pos[1]][pos[0] - 1] !== 0)
-                    nearestNeighbour([pos[0] - 1, pos[1]]);
-                if (
-                    pos[1] < board.length - 1 &&
-                    boardCopy[pos[1] + 1][pos[0]] !== 0
-                )
-                    nearestNeighbour([pos[0], pos[1] + 1]);
-                if (
-                    pos[0] < board.length - 1 &&
-                    boardCopy[pos[1]][pos[0] + 1] !== 0
-                )
-                    nearestNeighbour([pos[0] + 1, pos[1]]);
-            };
-            nearestNeighbour(origPos);
-        } else return;
+            if (board[origPos[1]][origPos[0]] !== 0) {
+                const nearestNeighbour = (pos) => {
+                    ship.push([pos, boardCopy[pos[1]][pos[0]]]);
+                    boardCopy[pos[1]][pos[0]] = 0;
+                    if (pos[1] > 0 && boardCopy[pos[1] - 1][pos[0]] !== 0)
+                        nearestNeighbour([pos[0], pos[1] - 1]);
+                    if (pos[0] > 0 && boardCopy[pos[1]][pos[0] - 1] !== 0)
+                        nearestNeighbour([pos[0] - 1, pos[1]]);
+                    if (
+                        pos[1] < board.length - 1 &&
+                        boardCopy[pos[1] + 1][pos[0]] !== 0
+                    )
+                        nearestNeighbour([pos[0], pos[1] + 1]);
+                    if (
+                        pos[0] < board.length - 1 &&
+                        boardCopy[pos[1]][pos[0] + 1] !== 0
+                    )
+                        nearestNeighbour([pos[0] + 1, pos[1]]);
+                };
+                nearestNeighbour(origPos);
+            } else return;
 
-        let currRot = false;
-        if (ship.length > 2 && ship[0][0][1] !== ship[1][0][1]) currRot = true;
+            let currRot = false;
+            if (ship.length > 2 && ship[0][0][1] !== ship[1][0][1])
+                currRot = true;
 
-        const middleIndex = Math.ceil((ship.length - 1) / 2);
-        let middlePos = [];
-        if (currRot) ship.sort((a, b) => a[0][1] - b[0][1]);
-        else ship.sort((a, b) => a[0][0] - b[0][0]);
-        middlePos = ship[middleIndex][0];
+            const middleIndex = Math.ceil((ship.length - 1) / 2);
+            let middlePos = [];
+            if (currRot) ship.sort((a, b) => a[0][1] - b[0][1]);
+            else ship.sort((a, b) => a[0][0] - b[0][0]);
+            middlePos = ship[middleIndex][0];
 
-        if (rotation) currRot = !currRot;
+            if (rotation) currRot = !currRot;
 
-        if (rotation) {
-            destPos[0] += middlePos[1] - origPos[1];
-            destPos[1] += middlePos[0] - origPos[0];
-        } else {
-            destPos[0] += middlePos[0] - origPos[0];
-            destPos[1] += middlePos[1] - origPos[1];
-        }
+            if (rotation) {
+                destPos[0] += middlePos[1] - origPos[1];
+                destPos[1] += middlePos[0] - origPos[0];
+            } else {
+                destPos[0] += middlePos[0] - origPos[0];
+                destPos[1] += middlePos[1] - origPos[1];
+            }
 
-        if (validateShipPosition(boardCopy, ship.length, destPos, currRot)) {
-            board = boardCopy;
-            for (let i = 0; i < ship.length; i++) {
-                if (currRot) {
-                    board[destPos[1] + (i - middleIndex)][destPos[0]] =
-                        ship[i][1];
-                } else {
-                    board[destPos[1]][destPos[0] + (i - middleIndex)] =
-                        ship[i][1];
+            if (
+                validateShipPosition(boardCopy, ship.length, destPos, currRot)
+            ) {
+                board = boardCopy;
+                for (let i = 0; i < ship.length; i++) {
+                    if (currRot) {
+                        board[destPos[1] + (i - middleIndex)][destPos[0]] =
+                            ship[i][1];
+                    } else {
+                        board[destPos[1]][destPos[0] + (i - middleIndex)] =
+                            ship[i][1];
+                    }
                 }
             }
         }
@@ -128,31 +140,33 @@ const Gameboard = (s) => {
     };
 
     const deleteShip = (position) => {
-        if (!Array.isArray(position) || position.length !== 2) return;
-        if (!Number.isInteger(position[0])) return;
-        if (position[0] < 0 || position[0] >= board.length) return;
-        if (!Number.isInteger(position[1])) return;
-        if (position[1] < 0 || position[1] >= board.length) return;
+        if (!gameStarted) {
+            if (!Array.isArray(position) || position.length !== 2) return;
+            if (!Number.isInteger(position[0])) return;
+            if (position[0] < 0 || position[0] >= board.length) return;
+            if (!Number.isInteger(position[1])) return;
+            if (position[1] < 0 || position[1] >= board.length) return;
 
-        if (board[position[1]][position[0]] !== 0) {
-            const nearestNeighbour = (pos) => {
-                board[pos[1]][pos[0]] = 0;
-                if (pos[1] > 0 && board[pos[1] - 1][pos[0]] !== 0)
-                    nearestNeighbour([pos[0], pos[1] - 1]);
-                if (pos[0] > 0 && board[pos[1]][pos[0] - 1] !== 0)
-                    nearestNeighbour([pos[0] - 1, pos[1]]);
-                if (
-                    pos[1] < board.length - 1 &&
-                    board[pos[1] + 1][pos[0]] !== 0
-                )
-                    nearestNeighbour([pos[0], pos[1] + 1]);
-                if (
-                    pos[0] < board.length - 1 &&
-                    board[pos[1]][pos[0] + 1] !== 0
-                )
-                    nearestNeighbour([pos[0] + 1, pos[1]]);
-            };
-            nearestNeighbour(position);
+            if (board[position[1]][position[0]] !== 0) {
+                const nearestNeighbour = (pos) => {
+                    board[pos[1]][pos[0]] = 0;
+                    if (pos[1] > 0 && board[pos[1] - 1][pos[0]] !== 0)
+                        nearestNeighbour([pos[0], pos[1] - 1]);
+                    if (pos[0] > 0 && board[pos[1]][pos[0] - 1] !== 0)
+                        nearestNeighbour([pos[0] - 1, pos[1]]);
+                    if (
+                        pos[1] < board.length - 1 &&
+                        board[pos[1] + 1][pos[0]] !== 0
+                    )
+                        nearestNeighbour([pos[0], pos[1] + 1]);
+                    if (
+                        pos[0] < board.length - 1 &&
+                        board[pos[1]][pos[0] + 1] !== 0
+                    )
+                        nearestNeighbour([pos[0] + 1, pos[1]]);
+                };
+                nearestNeighbour(position);
+            }
         }
     };
 
@@ -172,26 +186,32 @@ const Gameboard = (s) => {
     };
 
     const receiveAttack = (position) => {
-        if (!Array.isArray(position) || position.length !== 2) return;
-        if (!Number.isInteger(position[0])) return;
-        if (position[0] < 0 || position[0] >= board.length) return;
-        if (!Number.isInteger(position[1])) return;
-        if (position[1] < 0 || position[1] >= board.length) return;
+        if (gameStarted) {
+            if (!Array.isArray(position) || position.length !== 2) return;
+            if (!Number.isInteger(position[0])) return;
+            if (position[0] < 0 || position[0] >= board.length) return;
+            if (!Number.isInteger(position[1])) return;
+            if (position[1] < 0 || position[1] >= board.length) return;
 
-        if (board[position[1]][position[0]] !== 2) {
-            board[position[1]][position[0]] = 2;
-            return true;
+            if (board[position[1]][position[0]] !== 2) {
+                board[position[1]][position[0]] = 2;
+                return true;
+            }
+            return false;
         }
         return false;
     };
 
     const checkDefeat = () => {
-        for (let i = 0; i < board.length; i++) {
-            for (let j = 0; j < board[i].length; j++) {
-                if (board[i][j] === 1) return false;
+        if (gameStarted) {
+            for (let i = 0; i < board.length; i++) {
+                for (let j = 0; j < board[i].length; j++) {
+                    if (board[i][j] === 1) return false;
+                }
             }
+            return true;
         }
-        return true;
+        return false;
     };
 
     const observeBoard = () => {
@@ -199,6 +219,7 @@ const Gameboard = (s) => {
     };
 
     return {
+        startGame,
         placeShip,
         moveShip,
         deleteShip,
