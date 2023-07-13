@@ -3,6 +3,7 @@ const Gameboard = (s) => {
     let gameStarted = false;
     let attacks = [];
     let hits = [];
+    let sinks = [];
 
     const generateBoard = () => {
         let board = [];
@@ -25,6 +26,7 @@ const Gameboard = (s) => {
         gameStarted = false;
         attacks = [];
         hits = [];
+        sinks = [];
     };
 
     const placeShip = (length, position, rotation) => {
@@ -58,40 +60,18 @@ const Gameboard = (s) => {
             if (destPos[1] < 0 || destPos[1] >= board.length) return;
             if (typeof rotation !== "boolean") return false;
 
-            const ship = [];
-            const boardCopy = observeBoard();
-
-            if (board[origPos[1]][origPos[0]] !== 0) {
-                const nearestNeighbour = (pos) => {
-                    ship.push([pos, boardCopy[pos[1]][pos[0]]]);
-                    boardCopy[pos[1]][pos[0]] = 0;
-                    if (pos[1] > 0 && boardCopy[pos[1] - 1][pos[0]] !== 0)
-                        nearestNeighbour([pos[0], pos[1] - 1]);
-                    if (pos[0] > 0 && boardCopy[pos[1]][pos[0] - 1] !== 0)
-                        nearestNeighbour([pos[0] - 1, pos[1]]);
-                    if (
-                        pos[1] < board.length - 1 &&
-                        boardCopy[pos[1] + 1][pos[0]] !== 0
-                    )
-                        nearestNeighbour([pos[0], pos[1] + 1]);
-                    if (
-                        pos[0] < board.length - 1 &&
-                        boardCopy[pos[1]][pos[0] + 1] !== 0
-                    )
-                        nearestNeighbour([pos[0] + 1, pos[1]]);
-                };
-                nearestNeighbour(origPos);
-            } else return;
+            const extractShip = getShip(origPos);
+            if (!extractShip) return;
+            const [ship, boardCopy] = extractShip;
 
             let currRot = false;
-            if (ship.length > 2 && ship[0][0][1] !== ship[1][0][1])
-                currRot = true;
+            if (ship.length > 2 && ship[0][1] !== ship[1][1]) currRot = true;
 
             const middleIndex = Math.ceil((ship.length - 1) / 2);
             let middlePos = [];
-            if (currRot) ship.sort((a, b) => a[0][1] - b[0][1]);
-            else ship.sort((a, b) => a[0][0] - b[0][0]);
-            middlePos = ship[middleIndex][0];
+            if (currRot) ship.sort((a, b) => a[1] - b[1]);
+            else ship.sort((a, b) => a[0] - b[0]);
+            middlePos = ship[middleIndex];
 
             if (rotation) currRot = !currRot;
 
@@ -109,11 +89,9 @@ const Gameboard = (s) => {
                 board = boardCopy;
                 for (let i = 0; i < ship.length; i++) {
                     if (currRot) {
-                        board[destPos[1] + (i - middleIndex)][destPos[0]] =
-                            ship[i][1];
+                        board[destPos[1] + (i - middleIndex)][destPos[0]] = 1;
                     } else {
-                        board[destPos[1]][destPos[0] + (i - middleIndex)] =
-                            ship[i][1];
+                        board[destPos[1]][destPos[0] + (i - middleIndex)] = 1;
                     }
                 }
             }
@@ -156,26 +134,8 @@ const Gameboard = (s) => {
             if (!Number.isInteger(position[1])) return;
             if (position[1] < 0 || position[1] >= board.length) return;
 
-            if (board[position[1]][position[0]] !== 0) {
-                const nearestNeighbour = (pos) => {
-                    board[pos[1]][pos[0]] = 0;
-                    if (pos[1] > 0 && board[pos[1] - 1][pos[0]] !== 0)
-                        nearestNeighbour([pos[0], pos[1] - 1]);
-                    if (pos[0] > 0 && board[pos[1]][pos[0] - 1] !== 0)
-                        nearestNeighbour([pos[0] - 1, pos[1]]);
-                    if (
-                        pos[1] < board.length - 1 &&
-                        board[pos[1] + 1][pos[0]] !== 0
-                    )
-                        nearestNeighbour([pos[0], pos[1] + 1]);
-                    if (
-                        pos[0] < board.length - 1 &&
-                        board[pos[1]][pos[0] + 1] !== 0
-                    )
-                        nearestNeighbour([pos[0] + 1, pos[1]]);
-                };
-                nearestNeighbour(position);
-            }
+            const extractShip = getShip(position);
+            if (extractShip) board = extractShip[1];
         }
     };
 
@@ -211,6 +171,40 @@ const Gameboard = (s) => {
             return false;
         }
         return false;
+    };
+
+    const getShip = (position) => {
+        if (!Array.isArray(position) || position.length !== 2) return;
+        if (!Number.isInteger(position[0])) return;
+        if (position[0] < 0 || position[0] >= board.length) return;
+        if (!Number.isInteger(position[1])) return;
+        if (position[1] < 0 || position[1] >= board.length) return;
+
+        if (board[position[1]][position[0]] !== 0) {
+            const ship = [];
+            const boardCopy = observeBoard();
+            const nearestNeighbour = (pos) => {
+                ship.push(pos);
+                boardCopy[pos[1]][pos[0]] = 0;
+                if (pos[1] > 0 && boardCopy[pos[1] - 1][pos[0]] !== 0)
+                    nearestNeighbour([pos[0], pos[1] - 1]);
+                if (pos[0] > 0 && boardCopy[pos[1]][pos[0] - 1] !== 0)
+                    nearestNeighbour([pos[0] - 1, pos[1]]);
+                if (
+                    pos[1] < board.length - 1 &&
+                    boardCopy[pos[1] + 1][pos[0]] !== 0
+                )
+                    nearestNeighbour([pos[0], pos[1] + 1]);
+                if (
+                    pos[0] < board.length - 1 &&
+                    boardCopy[pos[1]][pos[0] + 1] !== 0
+                )
+                    nearestNeighbour([pos[0] + 1, pos[1]]);
+            };
+            nearestNeighbour(position);
+            return [ship, boardCopy];
+        }
+        return null;
     };
 
     const checkDefeat = () => {
