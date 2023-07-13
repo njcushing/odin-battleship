@@ -1,6 +1,7 @@
 const Gameboard = (s) => {
     let size = s;
     let gameStarted = false;
+    let attacks = [];
     let hits = [];
 
     const generateBoard = () => {
@@ -22,6 +23,7 @@ const Gameboard = (s) => {
     const resetBoard = () => {
         board = generateBoard();
         gameStarted = false;
+        attacks = [];
         hits = [];
     };
 
@@ -202,6 +204,7 @@ const Gameboard = (s) => {
 
             if (board[position[1]][position[0]] === 1) hits.push(position);
             if (board[position[1]][position[0]] !== 2) {
+                attacks.push(position);
                 board[position[1]][position[0]] = 2;
                 return true;
             }
@@ -226,6 +229,10 @@ const Gameboard = (s) => {
         return JSON.parse(JSON.stringify(board));
     };
 
+    const previousAttacks = () => {
+        return JSON.parse(JSON.stringify(attacks));
+    };
+
     const previousHits = () => {
         return JSON.parse(JSON.stringify(hits));
     };
@@ -239,6 +246,7 @@ const Gameboard = (s) => {
         receiveAttack,
         checkDefeat,
         observeBoard,
+        previousAttacks,
         previousHits,
     };
 };
