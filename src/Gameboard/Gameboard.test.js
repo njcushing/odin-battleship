@@ -578,12 +578,12 @@ test("Check that previousSinks method returns array that has correctly tracked p
     board.receiveAttack([2, 3]);
     expect(board.previousSinks()).toStrictEqual([
         [
-            [1, 1],
             [2, 1],
+            [1, 1],
         ],
         [
-            [1, 3],
             [2, 3],
+            [1, 3],
         ],
     ]);
     board.resetBoard();

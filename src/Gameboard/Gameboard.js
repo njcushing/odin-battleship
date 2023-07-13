@@ -170,6 +170,22 @@ const Gameboard = (s) => {
                 if (board[position[1]][position[0]] === 1) hits.push(position);
                 attacks.push(position);
                 board[position[1]][position[0]] = 2;
+
+                let startingBoardCopy = JSON.parse(
+                    JSON.stringify(startingBoard)
+                );
+                const getShip = extractShip(startingBoardCopy, position);
+                if (getShip) {
+                    let shipSunk = true;
+                    for (let i = 0; i < getShip[1].length; i++) {
+                        if (board[getShip[1][i][1]][getShip[1][i][0]] === 1) {
+                            shipSunk = false;
+                            break;
+                        }
+                    }
+                    if (shipSunk) sinks.push(getShip[1]);
+                }
+
                 return true;
             }
             return false;
@@ -234,6 +250,10 @@ const Gameboard = (s) => {
         return JSON.parse(JSON.stringify(hits));
     };
 
+    const previousSinks = () => {
+        return JSON.parse(JSON.stringify(sinks));
+    };
+
     return {
         startGame,
         resetBoard,
@@ -245,6 +265,7 @@ const Gameboard = (s) => {
         observeBoard,
         previousAttacks,
         previousHits,
+        previousSinks,
     };
 };
 export default Gameboard;
