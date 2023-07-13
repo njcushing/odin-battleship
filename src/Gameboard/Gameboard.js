@@ -16,13 +16,16 @@ const Gameboard = (s) => {
         return board;
     };
     let board = generateBoard();
+    let startingBoard = null;
 
     const startGame = () => {
         gameStarted = true;
+        startingBoard = observeBoard();
     };
 
     const resetBoard = () => {
         board = generateBoard();
+        startingBoard = null;
         gameStarted = false;
         attacks = [];
         hits = [];
@@ -60,9 +63,11 @@ const Gameboard = (s) => {
             if (destPos[1] < 0 || destPos[1] >= board.length) return;
             if (typeof rotation !== "boolean") return false;
 
-            const extractShip = getShip(origPos);
-            if (!extractShip) return;
-            const [ship, boardCopy] = extractShip;
+            let boardCopy = observeBoard();
+            const getShip = extractShip(boardCopy, origPos);
+            if (!getShip) return;
+            boardCopy = getShip[0];
+            const ship = getShip[1];
 
             let currRot = false;
             if (ship.length > 2 && ship[0][1] !== ship[1][1]) currRot = true;
@@ -134,8 +139,7 @@ const Gameboard = (s) => {
             if (!Number.isInteger(position[1])) return;
             if (position[1] < 0 || position[1] >= board.length) return;
 
-            const extractShip = getShip(position);
-            if (extractShip) board = extractShip[1];
+            extractShip(board, position);
         }
     };
 
@@ -162,8 +166,8 @@ const Gameboard = (s) => {
             if (!Number.isInteger(position[1])) return;
             if (position[1] < 0 || position[1] >= board.length) return;
 
-            if (board[position[1]][position[0]] === 1) hits.push(position);
             if (board[position[1]][position[0]] !== 2) {
+                if (board[position[1]][position[0]] === 1) hits.push(position);
                 attacks.push(position);
                 board[position[1]][position[0]] = 2;
                 return true;
@@ -173,7 +177,7 @@ const Gameboard = (s) => {
         return false;
     };
 
-    const getShip = (position) => {
+    const extractShip = (board, position) => {
         if (!Array.isArray(position) || position.length !== 2) return;
         if (!Number.isInteger(position[0])) return;
         if (position[0] < 0 || position[0] >= board.length) return;
@@ -182,27 +186,26 @@ const Gameboard = (s) => {
 
         if (board[position[1]][position[0]] !== 0) {
             const ship = [];
-            const boardCopy = observeBoard();
             const nearestNeighbour = (pos) => {
                 ship.push(pos);
-                boardCopy[pos[1]][pos[0]] = 0;
-                if (pos[1] > 0 && boardCopy[pos[1] - 1][pos[0]] !== 0)
+                board[pos[1]][pos[0]] = 0;
+                if (pos[1] > 0 && board[pos[1] - 1][pos[0]] !== 0)
                     nearestNeighbour([pos[0], pos[1] - 1]);
-                if (pos[0] > 0 && boardCopy[pos[1]][pos[0] - 1] !== 0)
+                if (pos[0] > 0 && board[pos[1]][pos[0] - 1] !== 0)
                     nearestNeighbour([pos[0] - 1, pos[1]]);
                 if (
                     pos[1] < board.length - 1 &&
-                    boardCopy[pos[1] + 1][pos[0]] !== 0
+                    board[pos[1] + 1][pos[0]] !== 0
                 )
                     nearestNeighbour([pos[0], pos[1] + 1]);
                 if (
                     pos[0] < board.length - 1 &&
-                    boardCopy[pos[1]][pos[0] + 1] !== 0
+                    board[pos[1]][pos[0] + 1] !== 0
                 )
                     nearestNeighbour([pos[0] + 1, pos[1]]);
             };
             nearestNeighbour(position);
-            return [ship, boardCopy];
+            return [board, ship];
         }
         return null;
     };
