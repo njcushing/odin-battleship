@@ -520,6 +520,7 @@ test("Check that previousHits method returns array that has correctly tracked pr
         [0, 0, 0, 0],
         [0, 1, 1, 0],
     ]);
+    board.startGame();
     board.receiveAttack([0, 0]);
     board.receiveAttack([2, 1]);
     board.receiveAttack([1, 2]);
@@ -529,4 +530,6 @@ test("Check that previousHits method returns array that has correctly tracked pr
         [2, 1],
         [2, 3],
     ]);
+    board.resetBoard();
+    expect(board.previousHits()).toStrictEqual([]);
 });

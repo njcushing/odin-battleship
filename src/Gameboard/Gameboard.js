@@ -1,6 +1,7 @@
 const Gameboard = (s) => {
     let size = s;
     let gameStarted = false;
+    let hits = [];
 
     const generateBoard = () => {
         let board = [];
@@ -21,6 +22,7 @@ const Gameboard = (s) => {
     const resetBoard = () => {
         board = generateBoard();
         gameStarted = false;
+        hits = [];
     };
 
     const placeShip = (length, position, rotation) => {
@@ -198,6 +200,7 @@ const Gameboard = (s) => {
             if (!Number.isInteger(position[1])) return;
             if (position[1] < 0 || position[1] >= board.length) return;
 
+            if (board[position[1]][position[0]] === 1) hits.push(position);
             if (board[position[1]][position[0]] !== 2) {
                 board[position[1]][position[0]] = 2;
                 return true;
@@ -223,6 +226,10 @@ const Gameboard = (s) => {
         return JSON.parse(JSON.stringify(board));
     };
 
+    const previousHits = () => {
+        return JSON.parse(JSON.stringify(hits));
+    };
+
     return {
         startGame,
         resetBoard,
@@ -232,6 +239,7 @@ const Gameboard = (s) => {
         receiveAttack,
         checkDefeat,
         observeBoard,
+        previousHits,
     };
 };
 export default Gameboard;
