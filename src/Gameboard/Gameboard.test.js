@@ -557,3 +557,35 @@ test("Check that previousHits method returns array that has correctly tracked pr
     board.resetBoard();
     expect(board.previousHits()).toStrictEqual([]);
 });
+
+test("Check that previousSinks method returns array that has correctly tracked previous sinks", () => {
+    const board = Gameboard(4);
+    board.placeShip(2, [1, 1], false);
+    board.placeShip(2, [1, 3], false);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0],
+        [0, 1, 1, 0],
+        [0, 0, 0, 0],
+        [0, 1, 1, 0],
+    ]);
+    board.receiveAttack([1, 1]);
+    board.receiveAttack([2, 1]);
+    expect(board.previousSinks()).toStrictEqual([]);
+    board.startGame();
+    board.receiveAttack([1, 1]);
+    board.receiveAttack([2, 1]);
+    board.receiveAttack([1, 3]);
+    board.receiveAttack([2, 3]);
+    expect(board.previousSinks()).toStrictEqual([
+        [
+            [1, 1],
+            [2, 1],
+        ],
+        [
+            [1, 3],
+            [2, 3],
+        ],
+    ]);
+    board.resetBoard();
+    expect(board.previousSinks()).toStrictEqual([]);
+});
