@@ -509,3 +509,24 @@ test("Check that the resetBoard method is resetting board and gameStarted bool c
         [0, 0, 0, 0],
     ]);
 });
+
+test("Check that previousHits method returns array that has correctly tracked previous hits", () => {
+    const board = Gameboard(4);
+    board.placeShip(2, [1, 1], false);
+    board.placeShip(2, [1, 3], false);
+    expect(board.observeBoard()).toStrictEqual([
+        [0, 0, 0, 0],
+        [0, 1, 1, 0],
+        [0, 0, 0, 0],
+        [0, 1, 1, 0],
+    ]);
+    board.receiveAttack([0, 0]);
+    board.receiveAttack([2, 1]);
+    board.receiveAttack([1, 2]);
+    board.receiveAttack([2, 2]);
+    board.receiveAttack([2, 3]);
+    expect(board.previousHits()).toStrictEqual([
+        [2, 1],
+        [2, 3],
+    ]);
+});
