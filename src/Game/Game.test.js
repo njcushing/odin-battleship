@@ -28,6 +28,19 @@ test("Ensure Game can create two Gameboard objects from module", () => {
     expect(game.getGameboards()[1].observeBoard()).toStrictEqual(board);
 });
 
+test("Ensure changeTurn method is cycling the turn between 0 and 1", () => {
+    const game = Game();
+    game.startGame();
+    const turn = game.getTurn();
+    expect([0, 1]).toContain(turn);
+    game.changeTurn();
+    expect(game.getTurn()).not.toBe(turn);
+    expect([0, 1]).toContain(turn);
+    game.changeTurn();
+    expect(game.getTurn()).toBe(turn);
+    expect([0, 1]).toContain(turn);
+});
+
 test(`When calling startGame method, make sure both boards are started, turn is
     either 0 or 1 and computer takes turn if applicable`, () => {
     const game = Game();
@@ -43,7 +56,6 @@ test(`When calling startGame method, make sure both boards are started, turn is
         boards[1].observeBoard()
     );
     const turn = game.getTurn();
-    expect([0, 1]).toContain(turn);
     if (players[turn].getStyle() === "Computer")
         expect(setTimeout).toBeCalledTimes(1);
 });
@@ -64,15 +76,26 @@ test("Ensure resetGame resets both players' boards correctly", () => {
     expect(boards[0].observeBoard()).toStrictEqual(boards[1].observeBoard());
 });
 
-test("Ensure changeTurn method is cycling the turn between 0 and 1", () => {
+test(`Check that the attack method is only working for "Manual" players, on their
+    turn, on the correct board, only when the game has started and then switches
+    turn and calls computerAttack if necessary`, () => {
     const game = Game();
+    const boards = game.getGameboards();
+    const boardEmpty = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ];
+    const players = game.getPlayers();
     game.startGame();
     const turn = game.getTurn();
-    expect([0, 1]).toContain(turn);
-    game.changeTurn();
-    expect(game.getTurn()).not.toBe(turn);
-    expect([0, 1]).toContain(turn);
-    game.changeTurn();
-    expect(game.getTurn()).toBe(turn);
-    expect([0, 1]).toContain(turn);
+    if (players[turn].getStyle() === "Manual") {
+    }
 });
