@@ -47,3 +47,13 @@ test(`When calling startGame method, make sure both boards are started, turn is
     if (players[turn].getStyle() === "Computer")
         expect(setTimeout).toBeCalledTimes(1);
 });
+
+test("Ensure changeTurn method is cycling the turn between 0 and 1", () => {
+    const game = Game();
+    game.startGame();
+    const turn = game.getTurn();
+    game.changeTurn();
+    expect(game.getTurn()).not.toBe(turn);
+    game.changeTurn();
+    expect(game.getTurn()).toBe(turn);
+});

@@ -46,12 +46,12 @@ const Game = () => {
         return boards;
     };
 
-    const changeTurn = () => {
-        turn = (turn + 1) % 2;
-    };
-
     const getTurn = () => {
         return turn;
+    };
+
+    const changeTurn = () => {
+        turn = (turn + 1) % 2;
     };
 
     return {
@@ -60,6 +60,7 @@ const Game = () => {
         getPlayers,
         getGameboards,
         getTurn,
+        changeTurn,
     };
 };
 export default Game;
