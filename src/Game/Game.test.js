@@ -48,6 +48,22 @@ test(`When calling startGame method, make sure both boards are started, turn is
         expect(setTimeout).toBeCalledTimes(1);
 });
 
+test("Ensure resetGame resets both players' boards correctly", () => {
+    const game = Game();
+    const boards = game.getGameboards();
+    game.startGame();
+    boards[0].receiveAttack([3, 3]);
+    boards[1].receiveAttack([2, 2]);
+    expect(boards[0].observeBoard()).not.toStrictEqual(
+        boards[1].observeBoard()
+    );
+    game.resetGame();
+    expect(boards[0].observeBoard()).toStrictEqual(boards[1].observeBoard());
+    boards[0].receiveAttack([3, 3]);
+    boards[1].receiveAttack([2, 2]);
+    expect(boards[0].observeBoard()).toStrictEqual(boards[1].observeBoard());
+});
+
 test("Ensure changeTurn method is cycling the turn between 0 and 1", () => {
     const game = Game();
     game.startGame();

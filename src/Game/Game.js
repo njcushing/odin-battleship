@@ -21,6 +21,7 @@ const Game = () => {
     };
 
     const resetGame = () => {
+        gameStarted = false;
         boards[0].resetBoard();
         boards[1].resetBoard();
     };
