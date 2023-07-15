@@ -110,6 +110,21 @@ describe("Calling the manualAttack method... ", () => {
         players[0].setStyle("Manual");
         players[1].setStyle("Manual");
     });
+    describe("Should do nothing if the first argument (board index)... ", () => {
+        test("Is not an integer", () => {
+            expect(game.manualAttack(0.5, [2, 2])).toBeNull();
+        });
+        test("Is less than 0", () => {
+            expect(game.manualAttack(-1, [2, 2])).toBeNull();
+        });
+        test("Is larger than 1", () => {
+            expect(game.manualAttack(2, [2, 2])).toBeNull();
+        });
+    });
+    test("Should return null if the current player is trying to attack their own board", () => {
+        if (game.getTurn() === 1) game.changeTurn();
+        expect(game.manualAttack(0, [2, 2])).toBeNull();
+    });
 });
 
 describe("Calling the endGame method... ", () => {
