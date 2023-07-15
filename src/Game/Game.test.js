@@ -98,19 +98,9 @@ describe("Calling the startGame method... ", () => {
 describe("Calling the manualAttack method... ", () => {
     const game = Game();
     const gameboards = game.getGameboards();
+    const spyBoard1ReceiveAttack = jest.spyOn(gameboards[0], "receiveAttack");
     const players = game.getPlayers();
-    test("Should return null if the game has not yet started", () => {
-        expect(game.manualAttack(0, [2, 2])).toBeNull();
-        game.startGame();
-    });
-    test("Should return null if current Player's style is set to 'Computer'", () => {
-        players[0].setStyle("Computer");
-        players[1].setStyle("Computer");
-        expect(game.manualAttack(0, [2, 2])).toBeNull();
-        players[0].setStyle("Manual");
-        players[1].setStyle("Manual");
-    });
-    describe("Should do nothing if the first argument (board index)... ", () => {
+    describe("Should return null if the first argument (board index)... ", () => {
         test("Is not an integer", () => {
             expect(game.manualAttack(0.5, [2, 2])).toBeNull();
         });
@@ -121,9 +111,26 @@ describe("Calling the manualAttack method... ", () => {
             expect(game.manualAttack(2, [2, 2])).toBeNull();
         });
     });
-    test("Should return null if the current player is trying to attack their own board", () => {
-        if (game.getTurn() === 1) game.changeTurn();
-        expect(game.manualAttack(0, [2, 2])).toBeNull();
+    describe("If the first argument is valid... ", () => {
+        test("Should return null if the game has not yet started", () => {
+            expect(game.manualAttack(0, [2, 2])).toBeNull();
+            game.startGame();
+        });
+        test("Should return null if current Player's style is set to 'Computer'", () => {
+            players[0].setStyle("Computer");
+            players[1].setStyle("Computer");
+            expect(game.manualAttack(0, [2, 2])).toBeNull();
+            players[0].setStyle("Manual");
+            players[1].setStyle("Manual");
+        });
+        test("Should return null if the current player is trying to attack their own board", () => {
+            if (game.getTurn() === 1) game.changeTurn();
+            expect(game.manualAttack(0, [2, 2])).toBeNull();
+        });
+        test("Should call the receiveAttack method on the board being attacked", () => {
+            game.manualAttack(1, [2, 2]);
+            expect(spyBoard1ReceiveAttack).toHaveBeenCalledTimes(1);
+        });
     });
 });
 
