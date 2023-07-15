@@ -64,6 +64,7 @@ const Game = () => {
 
     return {
         startGame,
+        endGame,
         resetGame,
         isGameStarted,
         getPlayers,

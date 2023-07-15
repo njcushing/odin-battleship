@@ -101,11 +101,21 @@ describe("Calling the resetGame method... ", () => {
     const spyBoard1ResetBoard = jest.spyOn(gameboards[0], "resetBoard");
     const spyBoard2ResetBoard = jest.spyOn(gameboards[1], "resetBoard");
     test("Should set the game started state to false", () => {
+        game.startGame();
         game.resetGame();
         expect(game.isGameStarted()).toBe(false);
     });
     test("Should call the resetBoard method on both Gameboard objects", () => {
         expect(spyBoard1ResetBoard).toHaveBeenCalledTimes(1);
         expect(spyBoard2ResetBoard).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe("Calling the endGame method... ", () => {
+    const game = Game();
+    test("Should set the game started state to false", () => {
+        game.startGame();
+        game.endGame();
+        expect(game.isGameStarted()).toBe(false);
     });
 });
