@@ -131,6 +131,17 @@ describe("Calling the manualAttack method... ", () => {
             game.manualAttack(1, [2, 2]);
             expect(spyBoard1ReceiveAttack).toHaveBeenCalledTimes(1);
         });
+        test("Should NOT change turn if an unsuccessful hit went through", () => {
+            if (game.getTurn() === 1) game.changeTurn();
+            const currentTurn = game.getTurn();
+            game.manualAttack(1, [2, 2]);
+            expect(game.getTurn()).toBe(currentTurn);
+        });
+        test("Should change turn if a successful hit went through", () => {
+            const currentTurn = game.getTurn();
+            game.manualAttack(1, [3, 3]);
+            expect(game.getTurn()).not.toBe(currentTurn);
+        });
     });
 });
 

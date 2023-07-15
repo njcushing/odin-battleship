@@ -32,7 +32,10 @@ const Game = () => {
         if (!gameStarted) return null;
         if (players[turn].getStyle() === "Computer") return null;
         if (turn === board) return null;
+        const previousAttacksCount = boards[turn].previousAttacks().length;
         boards[turn].receiveAttack(position);
+        if (previousAttacksCount !== boards[turn].previousAttacks().length)
+            changeTurn();
     };
 
     const computerAttack = () => {
