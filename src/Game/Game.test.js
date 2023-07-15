@@ -78,7 +78,7 @@ describe("Calling the startGame method... ", () => {
         expect([0, 1]).toContain(turn);
     });
     describe("If the current turn is for a Player object whose style is set to 'Manual'... ", () => {
-        test("Should NOT call the async computerAttack method", () => {
+        test("The async computerAttack method SHOULD NOT be called", () => {
             if (game.getTurn() === 1) game.changeTurn();
             expect(spyGlobalSetTimeout).toHaveBeenCalledTimes(1);
         });
@@ -88,10 +88,36 @@ describe("Calling the startGame method... ", () => {
     players[1].setStyle("Computer");
     game.startGame();
     describe("If the current turn is for a Player object whose style is set to 'Computer'... ", () => {
-        test("Should call the async computerAttack method", () => {
+        test("The async computerAttack method SHOULD be called", () => {
             if (game.getTurn() === 0) game.changeTurn();
             expect(spyGlobalSetTimeout).toHaveBeenCalledTimes(1);
         });
+    });
+});
+
+describe("Calling the manualAttack method... ", () => {
+    const game = Game();
+    const gameboards = game.getGameboards();
+    const players = game.getPlayers();
+    test("Should return null if the game has not yet started", () => {
+        expect(game.manualAttack(0, [2, 2])).toBeNull();
+        game.startGame();
+    });
+    test("Should return null if current Player's style is set to 'Computer'", () => {
+        players[0].setStyle("Computer");
+        players[1].setStyle("Computer");
+        expect(game.manualAttack(0, [2, 2])).toBeNull();
+        players[0].setStyle("Manual");
+        players[1].setStyle("Manual");
+    });
+});
+
+describe("Calling the endGame method... ", () => {
+    const game = Game();
+    test("Should set the game started state to false", () => {
+        game.startGame();
+        game.endGame();
+        expect(game.isGameStarted()).toBe(false);
     });
 });
 
@@ -108,14 +134,5 @@ describe("Calling the resetGame method... ", () => {
     test("Should call the resetBoard method on both Gameboard objects", () => {
         expect(spyBoard1ResetBoard).toHaveBeenCalledTimes(1);
         expect(spyBoard2ResetBoard).toHaveBeenCalledTimes(1);
-    });
-});
-
-describe("Calling the endGame method... ", () => {
-    const game = Game();
-    test("Should set the game started state to false", () => {
-        game.startGame();
-        game.endGame();
-        expect(game.isGameStarted()).toBe(false);
     });
 });
