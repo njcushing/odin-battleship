@@ -275,6 +275,19 @@ describe("Calling the moveShip method... ", () => {
             });
         });
         describe("Should NOT move a ship to the new location... ", () => {
+            test("If there is no ship at the provided origin position", () => {
+                board.moveShip([2, 2], [2, 2], false);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
             test("If it will exceed the bounds of the board", () => {
                 board.moveShip([4, 4], [4, 1], false);
                 expect(board.observeBoard()).toStrictEqual([

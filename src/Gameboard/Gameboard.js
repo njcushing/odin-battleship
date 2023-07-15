@@ -50,16 +50,8 @@ const Gameboard = (s) => {
 
     const moveShip = (origPos, destPos, rotation) => {
         if (isGameStarted()) return null;
-        if (!Array.isArray(origPos) || origPos.length !== 2) return;
-        if (!Number.isInteger(origPos[0])) return;
-        if (origPos[0] < 0 || origPos[0] >= board.length) return;
-        if (!Number.isInteger(origPos[1])) return;
-        if (origPos[1] < 0 || origPos[1] >= board.length) return;
-        if (!Array.isArray(destPos) || destPos.length !== 2) return;
-        if (!Number.isInteger(destPos[0])) return;
-        if (destPos[0] < 0 || destPos[0] >= board.length) return;
-        if (!Number.isInteger(destPos[1])) return;
-        if (destPos[1] < 0 || destPos[1] >= board.length) return;
+        if (!validateCoordinateInput(origPos)) return;
+        if (!validateCoordinateInput(destPos)) return;
         if (typeof rotation !== "boolean") return false;
 
         let boardCopy = observeBoard();
@@ -102,23 +94,26 @@ const Gameboard = (s) => {
     const validateShipPosition = (board, length, position, rotation) => {
         if (!Number.isInteger(length) || length < 1 || length > board.length)
             return false;
-        if (!Array.isArray(position) || position.length !== 2) return false;
-        if (!Number.isInteger(position[0])) return false;
-        if (!Number.isInteger(position[1])) return false;
+        if (!validateCoordinateInput(position)) return false;
         if (typeof rotation !== "boolean") return false;
 
         const bounds = calculateShipArea(length, position, rotation);
 
-        if (bounds[0][0] < 0 || bounds[0][0] >= board.length) return false;
-        if (bounds[0][1] < 0 || bounds[0][1] >= board.length) return false;
-        if (bounds[1][0] < 0 || bounds[1][0] >= board.length) return false;
-        if (bounds[1][1] < 0 || bounds[1][1] >= board.length) return false;
+        if (
+            bounds[0][0] < 0 ||
+            bounds[0][0] >= board.length ||
+            bounds[0][1] < 0 ||
+            bounds[0][1] >= board.length ||
+            bounds[1][0] < 0 ||
+            bounds[1][0] >= board.length ||
+            bounds[1][1] < 0 ||
+            bounds[1][1] >= board.length
+        )
+            return false;
 
         for (let i = bounds[0][0] - 1; i <= bounds[1][0] + 1; i++) {
-            if (i < -1 || i > board.length) return false;
             if (i === -1 || i === board.length) continue;
             for (let j = bounds[0][1] - 1; j <= bounds[1][1] + 1; j++) {
-                if (j < -1 || j > board.length) return false;
                 if (j === -1 || j === board.length) continue;
                 if (board[j][i] !== 0) return false;
             }
@@ -129,11 +124,7 @@ const Gameboard = (s) => {
 
     const deleteShip = (position) => {
         if (isGameStarted()) return null;
-        if (!Array.isArray(position) || position.length !== 2) return;
-        if (!Number.isInteger(position[0])) return;
-        if (position[0] < 0 || position[0] >= board.length) return;
-        if (!Number.isInteger(position[1])) return;
-        if (position[1] < 0 || position[1] >= board.length) return;
+        if (!validateCoordinateInput(position)) return;
 
         extractShip(board, position);
     };
@@ -155,11 +146,7 @@ const Gameboard = (s) => {
 
     const receiveAttack = (position) => {
         if (!isGameStarted()) return false;
-        if (!Array.isArray(position) || position.length !== 2) return;
-        if (!Number.isInteger(position[0])) return;
-        if (position[0] < 0 || position[0] >= board.length) return;
-        if (!Number.isInteger(position[1])) return;
-        if (position[1] < 0 || position[1] >= board.length) return;
+        if (!validateCoordinateInput(position)) return;
 
         if (board[position[1]][position[0]] !== 2) {
             if (board[position[1]][position[0]] === 1) hits.push(position);
@@ -184,12 +171,6 @@ const Gameboard = (s) => {
     };
 
     const extractShip = (board, position) => {
-        if (!Array.isArray(position) || position.length !== 2) return;
-        if (!Number.isInteger(position[0])) return;
-        if (position[0] < 0 || position[0] >= board.length) return;
-        if (!Number.isInteger(position[1])) return;
-        if (position[1] < 0 || position[1] >= board.length) return;
-
         if (board[position[1]][position[0]] !== 0) {
             const ship = [];
             const nearestNeighbour = (pos) => {
@@ -214,6 +195,22 @@ const Gameboard = (s) => {
             return [board, ship];
         }
         return null;
+    };
+
+    const validateCoordinateInput = (position) => {
+        if (
+            Array.isArray(position) &&
+            position.length === 2 &&
+            Number.isInteger(position[0]) &&
+            position[0] >= 0 &&
+            position[0] < board.length &&
+            Number.isInteger(position[1]) &&
+            position[1] >= 0 &&
+            position[1] < board.length
+        ) {
+            return true;
+        }
+        return false;
     };
 
     const checkDefeat = () => {
