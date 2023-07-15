@@ -9,6 +9,7 @@ const Game = () => {
     let boards = [Gameboard(10), Gameboard(10)];
 
     const startGame = () => {
+        if (gameStarted) return null;
         gameStarted = true;
         boards[0].startGame();
         boards[1].startGame();
@@ -26,6 +27,8 @@ const Game = () => {
         boards[1].resetBoard();
     };
 
+    const attack = (board, position) => {};
+
     const computerAttack = (turn, player, board) => {
         setTimeout(() => {
             let boardToAttack = boards[(turn + 1) % 2];
@@ -39,6 +42,10 @@ const Game = () => {
         }, 3000);
     };
 
+    const isGameStarted = () => {
+        return gameStarted;
+    };
+
     const getPlayers = () => {
         return players;
     };
@@ -47,21 +54,22 @@ const Game = () => {
         return boards;
     };
 
-    const getTurn = () => {
-        return turn;
-    };
-
     const changeTurn = () => {
         turn = (turn + 1) % 2;
+    };
+
+    const getTurn = () => {
+        return turn;
     };
 
     return {
         startGame,
         resetGame,
+        isGameStarted,
         getPlayers,
         getGameboards,
-        getTurn,
         changeTurn,
+        getTurn,
     };
 };
 export default Game;

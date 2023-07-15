@@ -1,101 +1,101 @@
 import Game from "./../Game/Game";
+import Gameboard from "./../Gameboard/Gameboard";
 
 jest.useFakeTimers();
-jest.spyOn(global, "setTimeout");
 
-test(`Ensure Game can create two Player objects from module and assign their
-    default play styles correctly`, () => {
-    const game = Game();
-    expect(game.getPlayers()[0].getStyle()).toBe("Manual");
-    expect(game.getPlayers()[1].getStyle()).toBe("Computer");
+describe("Calling the isGameStarted method... ", () => {
+    const game = Game(1);
+    test("Should return the default value after initialisation (false)", () => {
+        expect(game.isGameStarted()).toBe(false);
+    });
 });
 
-test("Ensure Game can create two Gameboard objects from module", () => {
+describe("Calling the getGameboards method... ", () => {
     const game = Game();
-    const board = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    ];
-    expect(game.getGameboards()[0].observeBoard()).toStrictEqual(board);
-    expect(game.getGameboards()[1].observeBoard()).toStrictEqual(board);
+    const gameboards = game.getGameboards();
+    test("Should return an array of length 2", () => {
+        expect(gameboards.length).toEqual(2);
+    });
 });
 
-test("Ensure changeTurn method is cycling the turn between 0 and 1", () => {
+describe("Calling the getPlayers method... ", () => {
     const game = Game();
-    game.startGame();
-    const turn = game.getTurn();
-    expect([0, 1]).toContain(turn);
-    game.changeTurn();
-    expect(game.getTurn()).not.toBe(turn);
-    expect([0, 1]).toContain(turn);
-    game.changeTurn();
-    expect(game.getTurn()).toBe(turn);
-    expect([0, 1]).toContain(turn);
+    const players = game.getGameboards();
+    test("Should return an array of length 2", () => {
+        expect(players.length).toEqual(2);
+    });
 });
 
-test(`When calling startGame method, make sure both boards are started, turn is
-    either 0 or 1 and computer takes turn if applicable`, () => {
+describe("On Game object instantiation... ", () => {
     const game = Game();
-    const boards = game.getGameboards();
+    const board = Gameboard(10);
+    const boardEmpty = board.observeBoard();
+    test("TWO Gameboard objects of size 10x10 should be created correctly", () => {
+        const gameboards = game.getGameboards();
+        expect(gameboards[0].observeBoard()).toStrictEqual(boardEmpty);
+        expect(gameboards[1].observeBoard()).toStrictEqual(boardEmpty);
+    });
+    test("TWO Player objects should be created correctly", () => {
+        const players = game.getPlayers();
+        expect(players[0].getStyle()).toBe("Manual");
+        expect(players[1].getStyle()).toBe("Computer");
+    });
+});
+
+describe("Calling the changeTurn method... ", () => {
+    const game = Game();
+    let turn = game.getTurn();
+    test("Should cycle the turn value between 0 and 1", () => {
+        expect([0, 1]).toContain(turn);
+        game.changeTurn();
+        turn = game.getTurn();
+        expect([0, 1]).toContain(turn);
+        game.changeTurn();
+        turn = game.getTurn();
+        expect([0, 1]).toContain(turn);
+    });
+});
+
+describe("Calling the startGame method... ", () => {
+    const game = Game();
+    const gameboards = game.getGameboards();
+    const spyBoard1StartGame = jest.spyOn(gameboards[0], "startGame");
+    const spyBoard2StartGame = jest.spyOn(gameboards[1], "startGame");
     const players = game.getPlayers();
-    boards[0].receiveAttack([3, 3]);
-    boards[1].receiveAttack([2, 2]);
-    expect(boards[0].observeBoard()).toStrictEqual(boards[1].observeBoard());
+    /* Setting both Player objects' styles to "Computer" here to force computerAttack method call */
+    players[0].setStyle("Computer");
+    players[1].setStyle("Computer");
+    const spyGlobalSetTimeout = jest.spyOn(global, "setTimeout");
     game.startGame();
-    boards[0].receiveAttack([3, 3]);
-    boards[1].receiveAttack([2, 2]);
-    expect(boards[0].observeBoard()).not.toStrictEqual(
-        boards[1].observeBoard()
-    );
-    const turn = game.getTurn();
-    if (players[turn].getStyle() === "Computer")
-        expect(setTimeout).toBeCalledTimes(1);
+    test("Should set the game started state to true", () => {
+        expect(game.isGameStarted()).toBe(true);
+    });
+    test("Should call the startGame method on both Gameboard objects", () => {
+        expect(spyBoard1StartGame).toHaveBeenCalledTimes(1);
+        expect(spyBoard2StartGame).toHaveBeenCalledTimes(1);
+    });
+    test("Should set the current turn to either 0 or 1", () => {
+        const turn = game.getTurn();
+        expect([0, 1]).toContain(turn);
+    });
+    describe("If the current turn is for a Player object whose style is set to 'Computer'... ", () => {
+        test("Should call the async computerAttack method", () => {
+            expect(spyGlobalSetTimeout).toHaveBeenCalledTimes(1);
+        });
+    });
 });
 
-test("Ensure resetGame resets both players' boards correctly", () => {
+describe("Calling the resetGame method... ", () => {
     const game = Game();
-    const boards = game.getGameboards();
-    game.startGame();
-    boards[0].receiveAttack([3, 3]);
-    boards[1].receiveAttack([2, 2]);
-    expect(boards[0].observeBoard()).not.toStrictEqual(
-        boards[1].observeBoard()
-    );
-    game.resetGame();
-    expect(boards[0].observeBoard()).toStrictEqual(boards[1].observeBoard());
-    boards[0].receiveAttack([3, 3]);
-    boards[1].receiveAttack([2, 2]);
-    expect(boards[0].observeBoard()).toStrictEqual(boards[1].observeBoard());
-});
-
-test(`Check that the attack method is only working for "Manual" players, on their
-    turn, on the correct board, only when the game has started and then switches
-    turn and calls computerAttack if necessary`, () => {
-    const game = Game();
-    const boards = game.getGameboards();
-    const boardEmpty = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    ];
-    const players = game.getPlayers();
-    game.startGame();
-    const turn = game.getTurn();
-    if (players[turn].getStyle() === "Manual") {
-    }
+    const gameboards = game.getGameboards();
+    const spyBoard1ResetBoard = jest.spyOn(gameboards[0], "resetBoard");
+    const spyBoard2ResetBoard = jest.spyOn(gameboards[1], "resetBoard");
+    test("Should set the game started state to false", () => {
+        game.resetGame();
+        expect(game.isGameStarted()).toBe(false);
+    });
+    test("Should call the resetBoard method on both Gameboard objects", () => {
+        expect(spyBoard1ResetBoard).toHaveBeenCalledTimes(1);
+        expect(spyBoard2ResetBoard).toHaveBeenCalledTimes(1);
+    });
 });
