@@ -1,371 +1,193 @@
 import Gameboard from "./Gameboard";
 
-test("Ensure board is being created & returned correctly", () => {
-    const board1 = Gameboard(3);
-    expect(board1.observeBoard()).toStrictEqual([
-        [0, 0, 0],
-        [0, 0, 0],
-        [0, 0, 0],
-    ]);
-    const board2 = Gameboard(4);
-    expect(board2.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-    ]);
-    const board3 = Gameboard(3);
-    expect(board3.observeBoard()).not.toStrictEqual([
-        [0, 0],
-        [0, 0],
-    ]);
+describe("Calling the isGameStarted method... ", () => {
+    const board = Gameboard(1);
+    test("Should return the default value after initialisation (false)", () => {
+        expect(board.isGameStarted()).toBe(false);
+    });
 });
 
-test("Ensure board is not manipulated by invalid placeShip arguments", () => {
-    const board = Gameboard(8);
-    const boardSame = [
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ];
-    board.placeShip(-1, [3, 3], false);
-    board.placeShip(0, [3, 3], false);
-    board.placeShip(9, [3, 3], false);
-    board.placeShip(1.5, [3, 3], false);
-    board.placeShip("test", [3, 3], false);
-    expect(board.observeBoard()).toStrictEqual(boardSame);
-    board.placeShip(4, ["test", 3], false);
-    board.placeShip(4, [3, "test"], false);
-    board.placeShip(4, [-1, 3], false);
-    board.placeShip(4, [3, -1], false);
-    board.placeShip(4, [7, 3], false);
-    board.placeShip(4, [3, 9], false);
-    board.placeShip(4, [10, 3], false);
-    board.placeShip(4, [3, 10], false);
-    board.placeShip(4, [2, 0.4], false);
-    board.placeShip(4, [0.4, 2], false);
-    board.placeShip(4, "test", false);
-    expect(board.observeBoard()).toStrictEqual(boardSame);
-    board.placeShip(4, [3, 3], 2);
-    board.placeShip(4, [3, 3], 0.5);
-    board.placeShip(4, [3, 3], "test");
-    expect(board.observeBoard()).toStrictEqual(boardSame);
-});
-
-test("Ensure board is being manipulated correctly by valid placeShip arguments", () => {
-    const board = Gameboard(8);
-    board.placeShip(5, [3, 3], false);
-    const x = {};
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.placeShip(4, [1, 6], false);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.placeShip(4, [7, 2], true);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 1, 1, 1, 1, 1, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.placeShip(3, [5, 7], false);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 1, 1, 1, 1, 1, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.placeShip(2, [7, 7], false);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 1, 1, 1, 1, 1, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.placeShip(4, [0, 1], false);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 1, 1, 1, 1, 1, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.placeShip(3, [0, 0], true);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 1, 1, 1, 1, 1, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.placeShip(4, [2, 3], false);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 1, 1, 1, 1, 1, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-});
-
-test("Ensure board is not manipulated by invalid moveShip arguments", () => {
-    const board = Gameboard(8);
-    board.placeShip(5, [3, 3], false);
-    const boardSame = [
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ];
-    board.moveShip(["test", 3], [3, 3], true);
-    board.moveShip([3, "test"], [3, 3], true);
-    board.moveShip([-1, 3], [3, 3], true);
-    board.moveShip([3, -1], [3, 3], true);
-    board.moveShip([7, 3], [3, 3], true);
-    board.moveShip([3, 9], [3, 3], true);
-    board.moveShip([10, 3], [3, 3], true);
-    board.moveShip([3, 10], [3, 3], true);
-    board.moveShip([2, 0.4], [3, 3], true);
-    board.moveShip([0.4, 2], [3, 3], true);
-    board.moveShip("test", [3, 3], true);
-    expect(board.observeBoard()).toStrictEqual(boardSame);
-    board.moveShip([3, 3], ["test", 3], true);
-    board.moveShip([3, 3], [3, "test"], true);
-    board.moveShip([3, 3], [-1, 3], true);
-    board.moveShip([3, 3], [3, -1], true);
-    board.moveShip([3, 3], [7, 3], false);
-    board.moveShip([3, 3], [3, 9], true);
-    board.moveShip([3, 3], [10, 3], true);
-    board.moveShip([3, 3], [3, 10], true);
-    board.moveShip([3, 3], [2, 0.4], true);
-    board.moveShip([3, 3], [0.4, 2], true);
-    board.moveShip([3, 3], "test", true);
-    expect(board.observeBoard()).toStrictEqual(boardSame);
-    board.moveShip([3, 3], [3, 3], 2);
-    board.moveShip([3, 3], [3, 3], 0.5);
-    board.moveShip([3, 3], [3, 3], "test");
-    expect(board.observeBoard()).toStrictEqual(boardSame);
-});
-
-test("Ensure board is being manipulated correctly by valid moveShip arguments", () => {
-    const board = Gameboard(8);
-    board.placeShip(5, [3, 3], false);
-    board.moveShip([3, 3], [3, 2], false);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.moveShip([5, 2], [4, 4], true);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 1, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.moveShip([4, 0], [0, 6], true);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.placeShip(5, [3, 3], false);
-    board.moveShip([2, 6], [3, 3], false);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.moveShip([3, 3], [6, 3], false);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.moveShip([3, 3], [6, 3], true);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0],
-        [1, 1, 1, 1, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.moveShip([6, 3], [6, 6], false);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0],
-        [1, 1, 1, 1, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-});
-
-test("Ensure board is not manipulated by invalid deleteShip arguments", () => {
-    const board = Gameboard(8);
-    board.placeShip(5, [3, 3], false);
-    const boardSame = [
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ];
-    board.deleteShip(["test", 3]);
-    board.deleteShip([3, "test"]);
-    board.deleteShip([-1, 3]);
-    board.deleteShip([3, -1]);
-    board.deleteShip([10, 3]);
-    board.deleteShip([3, 10]);
-    board.deleteShip([2, 0.4]);
-    board.deleteShip([0.4, 2]);
-    board.deleteShip("test");
-    expect(board.observeBoard()).toStrictEqual(boardSame);
-});
-
-test("Ensure board is being manipulated correctly by valid deleteShip arguments", () => {
-    const board = Gameboard(8);
-    board.placeShip(5, [3, 3], false);
-    board.placeShip(3, [2, 6], false);
-    board.placeShip(4, [7, 2], true);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 1, 1, 1, 1, 1, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.deleteShip([5, 2], true);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 1, 1, 1, 1, 1, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.deleteShip([1, 3], true);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.deleteShip([7, 4], true);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.deleteShip([2, 6], true);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-});
-
-test("Ensure board is not manipulated by invalid receiveAttack arguments", () => {
-    const board = Gameboard(8);
-    board.placeShip(5, [3, 3], false);
+describe("Calling the startGame method... ", () => {
+    const board = Gameboard(1);
     board.startGame();
+    test("Should set the game's 'started' state to true", () => {
+        expect(board.isGameStarted()).toBe(true);
+    });
+});
+
+describe("Calling the observeBoard method... ", () => {
+    test("Should return a copy of the board array", () => {
+        const board = Gameboard(3);
+        expect(board.observeBoard()).toStrictEqual([
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+        ]);
+    });
+});
+
+describe("On Gameboard object instantiation... ", () => {
+    test("A board of size 3x3 should be created correctly", () => {
+        const board = Gameboard(3);
+        expect(board.observeBoard()).toStrictEqual([
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+        ]);
+    });
+    test("A board of size 4x4 should be created correctly", () => {
+        const board = Gameboard(4);
+        expect(board.observeBoard()).toStrictEqual([
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+        ]);
+    });
+    test("A board of size 3x3 should not be created incorrectly", () => {
+        const board = Gameboard(3);
+        expect(board.observeBoard()).not.toStrictEqual([
+            [0, 0],
+            [0, 0],
+        ]);
+    });
+});
+
+describe("Calling the placeShip method... ", () => {
+    const board = Gameboard(8);
+    const boardEmpty = [
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ];
+    describe("If the game has not yet been started (default)... ", () => {
+        describe("Should do nothing if the first argument (ship length)... ", () => {
+            test("Is negative", () => {
+                board.placeShip(-1, [3, 3], false);
+                expect(board.observeBoard()).toStrictEqual(boardEmpty);
+            });
+            test("Is zero", () => {
+                board.placeShip(0, [3, 3], false);
+                expect(board.observeBoard()).toStrictEqual(boardEmpty);
+            });
+            test("Exceeds the size of the board", () => {
+                board.placeShip(9, [3, 3], false);
+                expect(board.observeBoard()).toStrictEqual(boardEmpty);
+            });
+            test("Is a float", () => {
+                board.placeShip(1.5, [3, 3], false);
+                expect(board.observeBoard()).toStrictEqual(boardEmpty);
+            });
+            test("Is not a number at all", () => {
+                board.placeShip("test", [3, 3], false);
+                expect(board.observeBoard()).toStrictEqual(boardEmpty);
+            });
+        });
+        describe("Should do nothing if the second argument (ship position)... ", () => {
+            test("Is not an array", () => {
+                board.placeShip(4, "test", false);
+                expect(board.observeBoard()).toStrictEqual(boardEmpty);
+            });
+            test("Is not exactly 2 elements long", () => {
+                board.placeShip(4, [3, 3, 3], false);
+                expect(board.observeBoard()).toStrictEqual(boardEmpty);
+            });
+            test("Doesn't only contain integers", () => {
+                board.placeShip(4, [2, "test"], false);
+                expect(board.observeBoard()).toStrictEqual(boardEmpty);
+            });
+        });
+        describe("Should do nothing if the third argument (ship rotation)... ", () => {
+            test("Is not a boolean", () => {
+                board.placeShip(4, [3, 3], "test");
+                expect(board.observeBoard()).toStrictEqual(boardEmpty);
+            });
+        });
+        describe("Should place a ship at the given position... ", () => {
+            test("Rotated", () => {
+                board.placeShip(5, [3, 3], false);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 1, 1, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
+            test("Not rotated", () => {
+                board.placeShip(4, [7, 2], true);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 1, 1, 1, 1, 1, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
+        });
+        describe("Should NOT place a ship at the given position... ", () => {
+            test("If it will exceed the bounds of the board", () => {
+                board.placeShip(4, [0, 1], false);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 1, 1, 1, 1, 1, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
+            test("If it will intrude on the bounds of another ship", () => {
+                board.placeShip(4, [2, 3], false);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 1, 1, 1, 1, 1, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
+        });
+    });
+    describe("If the game has been started... ", () => {
+        describe("Should NOT place a ship at the given position... ", () => {
+            test("Even if that position is valid", () => {
+                board.startGame();
+                board.placeShip(3, [2, 1], false);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 1, 1, 1, 1, 1, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
+        });
+    });
+});
+
+describe("Calling the moveShip method... ", () => {
+    const board = Gameboard(8);
+    board.placeShip(5, [3, 3], false);
     const boardSame = [
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
@@ -376,216 +198,357 @@ test("Ensure board is not manipulated by invalid receiveAttack arguments", () =>
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
     ];
-    board.receiveAttack(["test", 3]);
-    board.receiveAttack([3, "test"]);
-    board.receiveAttack([-1, 3]);
-    board.receiveAttack([3, -1]);
-    board.receiveAttack([10, 3]);
-    board.receiveAttack([3, 10]);
-    board.receiveAttack([2, 0.4]);
-    board.receiveAttack([0.4, 2]);
-    board.receiveAttack("test");
-    expect(board.observeBoard()).toStrictEqual(boardSame);
+    describe("If the game has not yet been started (default)... ", () => {
+        describe("Should do nothing if the first argument (ship original position)... ", () => {
+            test("Is not an array", () => {
+                board.moveShip("test", [3, 3], false);
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+            test("Is not exactly 2 elements long", () => {
+                board.moveShip([3, 3, 3], [3, 3], false);
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+            test("Doesn't only contain integers", () => {
+                board.moveShip([2, "test"], [3, 3], false);
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+        });
+        describe("Should do nothing if the second argument (ship destination position)... ", () => {
+            test("Is not an array", () => {
+                board.moveShip([3, 3], "test", false);
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+            test("Is not exactly 2 elements long", () => {
+                board.moveShip([3, 3], [3, 3, 3], false);
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+            test("Doesn't only contain integers", () => {
+                board.moveShip([3, 3], [2, "test"], false);
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+        });
+        describe("Should do nothing if the third argument (ship rotation from current rotation)... ", () => {
+            test("Is not a boolean", () => {
+                board.moveShip([3, 3], [3, 3], "test");
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+        });
+        describe("Should move a ship to the new location... ", () => {
+            test("When moved from its middle cell", () => {
+                board.moveShip([3, 3], [3, 2], false);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 1, 1, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
+            test("When moved from its edge cell", () => {
+                board.moveShip([5, 2], [6, 4], false);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 1, 1, 1, 1, 1, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
+            test("When rotated against its current rotation", () => {
+                board.moveShip([4, 4], [4, 4], true);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
+        });
+        describe("Should NOT move a ship to the new location... ", () => {
+            test("If it will exceed the bounds of the board", () => {
+                board.moveShip([4, 4], [4, 1], false);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
+            test("If it will intrude on the bounds of another ship", () => {
+                board.placeShip(3, [1, 3], false);
+                board.moveShip([4, 4], [3, 4], false);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [1, 1, 1, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
+        });
+    });
+    describe("If the game has been started... ", () => {
+        describe("Should NOT move a ship to the new location... ", () => {
+            test("Even if there is a ship at the origin and the desination is valid", () => {
+                board.startGame();
+                board.moveShip([4, 4], [5, 5], false);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [1, 1, 1, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 1, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
+        });
+    });
 });
 
-test("Ensure board is being manipulated correctly by valid receiveAttack arguments", () => {
+describe("Calling the deleteShip method... ", () => {
     const board = Gameboard(8);
     board.placeShip(5, [3, 3], false);
-    board.startGame();
-    board.receiveAttack([5, 2]);
-    expect(board.observeBoard()).toStrictEqual([
+    board.placeShip(5, [3, 6], false);
+    const boardSame = [
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 2, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+    ];
+    describe("If the game has not yet been started (default)... ", () => {
+        describe("Should do nothing if the first argument (position)... ", () => {
+            test("Is not an array", () => {
+                board.deleteShip("test");
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+            test("Is not exactly 2 elements long", () => {
+                board.deleteShip([3, 3, 3]);
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+            test("Doesn't only contain integers", () => {
+                board.deleteShip([3, "test"]);
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+        });
+        describe("Should NOT remove the ship from the board... ", () => {
+            test("If the position is not within the bounds of the board", () => {
+                board.deleteShip([9, 9]);
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+            test("If one is not at the given position", () => {
+                board.deleteShip([2, 2]);
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+        });
+        describe("Should remove the ship from the board... ", () => {
+            test("If one is at the given position", () => {
+                board.deleteShip([3, 3]);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 1, 1, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
+        });
+    });
+    describe("If the game has been started... ", () => {
+        describe("Should NOT remove the ship from the board... ", () => {
+            test("Even if there is a ship at the specified position", () => {
+                board.startGame();
+                board.deleteShip([3, 6]);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 1, 1, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
+        });
+    });
+});
+
+describe("Calling the receiveAttack method... ", () => {
+    const board = Gameboard(8);
+    board.placeShip(5, [3, 3], false);
+    const boardSame = [
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 1, 1, 1, 1, 1, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
+    ];
+    describe("If the game has not yet been started (default)... ", () => {
+        describe("Should NOT place an 'attacked' position on the board", () => {
+            test("Even if the position being attacked is valid", () => {
+                board.receiveAttack([4, 4]);
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+        });
+    });
+    describe("If the game has been started... ", () => {
+        describe("Should do nothing if the first argument (position)... ", () => {
+            test("Is not an array", () => {
+                board.startGame();
+                board.receiveAttack("test");
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+            test("Is not exactly 2 elements long", () => {
+                board.receiveAttack([3, 3, 3]);
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+            test("Doesn't only contain integers", () => {
+                board.receiveAttack([3, "test"]);
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+        });
+        describe("Should NOT place an 'attacked' position on the board... ", () => {
+            test("If the attack is outside the bounds of the board", () => {
+                board.receiveAttack([9, 9]);
+                expect(board.observeBoard()).toStrictEqual(boardSame);
+            });
+        });
+        describe("Should place an 'attacked' position on the board... ", () => {
+            test("If the attack is inside the bounds of the board", () => {
+                board.receiveAttack([4, 4]);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 1, 1, 0, 0],
+                    [0, 0, 0, 0, 2, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
+        });
+    });
+});
+
+describe("Calling the checkDefeat method... ", () => {
+    const board = Gameboard(8);
+    board.placeShip(1, [3, 3], false);
+    describe("If the game has not yet been started (default)... ", () => {
+        test("Should return false", () => {
+            expect(board.checkDefeat()).toBe(false);
+        });
+    });
+    describe("If the game has been started... ", () => {
+        test("Should return false while there is at least one position containing an alive ship", () => {
+            board.startGame();
+            expect(board.checkDefeat()).toBe(false);
+        });
+        test("Should return true when there are no positions containing an alive ship", () => {
+            board.receiveAttack([3, 3]);
+            expect(board.checkDefeat()).toBe(true);
+        });
+    });
+});
+
+describe("previousAttacks, previousHits, previousSinks and resetBoard methods grouping... ", () => {
+    const board = Gameboard(3);
+    const boardEmpty = board.observeBoard();
+    board.placeShip(2, [0, 0], false);
+    board.placeShip(2, [1, 2], false);
+    board.startGame();
+    board.receiveAttack([0, 0]);
+    board.receiveAttack([0, 1]);
+    board.receiveAttack([0, 1]);
     board.receiveAttack([1, 0]);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 2, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 2, 0, 0],
-        [0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.receiveAttack([4, 6]);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 2, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 2, 0, 0],
-        [0, 1, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 2, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-});
-
-test("Check for correct return value from checkDefeat method", () => {
-    const board = Gameboard(8);
-    board.placeShip(2, [3, 3], false);
-    board.startGame();
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 1, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-    ]);
-    board.receiveAttack([5, 2]);
-    expect(board.checkDefeat()).toBe(false);
-    board.receiveAttack([3, 3]);
-    expect(board.checkDefeat()).toBe(false);
-    board.receiveAttack([4, 3]);
-    expect(board.checkDefeat()).toBe(true);
-});
-
-test("Check that the startGame method is restricting correct methods in each state", () => {
-    const board = Gameboard(4);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-    ]);
-    board.placeShip(2, [2, 2], false);
-    board.receiveAttack([1, 3]);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 1, 1],
-        [0, 0, 0, 0],
-    ]);
-    board.startGame();
-    board.placeShip(2, [2, 0], false);
-    board.receiveAttack([1, 3]);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 1, 1],
-        [0, 2, 0, 0],
-    ]);
-});
-
-test("Check that the resetBoard method is resetting board and gameStarted bool correctly", () => {
-    const board = Gameboard(4);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-    ]);
-    board.placeShip(2, [2, 2], false);
-    board.placeShip(2, [1, 0], false);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 0, 1, 1],
-        [0, 0, 0, 0],
-    ]);
-    board.startGame();
-    board.placeShip(2, [0, 2], true);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 0, 1, 1],
-        [0, 0, 0, 0],
-    ]);
-    board.resetBoard();
-    board.placeShip(2, [1, 1], false);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0],
-        [0, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-    ]);
-});
-
-test("Check that previousAttacks method returns array that has correctly tracked previous attacks", () => {
-    const board = Gameboard(4);
     board.receiveAttack([1, 1]);
-    board.receiveAttack([2, 1]);
-    expect(board.previousAttacks()).toStrictEqual([]);
-    board.startGame();
-    board.receiveAttack([0, 0]);
-    board.receiveAttack([2, 1]);
     board.receiveAttack([1, 2]);
     board.receiveAttack([2, 2]);
-    board.receiveAttack([2, 3]);
-    expect(board.previousAttacks()).toStrictEqual([
-        [0, 0],
-        [2, 1],
-        [1, 2],
-        [2, 2],
-        [2, 3],
-    ]);
-    board.resetBoard();
-    expect(board.previousAttacks()).toStrictEqual([]);
-});
 
-test("Check that previousHits method returns array that has correctly tracked previous hits", () => {
-    const board = Gameboard(4);
-    board.placeShip(2, [1, 1], false);
-    board.placeShip(2, [1, 3], false);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0],
-        [0, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 1, 1, 0],
-    ]);
-    board.receiveAttack([2, 1]);
-    expect(board.previousHits()).toStrictEqual([]);
-    board.startGame();
-    board.receiveAttack([0, 0]);
-    board.receiveAttack([2, 1]);
-    board.receiveAttack([1, 2]);
-    board.receiveAttack([2, 2]);
-    board.receiveAttack([2, 3]);
-    expect(board.previousHits()).toStrictEqual([
-        [2, 1],
-        [2, 3],
-    ]);
-    board.resetBoard();
-    expect(board.previousHits()).toStrictEqual([]);
-});
+    describe("Calling the previousAttacks method... ", () => {
+        test("Should return an array containing the coordinate positions of each attack", () => {
+            expect(board.previousAttacks()).toStrictEqual([
+                [0, 0],
+                [0, 1],
+                [1, 0],
+                [1, 1],
+                [1, 2],
+                [2, 2],
+            ]);
+        });
+    });
 
-test("Check that previousSinks method returns array that has correctly tracked previous sinks", () => {
-    const board = Gameboard(4);
-    board.placeShip(2, [1, 1], false);
-    board.placeShip(2, [1, 3], false);
-    expect(board.observeBoard()).toStrictEqual([
-        [0, 0, 0, 0],
-        [0, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 1, 1, 0],
-    ]);
-    board.receiveAttack([1, 1]);
-    board.receiveAttack([2, 1]);
-    expect(board.previousSinks()).toStrictEqual([]);
-    board.startGame();
-    board.receiveAttack([1, 1]);
-    board.receiveAttack([2, 1]);
-    board.receiveAttack([1, 3]);
-    board.receiveAttack([2, 3]);
-    expect(board.previousSinks()).toStrictEqual([
-        [
-            [2, 1],
-            [1, 1],
-        ],
-        [
-            [2, 3],
-            [1, 3],
-        ],
-    ]);
-    board.resetBoard();
-    expect(board.previousSinks()).toStrictEqual([]);
+    describe("Calling the previousHits method... ", () => {
+        test("Should return an array containing the coordinate positions of each successful hit", () => {
+            expect(board.previousHits()).toStrictEqual([
+                [0, 0],
+                [1, 0],
+                [1, 2],
+                [2, 2],
+            ]);
+        });
+    });
+
+    describe("Calling the previousSinks method... ", () => {
+        test("Should return an array containing the coordinate positions of each successful hit", () => {
+            expect(board.previousSinks()).toStrictEqual([
+                [
+                    [1, 0],
+                    [0, 0],
+                ],
+                [
+                    [2, 2],
+                    [1, 2],
+                ],
+            ]);
+        });
+    });
+
+    describe("Calling the resetBoard method... ", () => {
+        test("Should reset the game started state to false", () => {
+            board.resetBoard();
+            expect(board.isGameStarted()).toBe(false);
+        });
+        test("Should reset the previousAttacks array", () => {
+            expect(board.previousAttacks()).toStrictEqual([]);
+        });
+        test("Should reset the previousHits array", () => {
+            expect(board.previousHits()).toStrictEqual([]);
+        });
+        test("Should reset the previousSinks array", () => {
+            expect(board.previousSinks()).toStrictEqual([]);
+        });
+        test("Should reset the board to empty", () => {
+            expect(board.observeBoard()).toStrictEqual(boardEmpty);
+        });
+    });
 });
