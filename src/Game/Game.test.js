@@ -62,24 +62,34 @@ describe("Calling the startGame method... ", () => {
     const spyBoard1StartGame = jest.spyOn(gameboards[0], "startGame");
     const spyBoard2StartGame = jest.spyOn(gameboards[1], "startGame");
     const players = game.getPlayers();
-    /* Setting both Player objects' styles to "Computer" here to force computerAttack method call */
-    players[0].setStyle("Computer");
-    players[1].setStyle("Computer");
+    players[0].setStyle("Manual");
+    players[1].setStyle("Manual");
     const spyGlobalSetTimeout = jest.spyOn(global, "setTimeout");
     game.startGame();
     test("Should set the game started state to true", () => {
         expect(game.isGameStarted()).toBe(true);
     });
     test("Should call the startGame method on both Gameboard objects", () => {
-        expect(spyBoard1StartGame).toHaveBeenCalledTimes(1);
-        expect(spyBoard2StartGame).toHaveBeenCalledTimes(1);
+        expect(spyBoard1StartGame).toHaveBeenCalledTimes(2);
+        expect(spyBoard2StartGame).toHaveBeenCalledTimes(2);
     });
     test("Should set the current turn to either 0 or 1", () => {
         const turn = game.getTurn();
         expect([0, 1]).toContain(turn);
     });
+    describe("If the current turn is for a Player object whose style is set to 'Manual'... ", () => {
+        test("Should NOT call the async computerAttack method", () => {
+            if (game.getTurn() === 1) game.changeTurn();
+            expect(spyGlobalSetTimeout).toHaveBeenCalledTimes(1);
+        });
+    });
+    game.resetGame();
+    players[0].setStyle("Computer");
+    players[1].setStyle("Computer");
+    game.startGame();
     describe("If the current turn is for a Player object whose style is set to 'Computer'... ", () => {
         test("Should call the async computerAttack method", () => {
+            if (game.getTurn() === 0) game.changeTurn();
             expect(spyGlobalSetTimeout).toHaveBeenCalledTimes(1);
         });
     });
