@@ -27,9 +27,14 @@ const Game = () => {
         boards[1].resetBoard();
     };
 
-    const attack = (board, position) => {};
+    const manualAttack = (board, position) => {
+        if (!gameStarted) return null;
+        if (players[turn].getStyle() === "Computer") return null;
+        if (!(Number.isInteger(board) && board >= 0 && board <= 1)) return null;
+        if (turn === board) return null;
+    };
 
-    const computerAttack = (turn, player, board) => {
+    const computerAttack = () => {
         setTimeout(() => {
             let boardToAttack = boards[(turn + 1) % 2];
             players[turn].takeComputerTurnRandom(boardToAttack);
@@ -66,6 +71,7 @@ const Game = () => {
         startGame,
         endGame,
         resetGame,
+        manualAttack,
         isGameStarted,
         getPlayers,
         getGameboards,
