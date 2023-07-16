@@ -1,4 +1,4 @@
-import Gameboard from "./Gameboard";
+import Gameboard from "./../Gameboard/Gameboard";
 
 describe("Calling the isGameStarted method... ", () => {
     const board = Gameboard(1);

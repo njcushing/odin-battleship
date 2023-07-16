@@ -1,4 +1,4 @@
-import Player from "./Player";
+import Player from "./../Player/Player";
 import Gameboard from "./../Gameboard/Gameboard";
 
 test("Check setStyle method is changing the style of the Player correctly & only when argument is valid", () => {
