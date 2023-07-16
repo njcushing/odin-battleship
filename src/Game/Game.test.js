@@ -5,6 +5,7 @@ jest.useFakeTimers();
 afterEach(() => {
     const spyGlobalSetTimeout = jest.spyOn(global, "setTimeout");
     spyGlobalSetTimeout.mockRestore();
+    jest.runOnlyPendingTimers();
 });
 
 describe("Calling the isGameStarted method... ", () => {
@@ -128,7 +129,6 @@ describe("Calling the manualAttack method... ", () => {
     const game = Game();
     const gameboards = game.getGameboards();
     gameboards[0].placeShip(1, [0, 0], false);
-    const spyBoard1ReceiveAttack = jest.spyOn(gameboards[0], "receiveAttack");
     const players = game.getPlayers();
     describe("Should return null if the first argument (board index)... ", () => {
         test("Is not an integer", () => {
@@ -158,6 +158,10 @@ describe("Calling the manualAttack method... ", () => {
             expect(game.manualAttack(0, [2, 2])).toBeNull();
         });
         test("Should call the receiveAttack method on the board being attacked", () => {
+            const spyBoard1ReceiveAttack = jest.spyOn(
+                gameboards[0],
+                "receiveAttack"
+            );
             game.manualAttack(1, [2, 2]);
             expect(spyBoard1ReceiveAttack).toHaveBeenCalledTimes(1);
         });
