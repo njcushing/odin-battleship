@@ -38,6 +38,16 @@ describe("Calling the createCell method... ", () => {
             expect(arr[arr.length - 1].classList).toContain("empty");
         });
     });
+    describe("If the third argument (parent node)...  ", () => {
+        test("Is NOT a valid DOM element, the method should return null", () => {
+            expect(UI.createCell(0, [], "test")).toBeNull();
+        });
+        test("Is a valid DOM element, the cell should be created as normal", () => {
+            let arr = [];
+            UI.createCell(0, arr, mockParent);
+            expect(arr[arr.length - 1].classList).toContain("empty");
+        });
+    });
 });
 
 /*

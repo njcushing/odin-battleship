@@ -23,12 +23,13 @@ const DOM = () => {
     const createElement = (type = "div", classes = [], parent = null) => {
         const newElement = document.createElement(type);
         classes.forEach((className) => newElement.classList.add(className));
-        if (parent) parent.appendChild(newElement);
+        if (parent instanceof Element) parent.appendChild(newElement);
         return newElement;
     };
 
     const createCell = (value, arr, parent) => {
         if (!Array.isArray(arr)) return null;
+        if (!(parent instanceof Element)) return null;
         switch (value) {
             case 1:
                 arr.push(createElement("div", ["cell", "ship"], parent));
