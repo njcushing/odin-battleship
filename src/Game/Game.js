@@ -56,7 +56,6 @@ const Game = () => {
                 return;
             }
             changeTurn();
-            if (players[turn].getStyle() === "Computer") computerAttack();
         }, 3000);
     };
 
@@ -78,6 +77,7 @@ const Game = () => {
 
     const changeTurn = () => {
         turn = (turn + 1) % 2;
+        if (players[turn].getStyle() === "Computer") computerAttack();
     };
 
     const getTurn = () => {

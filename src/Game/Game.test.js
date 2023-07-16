@@ -2,6 +2,10 @@ import Game from "./../Game/Game";
 import Gameboard from "./../Gameboard/Gameboard";
 
 jest.useFakeTimers();
+afterEach(() => {
+    const spyGlobalSetTimeout = jest.spyOn(global, "setTimeout");
+    spyGlobalSetTimeout.mockRestore();
+});
 
 describe("Calling the isGameStarted method... ", () => {
     const game = Game(1);
@@ -44,6 +48,7 @@ describe("On Game object instantiation... ", () => {
 
 describe("Calling the changeTurn method... ", () => {
     const game = Game();
+    const players = game.getPlayers();
     let turn = game.getTurn();
     test("Should cycle the turn value between 0 and 1", () => {
         expect([0, 1]).toContain(turn);
@@ -53,6 +58,24 @@ describe("Calling the changeTurn method... ", () => {
         game.changeTurn();
         turn = game.getTurn();
         expect([0, 1]).toContain(turn);
+    });
+    describe("If the new current turn is for a Player object whose style is set to 'Manual'... ", () => {
+        test("The async computerAttack method SHOULD NOT be called", () => {
+            players[0].setStyle("Manual");
+            players[1].setStyle("Manual");
+            const spyGlobalSetTimeout = jest.spyOn(global, "setTimeout");
+            game.changeTurn();
+            expect(spyGlobalSetTimeout).toHaveBeenCalledTimes(0);
+        });
+    });
+    describe("If the new current turn is for a Player object whose style is set to 'Computer'... ", () => {
+        test("The async computerAttack method SHOULD be called", () => {
+            players[0].setStyle("Computer");
+            players[1].setStyle("Computer");
+            const spyGlobalSetTimeout = jest.spyOn(global, "setTimeout");
+            game.changeTurn();
+            expect(spyGlobalSetTimeout).toHaveBeenCalledTimes(1);
+        });
     });
 });
 
@@ -73,8 +96,8 @@ describe("Calling the startGame method... ", () => {
         expect(game.isGameStarted()).toBe(true);
     });
     test("Should call the startGame method on both Gameboard objects", () => {
-        expect(spyBoard1StartGame).toHaveBeenCalledTimes(2);
-        expect(spyBoard2StartGame).toHaveBeenCalledTimes(2);
+        expect(spyBoard1StartGame).toHaveBeenCalledTimes(1);
+        expect(spyBoard2StartGame).toHaveBeenCalledTimes(1);
     });
     test("Should set the current turn to either 0 or 1", () => {
         const turn = game.getTurn();
@@ -82,21 +105,20 @@ describe("Calling the startGame method... ", () => {
     });
     describe("If the current turn is for a Player object whose style is set to 'Manual'... ", () => {
         test("The async computerAttack method SHOULD NOT be called", () => {
-            if (game.getTurn() === 1) game.changeTurn();
-            expect(spyGlobalSetTimeout).toHaveBeenCalledTimes(1);
+            expect(spyGlobalSetTimeout).toHaveBeenCalledTimes(0);
         });
     });
-    game.endGame();
     test("Should return null if the game is in an ended state", () => {
+        game.endGame();
         expect(game.startGame()).toBe(null);
     });
-    game.resetGame();
-    players[0].setStyle("Computer");
-    players[1].setStyle("Computer");
-    game.startGame();
     describe("If the current turn is for a Player object whose style is set to 'Computer'... ", () => {
         test("The async computerAttack method SHOULD be called", () => {
-            if (game.getTurn() === 0) game.changeTurn();
+            game.resetGame();
+            players[0].setStyle("Computer");
+            players[1].setStyle("Computer");
+            const spyGlobalSetTimeout = jest.spyOn(global, "setTimeout");
+            game.startGame();
             expect(spyGlobalSetTimeout).toHaveBeenCalledTimes(1);
         });
     });
