@@ -66,6 +66,9 @@ describe("Calling the startGame method... ", () => {
     players[1].setStyle("Manual");
     const spyGlobalSetTimeout = jest.spyOn(global, "setTimeout");
     game.startGame();
+    test("Should return null if the game has already started", () => {
+        expect(game.startGame()).toBe(null);
+    });
     test("Should set the game started state to true", () => {
         expect(game.isGameStarted()).toBe(true);
     });
@@ -82,6 +85,10 @@ describe("Calling the startGame method... ", () => {
             if (game.getTurn() === 1) game.changeTurn();
             expect(spyGlobalSetTimeout).toHaveBeenCalledTimes(1);
         });
+    });
+    game.endGame();
+    test("Should return null if the game is in an ended state", () => {
+        expect(game.startGame()).toBe(null);
     });
     game.resetGame();
     players[0].setStyle("Computer");
@@ -152,6 +159,9 @@ describe("Calling the endGame method... ", () => {
         game.endGame();
         expect(game.isGameStarted()).toBe(false);
     });
+    test("Should set the game ended state to true", () => {
+        expect(game.isGameEnded()).toBe(true);
+    });
 });
 
 describe("Calling the resetGame method... ", () => {
@@ -163,6 +173,9 @@ describe("Calling the resetGame method... ", () => {
         game.startGame();
         game.resetGame();
         expect(game.isGameStarted()).toBe(false);
+    });
+    test("Should set the game ended state to false", () => {
+        expect(game.isGameEnded()).toBe(false);
     });
     test("Should call the resetBoard method on both Gameboard objects", () => {
         expect(spyBoard1ResetBoard).toHaveBeenCalledTimes(1);

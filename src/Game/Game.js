@@ -3,14 +3,16 @@ import Gameboard from "../Gameboard/Gameboard";
 
 const Game = () => {
     let gameStarted = false;
+    let gameEnded = false;
     let turn = 0;
     let players = [Player(), Player()];
     players[1].setStyle("Computer");
     let boards = [Gameboard(10), Gameboard(10)];
 
     const startGame = () => {
-        if (gameStarted) return null;
+        if (gameStarted || gameEnded) return null;
         gameStarted = true;
+        gameEnded = false;
         boards[0].startGame();
         boards[1].startGame();
         turn = Math.floor(Math.random() * 2);
@@ -18,11 +20,13 @@ const Game = () => {
     };
 
     const endGame = () => {
+        gameEnded = true;
         gameStarted = false;
     };
 
     const resetGame = () => {
         gameStarted = false;
+        gameEnded = false;
         boards[0].resetBoard();
         boards[1].resetBoard();
     };
@@ -55,6 +59,10 @@ const Game = () => {
         return gameStarted;
     };
 
+    const isGameEnded = () => {
+        return gameEnded;
+    };
+
     const getPlayers = () => {
         return players;
     };
@@ -77,6 +85,7 @@ const Game = () => {
         resetGame,
         manualAttack,
         isGameStarted,
+        isGameEnded,
         getPlayers,
         getGameboards,
         changeTurn,
