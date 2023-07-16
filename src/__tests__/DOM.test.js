@@ -6,7 +6,38 @@ import DOM from "./../DOM/DOM";
 
 const UI = DOM();
 
-describe("Calling the createElement method... ", () => {});
+describe("Calling the createElement method... ", () => {
+    describe("If the first argument (HTML element type)...  ", () => {
+        test("Is NOT a valid HTML element type, the method should return null", () => {
+            expect(UI.createElement("aaa", ["test"], null)).toBeNull();
+        });
+        test("Is a valid HTML element type, the element should be created as normal", () => {
+            const mockElement = UI.createElement("div", ["test"], null);
+            expect(mockElement instanceof Element).toBe(true);
+        });
+    });
+    describe("If the second argument (class name array)...  ", () => {
+        test("Is NOT an array, the element should be created as normal but with no classes", () => {
+            const mockElement = UI.createElement("div", "test", null);
+            expect(mockElement.classList).toStrictEqual([]);
+        });
+        test("Contains any elements other than strings, they should be ignored", () => {
+            const mockElement = UI.createElement("div", ["test", 0, []], null);
+            expect(mockElement.classList).toStrictEqual(["test"]);
+        });
+    });
+    describe("If the third argument (HTML element type)...  ", () => {
+        test("Is NOT a valid DOM element, the element should be created as normal but with no parent", () => {
+            const mockElement = UI.createElement("div", ["test"], null);
+            expect(mockElement instanceof Element).toBe(true);
+        });
+        test("Is a valid DOM element, the element should be created as normal with a parent", () => {
+            const mockParent = document.createElement("div");
+            const mockElement = UI.createElement("div", ["test"], mockParent);
+            expect(mockElement.parentNode).toBeNull();
+        });
+    });
+});
 
 describe("Calling the createCell method... ", () => {
     const mockParent = document.createElement("div");
