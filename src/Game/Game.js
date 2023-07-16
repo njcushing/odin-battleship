@@ -38,8 +38,13 @@ const Game = () => {
         if (turn === board) return null;
         const previousAttacksCount = boards[turn].previousAttacks().length;
         boards[turn].receiveAttack(position);
-        if (previousAttacksCount !== boards[turn].previousAttacks().length)
+        if (previousAttacksCount !== boards[turn].previousAttacks().length) {
+            if (boards[turn].checkDefeat()) {
+                endGame();
+                return;
+            }
             changeTurn();
+        }
     };
 
     const computerAttack = () => {

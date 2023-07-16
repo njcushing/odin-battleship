@@ -105,6 +105,7 @@ describe("Calling the startGame method... ", () => {
 describe("Calling the manualAttack method... ", () => {
     const game = Game();
     const gameboards = game.getGameboards();
+    gameboards[0].placeShip(1, [0, 0], false);
     const spyBoard1ReceiveAttack = jest.spyOn(gameboards[0], "receiveAttack");
     const players = game.getPlayers();
     describe("Should return null if the first argument (board index)... ", () => {
@@ -144,10 +145,19 @@ describe("Calling the manualAttack method... ", () => {
             game.manualAttack(1, [2, 2]);
             expect(game.getTurn()).toBe(currentTurn);
         });
-        test("Should change turn if a successful hit went through", () => {
-            const currentTurn = game.getTurn();
-            game.manualAttack(1, [3, 3]);
-            expect(game.getTurn()).not.toBe(currentTurn);
+        describe("If a successful hit went through, should check for defeat on the board... ", () => {
+            test("If false, change turn", () => {
+                const currentTurn = game.getTurn();
+                game.manualAttack(1, [3, 3]);
+                expect(game.getTurn()).not.toBe(currentTurn);
+            });
+            test("If true, set the Game's ended state to true", () => {
+                game.manualAttack(0, [0, 0]);
+                expect(game.isGameEnded()).toBe(true);
+            });
+            test("If true, set the Game's started state to false", () => {
+                expect(game.isGameStarted()).toBe(false);
+            });
         });
     });
 });
