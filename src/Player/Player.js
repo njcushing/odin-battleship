@@ -24,13 +24,10 @@ const Player = () => {
         board.receiveAttack(rand);
     };
 
-    const takeComputerTurnIntelligent = () => {};
-
     return {
         setStyle,
         getStyle,
         takeComputerTurnRandom,
-        takeComputerTurnIntelligent,
     };
 };
 export default Player;
