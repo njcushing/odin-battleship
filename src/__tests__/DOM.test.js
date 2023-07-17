@@ -46,30 +46,20 @@ describe("Calling the createCell method... ", () => {
     const mockParent = document.createElement("div");
     describe("If the first argument (gameboard cell value)...  ", () => {
         test("Is NOT a valid value, it should still create the cell", () => {
-            UI.createCell("test", [], mockParent);
+            UI.createCell("test", mockParent);
             expect(mockParent.lastChild).not.toBeNull();
         });
         test("Is default or 0, the cell should contain the 'empty' class", () => {
-            UI.createCell(0, [], mockParent);
+            UI.createCell(0, mockParent);
             expect(mockParent.lastChild.classList).toContain("empty");
         });
         test("Is 1, the cell should contain the 'ship' class", () => {
-            UI.createCell(1, [], mockParent);
+            UI.createCell(1, mockParent);
             expect(mockParent.lastChild.classList).toContain("ship");
         });
         test("Is 2, the cell should contain the 'hit' class", () => {
-            UI.createCell(2, [], mockParent);
+            UI.createCell(2, mockParent);
             expect(mockParent.lastChild.classList).toContain("hit");
-        });
-    });
-    describe("If the second argument (element array)...  ", () => {
-        test("Is NOT a valid array, the method should return null", () => {
-            expect(UI.createCell(0, "test", mockParent)).toBeNull();
-        });
-        test("Is a valid array, the array should be appended with the new cell element", () => {
-            let arr = [];
-            UI.createCell(0, arr, mockParent);
-            expect(arr[arr.length - 1].classList).toContain("empty");
         });
     });
     describe("If the third argument (parent node)...  ", () => {
@@ -77,9 +67,8 @@ describe("Calling the createCell method... ", () => {
             expect(UI.createCell(0, [], "test")).toBeNull();
         });
         test("Is a valid DOM element, the cell should be created as normal", () => {
-            let arr = [];
-            UI.createCell(0, arr, mockParent);
-            expect(arr[arr.length - 1].classList).toContain("empty");
+            UI.createCell(0, mockParent);
+            expect(mockParent.lastChild.classList).toContain("empty");
         });
     });
 });
@@ -88,24 +77,19 @@ describe("Calling the createBoard method... ", () => {
     describe("If the first argument (Gameboard module)...  ", () => {
         test("Is NOT a valid object, the method should return null", () => {
             const mockParent = document.createElement("div");
-            expect(UI.createBoard(null, [], mockParent)).toBeNull();
+            expect(UI.createBoard(null, mockParent)).toBeNull();
         });
         test("Is NOT a valid Gameboard module, the method should return null", () => {
             const mockParent = document.createElement("div");
-            expect(UI.createBoard({}, [], mockParent)).toBeNull();
+            expect(UI.createBoard({}, mockParent)).toBeNull();
         });
     });
-    describe("If the second argument (cell array)...  ", () => {
-        test("Is NOT an array, the method should return null", () => {
-            const mockParent = document.createElement("div");
-            expect(UI.createBoard(Gameboard(3), "test", mockParent)).toBeNull();
-        });
-    });
-    describe("If the third argument (parent node)...  ", () => {
+    describe("If the second argument (parent node)...  ", () => {
         test("Is NOT a valid DOM element, the method should return null", () => {
-            expect(UI.createBoard(Gameboard(3), [], null)).toBeNull();
+            expect(UI.createBoard(Gameboard(3), null)).toBeNull();
         });
     });
+    describe("If both arguments are valid... ", () => {});
 });
 
 /*

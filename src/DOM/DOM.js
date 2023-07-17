@@ -9,10 +9,6 @@ const DOM = () => {
         board1: null,
         board2: null,
     };
-    const boardCells = {
-        board1: [],
-        board2: [],
-    };
 
     const displayGame = () => {
         clearDisplay();
@@ -38,19 +34,18 @@ const DOM = () => {
         return newElement;
     };
 
-    const createCell = (value, arr, parent) => {
-        if (!Array.isArray(arr)) return null;
+    const createCell = (value, parent) => {
         if (!(parent instanceof Element)) return null;
         switch (value) {
             case 1:
-                arr.push(createElement("div", ["cell", "ship"], parent));
+                createElement("div", ["cell", "ship"], parent);
                 break;
             case 2:
-                arr.push(createElement("div", ["cell", "hit"], parent));
+                createElement("div", ["cell", "hit"], parent);
                 break;
             case 0:
             default:
-                arr.push(createElement("div", ["cell", "empty"], parent));
+                createElement("div", ["cell", "empty"], parent);
                 break;
         }
     };
@@ -59,21 +54,18 @@ const DOM = () => {
         if (ele.base) ele.base.removeElement();
     };
 
-    const createBoard = (gameboardModule, cellArray, parent) => {
+    const createBoard = (gameboardModule, parent) => {
         /* Duck-typed Gameboard module check */
         if (gameboardModule === null) return null;
         if (typeof gameboardModule !== "object") return null;
         if (!Object.hasOwn(gameboardModule, "observeBoard")) return null;
 
-        if (!Array.isArray(cellArray)) return null;
         if (!(parent instanceof Element)) return null;
 
         const board = gameboardModule.observeBoard();
-        cellArray = [];
         for (let i = 0; i < board.length; i++) {
-            cellArray.push([]);
             for (let j = 0; j < board[i].length; j++) {
-                createCell(board[i][j], cellArray, parent);
+                createCell(board[i][j], parent);
             }
         }
     };
