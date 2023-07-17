@@ -12,12 +12,12 @@ const DOM = () => {
 
     const displayGame = () => {
         clearDisplay();
-        ele.base = createElement("div", ["base"], document.body);
-        ele.boardArea = createElement("div", ["board-area"], ele.base);
-        ele.board1 = createElement("div", ["board-one"], ele.boardArea);
-        ele.board2 = createElement("div", ["board-two"], ele.boardArea);
-        createBoard(game.getGameboards()[0], boardCells.board1, ele.board1);
-        createBoard(game.getGameboards()[1], boardCells.board2, ele.board2);
+        ele.base = createElement("div", ["btls-base"], document.body);
+        ele.boardArea = createElement("div", ["btls-board-area"], ele.base);
+        ele.board1 = createElement("div", ["btls-board-one"], ele.boardArea);
+        ele.board2 = createElement("div", ["btls-board-two"], ele.boardArea);
+        createBoard(game.getGameboards()[0], ele.board1);
+        createBoard(game.getGameboards()[1], ele.board2);
     };
 
     const createElement = (type = "div", classes = [], parent = null) => {
@@ -34,19 +34,20 @@ const DOM = () => {
         return newElement;
     };
 
-    const createCell = (value, parent) => {
+    const createCell = (parent) => {
         if (!(parent instanceof Element)) return null;
+        return createElement("div", ["btls-cell"], parent);
+    };
+
+    const setCellValueClassName = (cell, value) => {
         switch (value) {
             case 1:
-                createElement("div", ["cell", "ship"], parent);
-                break;
+                cell.classList.add("ship");
             case 2:
-                createElement("div", ["cell", "hit"], parent);
-                break;
+                cell.classList.add("hit");
             case 0:
             default:
-                createElement("div", ["cell", "empty"], parent);
-                break;
+                cell.classList.add("empty");
         }
     };
 
@@ -55,20 +56,41 @@ const DOM = () => {
     };
 
     const createBoard = (gameboardModule, parent) => {
-        /* Duck-typed Gameboard module check */
-        if (gameboardModule === null) return null;
-        if (typeof gameboardModule !== "object") return null;
-        if (!Object.hasOwn(gameboardModule, "observeBoard")) return null;
-
+        if (!checkValidGameboard(gameboardModule)) return null;
         if (!(parent instanceof Element)) return null;
         parent.replaceChildren();
 
         const board = gameboardModule.observeBoard();
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
-                createCell(board[i][j], parent);
+                const newCell = createCell(parent);
+                if (newCell) {
+                    setCellValueClassName(newCell, board[i][j]);
+                    newCell.addEventListener("click", () => {
+                        updateCell(newCell, [i, j], gameboardModule);
+                    });
+                }
             }
         }
+    };
+
+    const updateCell = (element, position, gameboardModule) => {
+        let board, currentState;
+        board = gameboardModule.observeBoard();
+        currentState = board[position[1]][position[0]];
+        if (!currentState) return null;
+        game.manualAttack(position, gameboardModule);
+        board = gameboardModule.observeBoard();
+        currentState = board[position[1]][position[0]];
+        element.setAttribute();
+    };
+
+    const checkValidGameboard = (gameboardModule) => {
+        /* Duck-typed Gameboard module check */
+        if (gameboardModule === null) return null;
+        if (typeof gameboardModule !== "object") return null;
+        if (!Object.hasOwn(gameboardModule, "observeBoard")) return null;
+        return true;
     };
 
     return {
@@ -76,6 +98,7 @@ const DOM = () => {
         createElement,
         createCell,
         createBoard,
+        updateCell,
     };
 };
 export default DOM;

@@ -8,7 +8,7 @@ import Gameboard from "./../Gameboard/Gameboard";
 const UI = DOM();
 
 describe("Calling the createElement method... ", () => {
-    describe("If the first argument (HTML element type)...  ", () => {
+    describe("If the first argument (HTML element type)... ", () => {
         test("Is NOT a valid HTML element type, the method should return null", () => {
             expect(UI.createElement("aaa", ["test"], null)).toBeNull();
         });
@@ -17,7 +17,7 @@ describe("Calling the createElement method... ", () => {
             expect(mockElement instanceof HTMLElement).toBe(true);
         });
     });
-    describe("If the second argument (class name array)...  ", () => {
+    describe("If the second argument (class name array)... ", () => {
         test("Is NOT an array, the element should be created as normal but with no classes", () => {
             const mockElement = UI.createElement("div", "test", null);
             const classArray = [...mockElement.classList];
@@ -29,7 +29,7 @@ describe("Calling the createElement method... ", () => {
             expect(classArray).toStrictEqual(["test"]);
         });
     });
-    describe("If the third argument (HTML element type)...  ", () => {
+    describe("If the third argument (HTML element type)... ", () => {
         test("Is NOT a valid DOM element, the element should be created as normal but with no parent", () => {
             const mockElement = UI.createElement("div", ["test"], null);
             expect(mockElement.parentNode).toBeNull();
@@ -44,37 +44,19 @@ describe("Calling the createElement method... ", () => {
 
 describe("Calling the createCell method... ", () => {
     const mockParent = document.createElement("div");
-    describe("If the first argument (gameboard cell value)...  ", () => {
-        test("Is NOT a valid value, it should still create the cell", () => {
-            UI.createCell("test", mockParent);
-            expect(mockParent.lastChild).not.toBeNull();
-        });
-        test("Is default or 0, the cell should contain the 'empty' class", () => {
-            UI.createCell(0, mockParent);
-            expect(mockParent.lastChild.classList).toContain("empty");
-        });
-        test("Is 1, the cell should contain the 'ship' class", () => {
-            UI.createCell(1, mockParent);
-            expect(mockParent.lastChild.classList).toContain("ship");
-        });
-        test("Is 2, the cell should contain the 'hit' class", () => {
-            UI.createCell(2, mockParent);
-            expect(mockParent.lastChild.classList).toContain("hit");
-        });
-    });
-    describe("If the third argument (parent node)...  ", () => {
+    describe("If the argument (parent node)... ", () => {
         test("Is NOT a valid DOM element, the method should return null", () => {
-            expect(UI.createCell(0, [], "test")).toBeNull();
+            expect(UI.createCell("test")).toBeNull();
         });
         test("Is a valid DOM element, the cell should be created as normal", () => {
-            UI.createCell(0, mockParent);
-            expect(mockParent.lastChild.classList).toContain("empty");
+            UI.createCell(mockParent);
+            expect(mockParent.lastChild.classList).toContain("btls-cell");
         });
     });
 });
 
 describe("Calling the createBoard method... ", () => {
-    describe("If the first argument (Gameboard module)...  ", () => {
+    describe("If the first argument (Gameboard module)... ", () => {
         test("Is NOT a valid object, the method should return null", () => {
             const mockParent = document.createElement("div");
             expect(UI.createBoard(null, mockParent)).toBeNull();
@@ -104,17 +86,6 @@ describe("Calling the createBoard method... ", () => {
     });
 });
 
-/*
-describe("Calling the displayGame method... ", () => {
-    const UI = DOM();
-    const createElement = jest.spyOn(document, "createElement");
-    const appendChild = jest.spyOn(document, "appendChild");
-    UI.displayGame();
-    describe("Whenever document.createElement is called... ", () => {});
-    describe("Whenever document.appendChild is called... ", () => {
-        test("Expect the argument to always be of type HTMLElement", () => {
-            expect(appendChild).toHaveBeenCalledWith(HTMLElement);
-        });
-    });
+describe("Calling the updateCell method... ", () => {
+    describe("Should retrieve its ", () => {});
 });
-*/
