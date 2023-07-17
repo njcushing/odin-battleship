@@ -89,7 +89,19 @@ describe("Calling the createBoard method... ", () => {
             expect(UI.createBoard(Gameboard(3), null)).toBeNull();
         });
     });
-    describe("If both arguments are valid... ", () => {});
+    describe("If both arguments are valid... ", () => {
+        const mockParent = document.createElement("div");
+        const mockBoardOne = Gameboard(3);
+        const mockBoardTwo = Gameboard(4);
+        test("The parent node should be cleared of all children before adding the cell elements (test 1)", () => {
+            UI.createBoard(mockBoardOne, mockParent);
+            expect(mockParent.children.length).toBe(9);
+        });
+        test("The parent node should be cleared of all children before adding the cell elements (test 2)", () => {
+            UI.createBoard(mockBoardTwo, mockParent);
+            expect(mockParent.children.length).toBe(16);
+        });
+    });
 });
 
 /*
