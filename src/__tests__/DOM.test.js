@@ -3,6 +3,7 @@
  */
 
 import DOM from "./../DOM/DOM";
+import Gameboard from "./../Gameboard/Gameboard";
 
 const UI = DOM();
 
@@ -79,6 +80,19 @@ describe("Calling the createCell method... ", () => {
             let arr = [];
             UI.createCell(0, arr, mockParent);
             expect(arr[arr.length - 1].classList).toContain("empty");
+        });
+    });
+});
+
+describe("Calling the createBoard method... ", () => {
+    describe("If the first argument (Gameboard module)...  ", () => {
+        test("Is not a valid object, the method should return null", () => {
+            const mockParent = document.createElement("div");
+            expect(UI.createBoard(null, [], mockParent)).toBeNull();
+        });
+        test("Is not a valid Gameboard module, the method should return null", () => {
+            const mockParent = document.createElement("div");
+            expect(UI.createBoard({}, [], mockParent)).toBeNull();
         });
     });
 });
