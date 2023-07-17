@@ -22,8 +22,15 @@ const DOM = () => {
 
     const createElement = (type = "div", classes = [], parent = null) => {
         const newElement = document.createElement(type);
-        classes.forEach((className) => newElement.classList.add(className));
-        if (parent instanceof Element) parent.appendChild(newElement);
+        if (newElement instanceof HTMLUnknownElement) return null;
+        if (Array.isArray(classes)) {
+            classes.forEach((className) => {
+                if (typeof className === "string") {
+                    newElement.classList.add(className);
+                }
+            });
+        }
+        if (parent instanceof HTMLElement) parent.appendChild(newElement);
         return newElement;
     };
 
