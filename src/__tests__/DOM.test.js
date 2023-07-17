@@ -87,5 +87,25 @@ describe("Calling the createBoard method... ", () => {
 });
 
 describe("Calling the updateCell method... ", () => {
-    describe("Should retrieve its ", () => {});
+    const mockParent = document.createElement("div");
+    const mockCell = UI.createCell(mockParent);
+    const mockBoard = Gameboard(3);
+    describe("If the first argument (cell node)... ", () => {
+        test("Is NOT a valid DOM element, the method should return null", () => {
+            expect(UI.updateCell(mockCell, "test", mockBoard)).toBeNull();
+        });
+    });
+    describe("If the second argument (position)... ", () => {
+        test("Is NOT an array, the method should return null", () => {
+            expect(UI.updateCell(mockCell, "test", mockBoard)).toBeNull();
+        });
+    });
+    describe("If the third argument (Gameboard module)... ", () => {
+        test("Is NOT a valid object, the method should return null", () => {
+            expect(UI.updateCell(mockCell, "test", null)).toBeNull();
+        });
+        test("Is NOT a valid Gameboard module, the method should return null", () => {
+            expect(UI.updateCell(mockCell, "test", {})).toBeNull();
+        });
+    });
 });
