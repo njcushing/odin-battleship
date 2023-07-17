@@ -17,7 +17,11 @@ const DOM = () => {
     const displayGame = () => {
         clearDisplay();
         ele.base = createElement("div", ["base"], document.body);
-        createBoards();
+        ele.boardArea = createElement("div", ["board-area"], ele.base);
+        ele.board1 = createElement("div", ["board-one"], ele.boardArea);
+        ele.board2 = createElement("div", ["board-two"], ele.boardArea);
+        createBoard(game.getGameboards()[0], boardCells.board1, ele.board1);
+        createBoard(game.getGameboards()[1], boardCells.board2, ele.board2);
     };
 
     const createElement = (type = "div", classes = [], parent = null) => {
@@ -55,32 +59,21 @@ const DOM = () => {
         if (ele.base) ele.base.removeElement();
     };
 
-    const createBoards = () => {
-        const boards = game.getGameboards();
-        const board1 = boards[0].observeBoard();
-        const board2 = boards[1].observeBoard();
+    const createBoard = (gameboardModule, cellArray, parent) => {
+        /* Duck-typed Gameboard module check */
+        if (gameboardModule === null) return null;
+        if (typeof gameboardModule !== "object") return null;
+        if (!Object.hasOwn(gameboardModule, "observeBoard")) return null;
 
-        let b1 = boardCells.board1;
-        let b2 = boardCells.board1;
+        if (!Array.isArray(cellArray)) return null;
+        if (!(parent instanceof Element)) return null;
 
-        if (ele.boardArea) ele.boardArea.removeElement();
-        ele.boardArea = createElement("div", ["board-area"], ele.base);
-        ele.board1 = createElement("div", ["board-one"], ele.boardArea);
-        ele.board2 = createElement("div", ["board-two"], ele.boardArea);
-
-        b1 = [];
-        for (let i = 0; i < board1.length; i++) {
-            b1.push([]);
-            for (let j = 0; j < board1[i].length; j++) {
-                createCell(board1[i][j], b1, ele.board1);
-            }
-        }
-
-        b2 = [];
-        for (let i = 0; i < board2.length; i++) {
-            b2.push([]);
-            for (let j = 0; j < board2[i].length; j++) {
-                createCell(board1[i][j], b2, ele.board2);
+        const board = gameboardModule.observeBoard();
+        cellArray = [];
+        for (let i = 0; i < board.length; i++) {
+            cellArray.push([]);
+            for (let j = 0; j < board[i].length; j++) {
+                createCell(board[i][j], cellArray, parent);
             }
         }
     };
@@ -89,6 +82,7 @@ const DOM = () => {
         displayGame,
         createElement,
         createCell,
+        createBoard,
     };
 };
 export default DOM;
