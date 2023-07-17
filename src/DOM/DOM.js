@@ -61,6 +61,7 @@ const DOM = () => {
         if (!Object.hasOwn(gameboardModule, "observeBoard")) return null;
 
         if (!(parent instanceof Element)) return null;
+        parent.replaceChildren();
 
         const board = gameboardModule.observeBoard();
         for (let i = 0; i < board.length; i++) {
