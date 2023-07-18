@@ -40,6 +40,7 @@ const DOM = () => {
     };
 
     const setCellValueClassName = (cell, value) => {
+        cell.classList.remove("ship", "hit", "empty");
         switch (value) {
             case 1:
                 cell.classList.add("ship");
@@ -57,7 +58,7 @@ const DOM = () => {
 
     const createBoard = (gameboardModule, parent) => {
         if (!checkValidGameboard(gameboardModule)) return null;
-        if (!(parent instanceof Element)) return null;
+        if (!(parent instanceof HTMLElement)) return null;
         parent.replaceChildren();
 
         const board = gameboardModule.observeBoard();
@@ -67,22 +68,27 @@ const DOM = () => {
                 if (newCell) {
                     setCellValueClassName(newCell, board[i][j]);
                     newCell.addEventListener("click", () => {
-                        updateCell(newCell, [i, j], gameboardModule);
+                        attackCell(newCell, [i, j], gameboardModule);
                     });
                 }
             }
         }
     };
 
-    const updateCell = (element, position, gameboardModule) => {
-        let board, currentState;
-        board = gameboardModule.observeBoard();
-        currentState = board[position[1]][position[0]];
+    const attackCell = (element, position, gameboardModule) => {
+        if (!(element instanceof HTMLElement)) return null;
+        if (!checkValidGameboard(gameboardModule)) return null;
+
+        let currentState, board;
+        currentState = gameboardModule.getCellStateAt(position);
         if (!currentState) return null;
+        board = gameboardModule.observeBoard();
+
         game.manualAttack(position, gameboardModule);
+
         board = gameboardModule.observeBoard();
         currentState = board[position[1]][position[0]];
-        element.setAttribute();
+        setCellValueClassName(element, currentState);
     };
 
     const checkValidGameboard = (gameboardModule) => {
@@ -93,12 +99,28 @@ const DOM = () => {
         return true;
     };
 
+    const validateCoordinateInput = (position) => {
+        if (
+            Array.isArray(position) &&
+            position.length === 2 &&
+            Number.isInteger(position[0]) &&
+            position[0] >= 0 &&
+            position[0] < board.length &&
+            Number.isInteger(position[1]) &&
+            position[1] >= 0 &&
+            position[1] < board.length
+        ) {
+            return true;
+        }
+        return false;
+    };
+
     return {
         displayGame,
         createElement,
         createCell,
         createBoard,
-        updateCell,
+        attackCell,
     };
 };
 export default DOM;
