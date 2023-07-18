@@ -53,6 +53,16 @@ describe("On Gameboard object instantiation... ", () => {
     });
 });
 
+describe("Calling the getCellStateAt method... ", () => {
+    const board = Gameboard(8);
+    test("Should return null if the given position does not lie on the board ", () => {
+        expect(board.getCellStateAt([-1, 8])).toBeNull();
+    });
+    test("Should return the correct value when the given position lies on the board", () => {
+        expect(board.getCellStateAt([3, 3])).toBe(0);
+    });
+});
+
 describe("Calling the placeShip method... ", () => {
     const board = Gameboard(8);
     const boardEmpty = [
