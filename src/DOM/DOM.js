@@ -6,18 +6,20 @@ const DOM = () => {
     const ele = {
         base: null,
         boardArea: null,
-        board1: null,
         board2: null,
+        board1: null,
     };
 
     const displayGame = () => {
         clearDisplay();
         ele.base = createElement("div", ["btls-base"], document.body);
         ele.boardArea = createElement("div", ["btls-board-area"], ele.base);
-        ele.board1 = createElement("div", ["btls-board-one"], ele.boardArea);
         ele.board2 = createElement("div", ["btls-board-two"], ele.boardArea);
+        ele.board1 = createElement("div", ["btls-board-one"], ele.boardArea);
         createBoard(game.getGameboards()[0], 0, ele.board1);
         createBoard(game.getGameboards()[1], 1, ele.board2);
+
+        game.startGame();
     };
 
     const createElement = (type = "div", classes = [], parent = null) => {
@@ -56,8 +58,16 @@ const DOM = () => {
         if (ele.base) ele.base.removeElement();
     };
 
-    const createBoard = (gameboardModule, boardNo, parent) => {
+    const createBoard = (gameboardModule, boardToAttack, parent) => {
         if (!checkValidGameboard(gameboardModule)) return null;
+        if (
+            !(
+                Number.isInteger(boardToAttack) &&
+                boardToAttack >= 0 &&
+                boardToAttack <= 1
+            )
+        )
+            return null;
         if (!(parent instanceof HTMLElement)) return null;
         parent.replaceChildren();
 
@@ -68,25 +78,32 @@ const DOM = () => {
                 if (newCell) {
                     setCellValueClassName(newCell, board[i][j]);
                     newCell.addEventListener("click", () => {
-                        attackCell(newCell, [j, i], boardNo);
+                        attackCell(newCell, [j, i], boardToAttack);
                     });
                 }
             }
         }
     };
 
-    const attackCell = (element, position, board) => {
+    const attackCell = (element, position, boardToAttack) => {
         if (!(element instanceof HTMLElement)) return null;
-        if (!(Number.isInteger(board) && board >= 0 && board <= 1)) return null;
+        if (
+            !(
+                Number.isInteger(boardToAttack) &&
+                boardToAttack >= 0 &&
+                boardToAttack <= 1
+            )
+        )
+            return null;
 
         let currentState, gameboardModule;
-        gameboardModule = game.getGameboards()[board];
+        gameboardModule = game.getGameboards()[boardToAttack];
         currentState = gameboardModule.getCellStateAt(position);
         if (currentState === null) return null;
 
-        game.manualAttack(board, position);
+        game.manualAttack(boardToAttack, position);
 
-        currentState = gameboardModule.getCellStateAt(position);
+        currentState = gameboardModule.getCellStateAt([3, 3]);
         setCellValueClassName(element, currentState);
     };
 

@@ -146,7 +146,7 @@ const Gameboard = (s) => {
 
     const receiveAttack = (position) => {
         if (!isGameStarted()) return false;
-        if (!validateCoordinateInput(position)) return;
+        if (!validateCoordinateInput(position)) return false;
 
         if (board[position[1]][position[0]] !== 2) {
             if (board[position[1]][position[0]] === 1) hits.push(position);

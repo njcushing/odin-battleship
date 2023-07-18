@@ -129,6 +129,7 @@ describe("Calling the manualAttack method... ", () => {
     const game = Game();
     const gameboards = game.getGameboards();
     gameboards[0].placeShip(1, [0, 0], false);
+    gameboards[1].placeShip(1, [0, 0], false);
     const players = game.getPlayers();
     describe("Should return null if the first argument (board index)... ", () => {
         test("Is not an integer", () => {
@@ -159,7 +160,7 @@ describe("Calling the manualAttack method... ", () => {
         });
         test("Should call the receiveAttack method on the board being attacked", () => {
             const spyBoard1ReceiveAttack = jest.spyOn(
-                gameboards[0],
+                gameboards[1],
                 "receiveAttack"
             );
             game.manualAttack(1, [2, 2]);

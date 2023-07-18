@@ -23,6 +23,12 @@
     padding: 0.5rem;
     gap: 0.12rem;
 }
+.btls-board-one {
+    background-color: rgb(146, 109, 109);
+}
+.btls-board-two {
+    background-color: rgb(109, 136, 146);
+}
 
 .btls-cell {
     border: 1px solid black;

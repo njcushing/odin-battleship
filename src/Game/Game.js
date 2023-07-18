@@ -36,10 +36,11 @@ const Game = () => {
         if (!gameStarted) return null;
         if (players[turn].getStyle() === "Computer") return null;
         if (turn === board) return null;
-        const previousAttacksCount = boards[turn].previousAttacks().length;
-        boards[turn].receiveAttack(position);
-        if (previousAttacksCount !== boards[turn].previousAttacks().length) {
-            if (boards[turn].checkDefeat()) {
+        const boardToAttack = boards[(turn + 1) % 2];
+        const previousAttacksCount = boardToAttack.previousAttacks().length;
+        boardToAttack.receiveAttack(position);
+        if (previousAttacksCount !== boardToAttack.previousAttacks().length) {
+            if (boardToAttack.checkDefeat()) {
                 endGame();
                 return;
             }
@@ -49,7 +50,7 @@ const Game = () => {
 
     const computerAttack = () => {
         setTimeout(() => {
-            let boardToAttack = boards[(turn + 1) % 2];
+            const boardToAttack = boards[(turn + 1) % 2];
             players[turn].takeComputerTurnRandom(boardToAttack);
             if (boardToAttack.checkDefeat()) {
                 endGame();
