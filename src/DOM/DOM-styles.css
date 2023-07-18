@@ -33,3 +33,13 @@
 .btls-cell:active {
     background-color: #e2e2e2;
 }
+
+.btls-cell .empty {
+    background-color: rgb(255, 255, 255);
+}
+.btls-cell .ship {
+    background-color: rgb(50, 171, 187);
+}
+.btls-cell .hit {
+    background-color: rgb(184, 112, 112);
+}

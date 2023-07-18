@@ -16,8 +16,8 @@ const DOM = () => {
         ele.boardArea = createElement("div", ["btls-board-area"], ele.base);
         ele.board1 = createElement("div", ["btls-board-one"], ele.boardArea);
         ele.board2 = createElement("div", ["btls-board-two"], ele.boardArea);
-        createBoard(game.getGameboards()[0], ele.board1);
-        createBoard(game.getGameboards()[1], ele.board2);
+        createBoard(game.getGameboards()[0], 0, ele.board1);
+        createBoard(game.getGameboards()[1], 1, ele.board2);
     };
 
     const createElement = (type = "div", classes = [], parent = null) => {
@@ -56,7 +56,7 @@ const DOM = () => {
         if (ele.base) ele.base.removeElement();
     };
 
-    const createBoard = (gameboardModule, parent) => {
+    const createBoard = (gameboardModule, boardNo, parent) => {
         if (!checkValidGameboard(gameboardModule)) return null;
         if (!(parent instanceof HTMLElement)) return null;
         parent.replaceChildren();
@@ -68,26 +68,25 @@ const DOM = () => {
                 if (newCell) {
                     setCellValueClassName(newCell, board[i][j]);
                     newCell.addEventListener("click", () => {
-                        attackCell(newCell, [i, j], gameboardModule);
+                        attackCell(newCell, [j, i], boardNo);
                     });
                 }
             }
         }
     };
 
-    const attackCell = (element, position, gameboardModule) => {
+    const attackCell = (element, position, board) => {
         if (!(element instanceof HTMLElement)) return null;
-        if (!checkValidGameboard(gameboardModule)) return null;
+        if (!(Number.isInteger(board) && board >= 0 && board <= 1)) return null;
 
-        let currentState, board;
+        let currentState, gameboardModule;
+        gameboardModule = game.getGameboards()[board];
         currentState = gameboardModule.getCellStateAt(position);
-        if (!currentState) return null;
-        board = gameboardModule.observeBoard();
+        if (currentState === null) return null;
 
-        game.manualAttack(position, gameboardModule);
+        game.manualAttack(board, position);
 
-        board = gameboardModule.observeBoard();
-        currentState = board[position[1]][position[0]];
+        currentState = gameboardModule.getCellStateAt(position);
         setCellValueClassName(element, currentState);
     };
 
@@ -97,22 +96,6 @@ const DOM = () => {
         if (typeof gameboardModule !== "object") return null;
         if (!Object.hasOwn(gameboardModule, "observeBoard")) return null;
         return true;
-    };
-
-    const validateCoordinateInput = (position) => {
-        if (
-            Array.isArray(position) &&
-            position.length === 2 &&
-            Number.isInteger(position[0]) &&
-            position[0] >= 0 &&
-            position[0] < board.length &&
-            Number.isInteger(position[1]) &&
-            position[1] >= 0 &&
-            position[1] < board.length
-        ) {
-            return true;
-        }
-        return false;
     };
 
     return {

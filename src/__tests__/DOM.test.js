@@ -59,28 +59,36 @@ describe("Calling the createBoard method... ", () => {
     describe("If the first argument (Gameboard module)... ", () => {
         test("Is NOT a valid object, the method should return null", () => {
             const mockParent = document.createElement("div");
-            expect(UI.createBoard(null, mockParent)).toBeNull();
+            expect(UI.createBoard(null, 0, mockParent)).toBeNull();
         });
         test("Is NOT a valid Gameboard module, the method should return null", () => {
             const mockParent = document.createElement("div");
-            expect(UI.createBoard({}, mockParent)).toBeNull();
+            expect(UI.createBoard({}, 0, mockParent)).toBeNull();
         });
     });
-    describe("If the second argument (parent node)...  ", () => {
+    describe("If the second argument (board number)...  ", () => {
+        test("Is NOT an integer, the method should return null", () => {
+            expect(UI.createBoard(Gameboard(3), "test", null)).toBeNull();
+        });
+        test("Is NOT either 0 or 1, the method should return null", () => {
+            expect(UI.createBoard(Gameboard(3), 2, null)).toBeNull();
+        });
+    });
+    describe("If the third argument (parent node)...  ", () => {
         test("Is NOT a valid DOM element, the method should return null", () => {
-            expect(UI.createBoard(Gameboard(3), null)).toBeNull();
+            expect(UI.createBoard(Gameboard(3), 0, null)).toBeNull();
         });
     });
-    describe("If both arguments are valid... ", () => {
+    describe("If all arguments are valid... ", () => {
         const mockParent = document.createElement("div");
         const mockBoardOne = Gameboard(3);
         const mockBoardTwo = Gameboard(4);
         test("The parent node should be cleared of all children before adding the cell elements (test 1)", () => {
-            UI.createBoard(mockBoardOne, mockParent);
+            UI.createBoard(mockBoardOne, 0, mockParent);
             expect(mockParent.children.length).toBe(9);
         });
         test("The parent node should be cleared of all children before adding the cell elements (test 2)", () => {
-            UI.createBoard(mockBoardTwo, mockParent);
+            UI.createBoard(mockBoardTwo, 0, mockParent);
             expect(mockParent.children.length).toBe(16);
         });
     });
@@ -92,20 +100,23 @@ describe("Calling the attackCell method... ", () => {
     const mockBoard = Gameboard(3);
     describe("If the first argument (cell node)... ", () => {
         test("Is NOT a valid DOM element, the method should return null", () => {
-            expect(UI.attackCell(null, [0, 0], mockBoard)).toBeNull();
+            expect(UI.attackCell(null, [0, 0], 0)).toBeNull();
         });
     });
     describe("If the second argument (position)... ", () => {
         test("Is NOT a valid position on the board, the method should return null", () => {
-            expect(UI.attackCell(mockCell, "test", mockBoard)).toBeNull();
+            expect(UI.attackCell(mockCell, "test", 0)).toBeNull();
         });
     });
-    describe("If the third argument (Gameboard module)... ", () => {
-        test("Is NOT a valid object, the method should return null", () => {
-            expect(UI.attackCell(mockCell, [0, 0], null)).toBeNull();
+    describe("If the third argument (board number)... ", () => {
+        test("Is NOT an integer, the method should return null", () => {
+            expect(UI.attackCell(mockCell, [0, 0], "test")).toBeNull();
         });
-        test("Is NOT a valid Gameboard module, the method should return null", () => {
-            expect(UI.attackCell(mockCell, [0, 0], {})).toBeNull();
+        test("Is NOT either 0 or 1, the method should return null", () => {
+            expect(UI.attackCell(mockCell, [0, 0], 2)).toBeNull();
         });
+    });
+    describe("If the state of the attacked board changes... ", () => {
+        describe("The state of the DOM element representing that cell should update accordingly", () => {});
     });
 });
