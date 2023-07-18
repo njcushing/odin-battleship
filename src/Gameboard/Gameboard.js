@@ -213,6 +213,11 @@ const Gameboard = (s) => {
         return false;
     };
 
+    const getCellStateAt = (position) => {
+        if (!validateCoordinateInput(position)) return null;
+        return board[position[1]][position[0]];
+    };
+
     const checkDefeat = () => {
         if (!isGameStarted()) return false;
         for (let i = 0; i < board.length; i++) {
@@ -250,6 +255,7 @@ const Gameboard = (s) => {
         moveShip,
         deleteShip,
         receiveAttack,
+        getCellStateAt,
         checkDefeat,
         isGameStarted,
         observeBoard,
