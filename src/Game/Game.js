@@ -33,7 +33,7 @@ const Game = () => {
 
     const manualAttack = (board, position) => {
         if (!(Number.isInteger(board) && board >= 0 && board <= 1)) return null;
-        if (!gameStarted) return null;
+        if (!gameStarted || gameEnded) return null;
         if (players[turn].getStyle() === "Computer") return null;
         if (turn === board) return null;
         const boardToAttack = boards[(turn + 1) % 2];

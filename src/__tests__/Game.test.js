@@ -185,6 +185,10 @@ describe("Calling the manualAttack method... ", () => {
             test("If true, set the Game's started state to false", () => {
                 expect(game.isGameStarted()).toBe(false);
             });
+            test("If true, further calls should return null", () => {
+                if (game.getTurn() === 1) game.changeTurn();
+                expect(game.manualAttack(1, [1, 1])).toBeNull();
+            });
         });
     });
 });

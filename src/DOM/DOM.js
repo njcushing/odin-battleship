@@ -103,7 +103,7 @@ const DOM = () => {
 
         game.manualAttack(boardToAttack, position);
 
-        currentState = gameboardModule.getCellStateAt([3, 3]);
+        currentState = gameboardModule.getCellStateAt(position);
         setCellValueClassName(element, currentState);
     };
 
