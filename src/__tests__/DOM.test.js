@@ -116,8 +116,23 @@ describe("Calling the attackCell method... ", () => {
             expect(mockDOM.attackCell(mockCell, [0, 0], 2)).toBeNull();
         });
     });
+    describe("If the cell is clicked... ", () => {
+        test("This method should be called", () => {
+            const spy = jest.spyOn(mockDOM, "attackCell");
+            mockCell.addEventListener("click", () => {
+                mockDOM.attackCell(mockCell, [0, 0], 1);
+            });
+            mockCell.click();
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+        test("The first argument of this method call should be the clicked cell", () => {
+            const spy = jest.spyOn(mockDOM, "attackCell");
+            mockCell.click();
+            expect(spy).toHaveBeenCalledWith(mockCell, [0, 0], 1);
+        });
+    });
     describe("If the state of the attacked board changes... ", () => {
-        describe("The state of the DOM element representing that cell should update accordingly", () => {
+        test("The state of the DOM element representing that cell should update accordingly", () => {
             mockDOM.displayGame();
             mockDOM.attackCell(mockCell, [1, 1], 1);
             const classArray = [...mockCell.classList];
