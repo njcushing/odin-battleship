@@ -6,8 +6,12 @@ const DOM = () => {
     const ele = {
         base: null,
         boardArea: null,
-        board2: null,
         board1: null,
+        b1XAxis: null,
+        b1YAxis: null,
+        board2: null,
+        b2XAxis: null,
+        b2XAxis: null,
     };
 
     const displayGame = () => {
@@ -15,9 +19,17 @@ const DOM = () => {
         ele.base = createElement("div", ["btls-base"], document.body);
         ele.boardArea = createElement("div", ["btls-board-area"], ele.base);
         ele.board2 = createElement("div", ["btls-board-two"], ele.boardArea);
+        ele.b2XAxis = createElement("div", ["btls-axis-2-x"], ele.boardArea);
+        ele.b2YAxis = createElement("div", ["btls-axis-2-y"], ele.boardArea);
         ele.board1 = createElement("div", ["btls-board-one"], ele.boardArea);
+        ele.b1XAxis = createElement("div", ["btls-axis-1-x"], ele.boardArea);
+        ele.b1YAxis = createElement("div", ["btls-axis-1-y"], ele.boardArea);
         createBoard(game.getGameboards()[0], 0, ele.board1);
         createBoard(game.getGameboards()[1], 1, ele.board2);
+        createAxis(ele.b1XAxis, 0, 0, ele.boardArea);
+        createAxis(ele.b1YAxis, 0, 1, ele.boardArea);
+        createAxis(ele.b2XAxis, 1, 0, ele.boardArea);
+        createAxis(ele.b2YAxis, 1, 1, ele.boardArea);
 
         game.startGame();
     };
@@ -83,6 +95,25 @@ const DOM = () => {
                 }
             }
         }
+    };
+
+    const createAxis = (element, boardNo, axis, parent) => {
+        const board = game.getGameboards()[boardNo];
+        const obsBoard = board.observeBoard();
+        if (axis === 0) {
+            for (let i = 0; i < obsBoard.length; i++) {
+                const ele = createElement("div", [`btls-axis-no`], element);
+                ele.textContent = i;
+            }
+        } else {
+            if (obsBoard.length > 0) {
+                for (let i = 0; i < obsBoard[0].length; i++) {
+                    const ele = createElement("div", [`btls-axis-no`], element);
+                    ele.textContent = i;
+                }
+            }
+        }
+        parent.appendChild(element);
     };
 
     const attackCell = (element, position, boardToAttack) => {
