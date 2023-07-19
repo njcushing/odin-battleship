@@ -116,6 +116,7 @@ const DOM = () => {
     };
 
     return {
+        game,
         displayGame,
         createElement,
         createCell,
