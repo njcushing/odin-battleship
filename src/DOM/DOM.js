@@ -5,28 +5,33 @@ const DOM = () => {
 
     const ele = {
         base: null,
+        title: null,
         boardArea: null,
         board1: null,
         b1XAxis: null,
         b1YAxis: null,
+        board1ID: null,
+        infoBox: null,
+        board2: null,
+        b2XAxis: null,
+        b2YAxis: null,
+        board2ID: null,
         buttons: null,
         startButton: null,
         resetButton: null,
-        board2: null,
-        b2XAxis: null,
-        b2XAxis: null,
     };
 
     const displayGame = () => {
         clearDisplay();
         ele.base = createElement("div", ["btls-base"], document.body);
+        ele.title = createElement("div", ["btls-title"], ele.base);
         ele.boardArea = createElement("div", ["btls-board-area"], ele.base);
         ele.board2 = createElement("div", ["btls-board-two"], ele.boardArea);
         ele.b2XAxis = createElement("div", ["btls-axis-2-x"], ele.boardArea);
         ele.b2YAxis = createElement("div", ["btls-axis-2-y"], ele.boardArea);
-        ele.buttons = createElement("div", ["btls-buttons"], ele.base);
-        ele.startButton = createElement("button", ["btls-start"], ele.buttons);
-        ele.resetButton = createElement("button", ["btls-reset"], ele.buttons);
+        ele.board2ID = createElement("div", ["btls-b2-id"], ele.boardArea);
+        ele.infoBox = createElement("div", ["btls-info-box"], ele.boardArea);
+        ele.board1ID = createElement("div", ["btls-b1-id"], ele.boardArea);
         ele.board1 = createElement("div", ["btls-board-one"], ele.boardArea);
         ele.b1XAxis = createElement("div", ["btls-axis-1-x"], ele.boardArea);
         ele.b1YAxis = createElement("div", ["btls-axis-1-y"], ele.boardArea);
@@ -37,6 +42,15 @@ const DOM = () => {
         createAxis(ele.b2XAxis, 1, 0, ele.boardArea);
         createAxis(ele.b2YAxis, 1, 1, ele.boardArea);
 
+        ele.title.textContent = "BATTLESHIP";
+
+        const players = game.getPlayers();
+        ele.board2ID.textContent = `Player Two: ${players[1].getStyle()}`;
+        ele.board1ID.textContent = `Player One: ${players[0].getStyle()}`;
+
+        ele.buttons = createElement("div", ["btls-buttons"], ele.base);
+        ele.startButton = createElement("button", ["btls-start"], ele.buttons);
+        ele.resetButton = createElement("button", ["btls-reset"], ele.buttons);
         ele.startButton.textContent = "Start Game";
         ele.resetButton.textContent = "Reset Game";
 
