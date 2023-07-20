@@ -598,3 +598,31 @@ describe("Calling the totalNumberOfShips method... ", () => {
         });
     });
 });
+
+describe("Calling the remainingNumberOfShips method... ", () => {
+    const board = Gameboard(5);
+    describe("If the game has NOT yet started... ", () => {
+        test("Should return the correct number of ships (3)", () => {
+            board.placeShip(1, [0, 0], false);
+            board.placeShip(1, [3, 4], false);
+            board.placeShip(1, [2, 2], false);
+            expect(board.remainingNumberOfShips()).toBe(3);
+        });
+        test("Should return the correct number of ships (4)", () => {
+            board.placeShip(1, [3, 0], false);
+            expect(board.remainingNumberOfShips()).toBe(4);
+        });
+    });
+    describe("If the game has started... ", () => {
+        test("Should return the correct number of ships (3)", () => {
+            board.startGame();
+            board.receiveAttack([0, 0]);
+            expect(board.remainingNumberOfShips()).toBe(3);
+        });
+        test("Should return the correct number of ships (1)", () => {
+            board.receiveAttack([2, 2]);
+            board.receiveAttack([3, 0]);
+            expect(board.remainingNumberOfShips()).toBe(3);
+        });
+    });
+});
