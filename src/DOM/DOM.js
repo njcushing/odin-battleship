@@ -48,13 +48,34 @@ const DOM = () => {
         ele.board2ID.textContent = `Player Two: ${players[1].getStyle()}`;
         ele.board1ID.textContent = `Player One: ${players[0].getStyle()}`;
 
+        ele.infoBox.textContent = "Welcome to Battleship!";
+
         ele.buttons = createElement("div", ["btls-buttons"], ele.base);
         ele.startButton = createElement("button", ["btls-start"], ele.buttons);
+        ele.startButton.addEventListener("click", startGame);
         ele.resetButton = createElement("button", ["btls-reset"], ele.buttons);
+        ele.resetButton.addEventListener("click", resetGame);
         ele.startButton.textContent = "Start Game";
         ele.resetButton.textContent = "Reset Game";
+    };
 
+    const startGame = () => {
+        const boards = game.getGameboards();
+        if (
+            boards[0].totalNumberOfShips() < 1 ||
+            boards[1].totalNumberOfShips() < 1
+        ) {
+            ele.infoBox.textContent =
+                "Please ensure all Manual players have at least one ship before starting the game";
+            return;
+        }
         game.startGame();
+    };
+
+    const endGame = () => {};
+
+    const resetGame = () => {
+        game.resetGame();
     };
 
     const createElement = (type = "div", classes = [], parent = null) => {
