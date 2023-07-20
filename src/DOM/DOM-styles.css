@@ -95,6 +95,25 @@
     grid-area: 3 / 2 / 4 / 3;
 }
 
+.btls-b1-btns,
+.btls-b2-btns {
+    display: flex;
+    gap: 0.5rem;
+}
+.btls-b1-btns {
+    grid-area: -4 / 3 / -3 / 4;
+}
+.btls-b2-btns {
+    grid-area: 3 / 3 / 4 / 4;
+}
+
+.btls-b1-change-style-button,
+.btls-b2-change-style-button,
+.btls-b1-hide-board-button,
+.btls-b2-hide-board-button {
+    font-size: 0.5rem;
+}
+
 .btls-info-box {
     grid-area: -5 / 2 / -4 / 3;
     display: flex;

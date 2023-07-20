@@ -15,7 +15,10 @@ const DOM = () => {
         board1: null,
         b1XAxis: null,
         b1YAxis: null,
-        board1ID: null,
+        b1ID: null,
+        b1Buttons: null,
+        b1ChangeStyleButton: null,
+        b1HideBoardButton: null,
         b1PlaceShipBox: null,
         b1PlaceShipModel: null,
         b1PlaceShipSizeInput: null,
@@ -24,7 +27,10 @@ const DOM = () => {
         board2: null,
         b2XAxis: null,
         b2YAxis: null,
-        board2ID: null,
+        b2ID: null,
+        b2Buttons: null,
+        b2ChangeStyleButton: null,
+        b2HideBoardButton: null,
         b2PlaceShipBox: null,
         b2PlaceShipModel: null,
         b2PlaceShipSizeInput: null,
@@ -43,12 +49,14 @@ const DOM = () => {
         ele.board2 = createElement("div", ["btls-board-two"], ele.boardArea);
         ele.b2XAxis = createElement("div", ["btls-axis-2-x"], ele.boardArea);
         ele.b2YAxis = createElement("div", ["btls-axis-2-y"], ele.boardArea);
-        ele.board2ID = createElement("div", ["btls-b2-id"], ele.boardArea);
+        ele.b2Buttons = createElement("div", ["btls-b2-btns"], ele.boardArea);
+        ele.b2ID = createElement("div", ["btls-b2-id"], ele.boardArea);
         ele.infoBox = createElement("div", ["btls-info-box"], ele.boardArea);
-        ele.board1ID = createElement("div", ["btls-b1-id"], ele.boardArea);
+        ele.b1ID = createElement("div", ["btls-b1-id"], ele.boardArea);
         ele.board1 = createElement("div", ["btls-board-one"], ele.boardArea);
         ele.b1XAxis = createElement("div", ["btls-axis-1-x"], ele.boardArea);
         ele.b1YAxis = createElement("div", ["btls-axis-1-y"], ele.boardArea);
+        ele.b1Buttons = createElement("div", ["btls-b1-btns"], ele.boardArea);
         createBoard(game.getGameboards()[0], 0, ele.board1);
         createBoard(game.getGameboards()[1], 1, ele.board2);
         createAxis(ele.b1XAxis, 0, 0, ele.boardArea);
@@ -59,10 +67,23 @@ const DOM = () => {
         ele.title.textContent = "BATTLESHIP";
 
         const players = game.getPlayers();
-        ele.board2ID.textContent = `Player Two: ${players[1].getStyle()}`;
-        ele.board1ID.textContent = `Player One: ${players[0].getStyle()}`;
+        ele.b2ID.textContent = `Player Two: ${players[1].getStyle()}`;
+        ele.b1ID.textContent = `Player One: ${players[0].getStyle()}`;
 
         ele.infoBox.textContent = "Welcome to Battleship!";
+
+        createPlayerButtons(
+            ele.b2ChangeStyleButton,
+            ele.b2HideBoardButton,
+            1,
+            ele.b2Buttons
+        );
+        createPlayerButtons(
+            ele.b1ChangeStyleButton,
+            ele.b1HideBoardButton,
+            1,
+            ele.b1Buttons
+        );
 
         ele.buttons = createElement("div", ["btls-buttons"], ele.base);
         ele.startButton = createElement("button", ["btls-start"], ele.buttons);
@@ -189,6 +210,22 @@ const DOM = () => {
             }
         }
         parent.appendChild(element);
+    };
+
+    const createPlayerButtons = (styleButton, hideButton, boardNo, parent) => {
+        const no = boardNo;
+        styleButton = createElement(
+            "button",
+            [`btls-b${boardNo}-change-style-button`],
+            parent
+        );
+        styleButton.textContent = "Change Style";
+        hideButton = createElement(
+            "button",
+            [`btls-b${boardNo}-hide-board-button`],
+            parent
+        );
+        hideButton.textContent = "Hide Board";
     };
 
     const createPlaceShipBox = (
