@@ -236,6 +236,20 @@ const Gameboard = (s) => {
         return JSON.parse(JSON.stringify(board));
     };
 
+    const totalNumberOfShips = () => {
+        let quantity = 0;
+        let boardCopy;
+        if (gameStarted) boardCopy = JSON.parse(JSON.stringify(startingBoard));
+        else boardCopy = observeBoard();
+        for (let i = 0; i < boardCopy.length; i++) {
+            for (let j = 0; j < boardCopy[i].length; j++) {
+                const ship = extractShip(boardCopy, [j, i]);
+                if (ship && ship[1].length > 0) quantity++;
+            }
+        }
+        return quantity;
+    };
+
     const previousAttacks = () => {
         return JSON.parse(JSON.stringify(attacks));
     };
@@ -259,6 +273,7 @@ const Gameboard = (s) => {
         checkDefeat,
         isGameStarted,
         observeBoard,
+        totalNumberOfShips,
         previousAttacks,
         previousHits,
         previousSinks,
