@@ -83,6 +83,7 @@ describe("Calling the createBoard method... ", () => {
     describe("If all arguments are valid... ", () => {
         const mockParent = document.createElement("div");
         const mockBoardOne = Gameboard(3);
+        mockBoardOne.placeShip(1, [2, 2], false);
         const mockBoardTwo = Gameboard(4);
         test("The parent node should be cleared of all children before adding the cell elements (test 1)", () => {
             UI.createBoard(mockBoardOne, 0, mockParent);

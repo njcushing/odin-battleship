@@ -1,21 +1,34 @@
 :root {
+    --battleship-history-box-width: 8rem;
     --battleship-board-size: 20rem;
+    --battleship-info-box-height: 4rem;
+    --battleship-place-ship-box-width: 8rem;
 }
 
 .btls-base {
+    display: grid;
+    grid-template-rows: repeat(3, auto); 
+    grid-template-columns: repeat(3, auto); 
     border: 1px solid black;
 }
 
+.btls-history-box {
+    grid-area: 2 / 1 / 3 / 2;
+    width: var(--battleship-history-box-width, 10rem);
+    border: 1px solid #000;
+}
+
 .btls-title {
+    grid-area: 1 / 1 / 2 / -1;
     font-size: 3rem;
     text-align: center;
 }
 
 .btls-board-area {
-    grid-area: 1 / 1 / 2 / -1;
+    grid-area: 2 / 2 / 3 / 3;
     display: grid;
-    grid-template-rows:  auto var(--battleship-board-size, 24rem) auto 4rem auto var(--battleship-board-size, 24rem) auto;
-    grid-template-columns: auto var(--battleship-board-size, 24rem);
+    grid-template-rows:  auto var(--battleship-board-size, 24rem) auto var(--battleship-info-box-height, 3rem) auto var(--battleship-board-size, 24rem) auto;
+    grid-template-columns: auto var(--battleship-board-size, 24rem) var(--battleship-place-ship-box-width, 10rem);
     padding: 0.5rem;
 }
 
@@ -39,10 +52,10 @@
 }
 
 .btls-board-one {
-    grid-area: -3 / -2 / -2 / -1;
+    grid-area: -3 / 2 / -2 / 3;
 }
 .btls-axis-1-x {
-    grid-area: -2 / -2 / -1 / -1;
+    grid-area: -2 / 2 / -1 / 3;
     padding: 0rem 0.5rem;
 }
 .btls-axis-1-y {
@@ -51,10 +64,10 @@
     padding: 0.5rem 0rem;
 }
 .btls-board-two {
-    grid-area: 2 / -2 / 3 / -1;
+    grid-area: 2 / 2 / 3 / 3;
 }
 .btls-axis-2-x {
-    grid-area: 1 / -2 / 2 / -1;
+    grid-area: 1 / 2 / 2 / 3;
     padding: 0rem 0.5rem;
 }
 .btls-axis-2-y {
@@ -76,14 +89,14 @@
 }
 
 .btls-b1-id {
-    grid-area: -4 / -2 / -3 / -1;
+    grid-area: -4 / 2 / -3 / 3;
 }
 .btls-b2-id {
-    grid-area: 3 / -2 / 4 / -1;
+    grid-area: 3 / 2 / 4 / 3;
 }
 
 .btls-info-box {
-    grid-area: -5 / -2 / -4 / -1;
+    grid-area: -5 / 2 / -4 / 3;
     display: flex;
     flex-direction: column;
     place-content: center;
@@ -92,8 +105,60 @@
     padding: 0.5rem;
 }
 
+.btls-b1-place-ship-box,
+.btls-b2-place-ship-box {
+    display: grid;
+    grid-template-rows: 1fr repeat(4, auto);
+    align-items: center;
+    width: var(--battleship-place-ship-box-width, 10rem);
+}
+.btls-b1-place-ship-box {
+    grid-area: 2 / -2 / 3 / -1;
+}
+.btls-b2-place-ship-box {
+    grid-area: 6 / -2 / 7 / -1;
+}
+
+.btls-b1-place-ship-model,
+.btls-b2-place-ship-model {
+    place-self: center;
+    width: 100%;
+    height: 100%;
+    gap: 0.2rem;
+}
+
+.btls-model-cell {
+    outline: 1px solid black;
+}
+
+.btls-b1-place-ship-size-label,
+.btls-b2-place-ship-size-label {
+    font-size: 1.2rem;
+    text-align: center;
+    margin: 0.8rem 0rem 0rem 0rem;
+}
+
+.btls-b1-place-ship-size,
+.btls-b2-place-ship-size {
+    font-size: 1.4rem;
+    border-radius: 9999px;
+    padding: 0.2rem 0.5rem;
+    border: none;
+    outline: 1px solid black;
+}
+
+.btls-b1-place-ship-rotation,
+.btls-b2-place-ship-rotation {
+    font-size: 0.8rem;
+    border-radius: 9999px;
+    outline: none;
+    border: none;
+    padding: 0.5rem 0.1rem;
+    margin: 0.8rem 0rem;
+}
+
 .btls-buttons {
-    grid-area: 2 / 1 / 3 / -1;
+    grid-area: 3 / 1 / -1 / -1;
     display: flex;
     justify-content: center;
     gap: 1rem;

@@ -2,20 +2,33 @@ import Game from "./../Game/Game";
 
 const DOM = () => {
     const game = Game();
+    let b1PlaceShipSize = 3;
+    let b1PlaceShipRotation = false;
+    let b2PlaceShipSize = 3;
+    let b2PlaceShipRotation = false;
 
     const ele = {
         base: null,
+        historyBox: null,
         title: null,
         boardArea: null,
         board1: null,
         b1XAxis: null,
         b1YAxis: null,
         board1ID: null,
+        b1PlaceShipBox: null,
+        b1PlaceShipModel: null,
+        b1PlaceShipSizeInput: null,
+        b1PlaceShipRotationButton: null,
         infoBox: null,
         board2: null,
         b2XAxis: null,
         b2YAxis: null,
         board2ID: null,
+        b2PlaceShipBox: null,
+        b2PlaceShipModel: null,
+        b2PlaceShipSizeInput: null,
+        b2PlaceShipRotationButton: null,
         buttons: null,
         startButton: null,
         resetButton: null,
@@ -24,6 +37,7 @@ const DOM = () => {
     const displayGame = () => {
         clearDisplay();
         ele.base = createElement("div", ["btls-base"], document.body);
+        ele.historyBox = createElement("div", ["btls-history-box"], ele.base);
         ele.title = createElement("div", ["btls-title"], ele.base);
         ele.boardArea = createElement("div", ["btls-board-area"], ele.base);
         ele.board2 = createElement("div", ["btls-board-two"], ele.boardArea);
@@ -57,6 +71,23 @@ const DOM = () => {
         ele.resetButton.addEventListener("click", resetGame);
         ele.startButton.textContent = "Start Game";
         ele.resetButton.textContent = "Reset Game";
+
+        createPlaceShipBox(
+            0,
+            ele.b1PlaceShipBox,
+            ele.b1PlaceShipModel,
+            ele.b1PlaceShipSizeInput,
+            ele.b1PlaceShipRotationButton,
+            ele.boardArea
+        );
+        createPlaceShipBox(
+            1,
+            ele.b2PlaceShipBox,
+            ele.b2PlaceShipModel,
+            ele.b2PlaceShipSizeInput,
+            ele.b2PlaceShipRotationButton,
+            ele.boardArea
+        );
     };
 
     const startGame = () => {
@@ -67,7 +98,7 @@ const DOM = () => {
         ) {
             ele.infoBox.textContent =
                 "Please ensure all Manual players have at least one ship before starting the game";
-            return;
+            return null;
         }
         game.startGame();
     };
@@ -158,6 +189,85 @@ const DOM = () => {
             }
         }
         parent.appendChild(element);
+    };
+
+    const createPlaceShipBox = (
+        boardNo,
+        box,
+        model,
+        sizeInput,
+        rotationButton,
+        parent
+    ) => {
+        const no = boardNo + 1;
+        box = createElement("div", [`btls-b${no}-place-ship-box`], parent);
+        model = createElement("div", [`btls-b${no}-place-ship-model`], box);
+        model.style["display"] = "grid";
+        const sizeLabel = createElement(
+            "label",
+            [`btls-b${no}-place-ship-size-label`],
+            box
+        );
+        sizeLabel.textContent = "Size";
+        sizeLabel.setAttribute("for", `btls-b${no}-place-ship-size`);
+        sizeInput = createElement(
+            "input",
+            [`btls-b${no}-place-ship-size`],
+            box
+        );
+        sizeInput.setAttribute("id", `btls-b${no}-place-ship-size`);
+        sizeInput.setAttribute("type", "number");
+        sizeInput.setAttribute("min", 1);
+        sizeInput.setAttribute("max", 10);
+        sizeInput.value = boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize;
+        sizeInput.addEventListener("input", () => {
+            sizeInput.value = Math.min(10, Math.max(1, sizeInput.value));
+            if (boardNo === 0) b1PlaceShipSize = sizeInput.value;
+            else b2PlaceShipSize = sizeInput.value;
+            updatePlaceShipModel(
+                model,
+                boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
+                boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
+            );
+        });
+        rotationButton = createElement(
+            "button",
+            [`btls-b${no}-place-ship-rotation`],
+            box
+        );
+        rotationButton.textContent = "Rotate Ship";
+        rotationButton.addEventListener("click", () => {
+            if (boardNo === 0) b1PlaceShipRotation = !b1PlaceShipRotation;
+            else b2PlaceShipRotation = !b2PlaceShipRotation;
+            updatePlaceShipModel(
+                model,
+                boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
+                boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
+            );
+        });
+        updatePlaceShipModel(
+            model,
+            boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
+            boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
+        );
+    };
+
+    const updatePlaceShipModel = (model, size, rotation) => {
+        model.replaceChildren();
+        for (let i = 0; i < size; i++) {
+            createElement("div", ["btls-model-cell"], model);
+        }
+        if (rotation) {
+            model.style["grid-template-rows"] = `repeat(${size}, auto)`;
+            model.style["grid-template-columns"] = "auto";
+            model.style["width"] = `10%`;
+            model.style["height"] = `${10 * size}%`;
+        } else {
+            model.style["grid-template-rows"] = "auto";
+            model.style["grid-template-columns"] = `repeat(${size}, auto)`;
+            model.style["width"] = `${10 * size}%`;
+            model.style["height"] = `10%`;
+        }
     };
 
     const attackCell = (element, position, boardToAttack) => {
