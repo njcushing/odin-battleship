@@ -6,6 +6,7 @@ import DOM from "./../DOM/DOM";
 import Gameboard from "./../Gameboard/Gameboard";
 
 const UI = DOM();
+UI.displayGame();
 
 describe("Calling the createElement method... ", () => {
     describe("If the first argument (HTML element type)... ", () => {
@@ -140,5 +141,31 @@ describe("Calling the attackCell method... ", () => {
                 classArray.includes("empty") || classArray.includes("hit")
             ).toBeTruthy();
         });
+    });
+});
+
+describe("Clicking the 'Start Game' button... ", () => {
+    test("Should call the startGame method", () => {
+        const funcObj = {
+            startGame: () => {},
+        };
+        const spy = jest.spyOn(funcObj, "startGame");
+        const mockCell = document.createElement("button");
+        mockCell.addEventListener("click", funcObj.startGame());
+        mockCell.click();
+        expect(spy).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe("Clicking the 'Reset Game' button... ", () => {
+    test("Should call the resetGame method", () => {
+        const funcObj = {
+            resetGame: () => {},
+        };
+        const spy = jest.spyOn(funcObj, "resetGame");
+        const mockCell = document.createElement("button");
+        mockCell.addEventListener("click", funcObj.resetGame());
+        mockCell.click();
+        expect(spy).toHaveBeenCalledTimes(1);
     });
 });
