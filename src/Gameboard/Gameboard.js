@@ -250,6 +250,11 @@ const Gameboard = (s) => {
         return quantity;
     };
 
+    const remainingNumberOfShips = () => {
+        if (gameStarted) return totalNumberOfShips() - sinks.length;
+        return totalNumberOfShips();
+    };
+
     const previousAttacks = () => {
         return JSON.parse(JSON.stringify(attacks));
     };
@@ -274,6 +279,7 @@ const Gameboard = (s) => {
         isGameStarted,
         observeBoard,
         totalNumberOfShips,
+        remainingNumberOfShips,
         previousAttacks,
         previousHits,
         previousSinks,

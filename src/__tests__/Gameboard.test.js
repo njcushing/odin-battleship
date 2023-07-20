@@ -622,7 +622,7 @@ describe("Calling the remainingNumberOfShips method... ", () => {
         test("Should return the correct number of ships (1)", () => {
             board.receiveAttack([2, 2]);
             board.receiveAttack([3, 0]);
-            expect(board.remainingNumberOfShips()).toBe(3);
+            expect(board.remainingNumberOfShips()).toBe(1);
         });
     });
 });
