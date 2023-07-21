@@ -110,8 +110,8 @@
 
 .btls-b1-change-style-button,
 .btls-b2-change-style-button,
-.btls-b1-hide-board-button,
-.btls-b2-hide-board-button {
+.btls-b1-hide-ships-button,
+.btls-b2-hide-ships-button {
     font-size: 0.5rem;
     border-radius: 9999px;
     outline: none;
@@ -131,16 +131,16 @@
 .btls-b2-change-style-button:active {
     background-color: #31ac2c;
 }
-.btls-b1-hide-board-button,
-.btls-b2-hide-board-button {
+.btls-b1-hide-ships-button,
+.btls-b2-hide-ships-button {
     background-color: #ecc825;
 }
-.btls-b1-hide-board-button:hover,
-.btls-b2-hide-board-button:hover {
+.btls-b1-hide-ships-button:hover,
+.btls-b2-hide-ships-button:hover {
     background-color: #fcdc4e;
 }
-.btls-b1-hide-board-button:active,
-.btls-b2-hide-board-button:active {
+.btls-b1-hide-ships-button:active,
+.btls-b2-hide-ships-button:active {
     background-color: #d4b216;
 }
 

@@ -5,13 +5,14 @@ const DOM = () => {
     let b1PlaceShipSize = 3;
     let b1PlaceShipRotation = false;
     let b1PlaceShipPosition = [0, 0];
+    let b1HideShips = false;
     let b2PlaceShipSize = 3;
     let b2PlaceShipRotation = false;
     let b2PlaceShipPosition = [0, 0];
+    let b2HideShips = false;
 
     const ele = {
         base: null,
-        historyBox: null,
         title: null,
         boardArea: null,
         board1: null,
@@ -20,7 +21,7 @@ const DOM = () => {
         b1ID: null,
         b1Buttons: null,
         b1ChangeStyleButton: null,
-        b1HideBoardButton: null,
+        b1HideShipsButton: null,
         b1PlaceShipBox: null,
         b1PlaceShipModel: null,
         b1PlaceShipSizeInput: null,
@@ -35,7 +36,7 @@ const DOM = () => {
         b2ID: null,
         b2Buttons: null,
         b2ChangeStyleButton: null,
-        b2HideBoardButton: null,
+        b2HideShipsButton: null,
         b2PlaceShipBox: null,
         b2PlaceShipModel: null,
         b2PlaceShipSizeInput: null,
@@ -51,7 +52,6 @@ const DOM = () => {
     const displayGame = () => {
         clearDisplay();
         ele.base = createElement("div", ["btls-base"], document.body);
-        ele.historyBox = createElement("div", ["btls-history-box"], ele.base);
         ele.title = createElement("div", ["btls-title"], ele.base);
         ele.boardArea = createElement("div", ["btls-board-area"], ele.base);
         ele.board2 = createElement("div", ["btls-board-two"], ele.boardArea);
@@ -74,9 +74,8 @@ const DOM = () => {
 
         ele.title.textContent = "BATTLESHIP";
 
-        const players = game.getPlayers();
-        ele.b2ID.textContent = `Player Two: ${players[1].getStyle()}`;
-        ele.b1ID.textContent = `Player One: ${players[0].getStyle()}`;
+        updatePlayerStyleButtonText(0);
+        updatePlayerStyleButtonText(1);
 
         ele.infoBox.textContent = "Welcome to Battleship!";
 
@@ -112,6 +111,8 @@ const DOM = () => {
 
     const resetGame = () => {
         game.resetGame();
+        createBoard(game.getGameboards()[0], 0, ele.board1);
+        createBoard(game.getGameboards()[1], 1, ele.board2);
     };
 
     const createElement = (type = "div", classes = [], parent = null) => {
@@ -205,19 +206,28 @@ const DOM = () => {
             parent
         );
         styleButton.textContent = "Change Style";
+        styleButton.addEventListener("click", () => {
+            changePlayerStyle(boardNo);
+        });
         hideButton = createElement(
             "button",
-            [`btls-b${no}-hide-board-button`],
+            [`btls-b${no}-hide-ships-button`],
             parent
         );
-        hideButton.textContent = "Hide Board";
+        hideButton.addEventListener("click", () => {
+            toggleBoardHiddenShips(boardNo);
+        });
         if (boardNo === 0) {
             ele.b1ChangeStyleButton = styleButton;
-            ele.b1HideBoardButton = hideButton;
+            ele.b1HideShipsButton = hideButton;
         } else {
             ele.b2ChangeStyleButton = styleButton;
-            ele.b2HideBoardButton = hideButton;
+            ele.b2HideShipsButton = hideButton;
         }
+        const players = game.getPlayers();
+        if (players[boardNo].getStyle() === "Computer")
+            toggleBoardHiddenShips(boardNo);
+        updatePlayerHideShipsButtonText(boardNo);
     };
 
     const createPlaceShipBox = (boardNo, parent) => {
@@ -367,6 +377,52 @@ const DOM = () => {
             model.style["width"] = `${10 * size}%`;
             model.style["height"] = `10%`;
         }
+    };
+
+    const changePlayerStyle = (boardNo) => {
+        if (!game.isGameStarted() && !game.isGameEnded()) {
+            const players = game.getPlayers();
+            const currentStyle = players[boardNo].getStyle();
+            const newStyle = currentStyle === "Manual" ? "Computer" : "Manual";
+            players[boardNo].setStyle(newStyle);
+            if (newStyle === "Computer") toggleBoardHiddenShips(boardNo);
+            updatePlayerStyleButtonText(boardNo);
+        }
+    };
+
+    const updatePlayerStyleButtonText = (boardNo) => {
+        const players = game.getPlayers();
+        if (boardNo === 0) {
+            ele.b1ID.textContent = `Player One: ${players[boardNo].getStyle()}`;
+        } else {
+            ele.b2ID.textContent = `Player Two: ${players[boardNo].getStyle()}`;
+        }
+    };
+
+    const toggleBoardHiddenShips = (boardNo) => {
+        const board = boardNo === 0 ? ele.board1 : ele.board2;
+        const players = game.getPlayers();
+        if (players[boardNo].getStyle() === "Computer") {
+            board.classList.add("ships-hidden");
+            boardNo === 0 ? (b1HideShips = true) : (b2HideShips = true);
+        } else {
+            if (board.classList.contains("ships-hidden")) {
+                board.classList.remove("ships-hidden");
+                boardNo === 0 ? (b1HideShips = false) : (b2HideShips = false);
+            } else {
+                board.classList.add("ships-hidden");
+                boardNo === 0 ? (b1HideShips = true) : (b2HideShips = true);
+            }
+        }
+        updatePlayerHideShipsButtonText(boardNo);
+    };
+
+    const updatePlayerHideShipsButtonText = (boardNo) => {
+        const hidden = boardNo === 0 ? b1HideShips : b2HideShips;
+        const button =
+            boardNo === 0 ? ele.b1HideShipsButton : ele.b2HideShipsButton;
+        if (hidden) button.textContent = "Show Ships";
+        else button.textContent = "Hide Ships";
     };
 
     const placeShip = (boardNo) => {
