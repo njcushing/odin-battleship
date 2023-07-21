@@ -4,8 +4,10 @@ const DOM = () => {
     const game = Game();
     let b1PlaceShipSize = 3;
     let b1PlaceShipRotation = false;
+    let b1PlaceShipPosition = [0, 0];
     let b2PlaceShipSize = 3;
     let b2PlaceShipRotation = false;
+    let b2PlaceShipPosition = [0, 0];
 
     const ele = {
         base: null,
@@ -23,6 +25,9 @@ const DOM = () => {
         b1PlaceShipModel: null,
         b1PlaceShipSizeInput: null,
         b1PlaceShipRotationButton: null,
+        b1PlaceShipXCoordInput: null,
+        b1PlaceShipYCoordInput: null,
+        b1PlaceShipPlaceButton: null,
         infoBox: null,
         board2: null,
         b2XAxis: null,
@@ -35,6 +40,9 @@ const DOM = () => {
         b2PlaceShipModel: null,
         b2PlaceShipSizeInput: null,
         b2PlaceShipRotationButton: null,
+        b2PlaceShipXCoordInput: null,
+        b2PlaceShipYCoordInput: null,
+        b2PlaceShipPlaceButton: null,
         buttons: null,
         startButton: null,
         resetButton: null,
@@ -93,22 +101,8 @@ const DOM = () => {
         ele.startButton.textContent = "Start Game";
         ele.resetButton.textContent = "Reset Game";
 
-        createPlaceShipBox(
-            0,
-            ele.b1PlaceShipBox,
-            ele.b1PlaceShipModel,
-            ele.b1PlaceShipSizeInput,
-            ele.b1PlaceShipRotationButton,
-            ele.boardArea
-        );
-        createPlaceShipBox(
-            1,
-            ele.b2PlaceShipBox,
-            ele.b2PlaceShipModel,
-            ele.b2PlaceShipSizeInput,
-            ele.b2PlaceShipRotationButton,
-            ele.boardArea
-        );
+        createPlaceShipBox(0, ele.boardArea);
+        createPlaceShipBox(1, ele.boardArea);
     };
 
     const startGame = () => {
@@ -228,65 +222,134 @@ const DOM = () => {
         hideButton.textContent = "Hide Board";
     };
 
-    const createPlaceShipBox = (
-        boardNo,
-        box,
-        model,
-        sizeInput,
-        rotationButton,
-        parent
-    ) => {
+    const createPlaceShipBox = (boardNo, parent) => {
         const no = boardNo + 1;
-        box = createElement("div", [`btls-b${no}-place-ship-box`], parent);
-        model = createElement("div", [`btls-b${no}-place-ship-model`], box);
+        let box = createElement("div", [`btls-b${no}-place-ship-box`], parent);
+        boardNo === 0 ? (ele.b1PlaceShipBox = box) : (ele.b2PlaceShipBox = box);
+        let model = createElement("div", [`btls-b${no}-place-ship-model`], box);
         model.style["display"] = "grid";
-        const sizeLabel = createElement(
+        boardNo === 0
+            ? (ele.b1PlaceShipModel = model)
+            : (ele.b2PlaceShipModel = model);
+        createPlaceShipBoxSizeLabelInput(boardNo, box);
+        createPlaceShipBoxCoordLabelInput(boardNo, 0, box);
+        createPlaceShipBoxCoordLabelInput(boardNo, 1, box);
+        createPlaceShipBoxRotationButton(boardNo, box);
+        createPlaceShipBoxPlaceButton(boardNo, box);
+        updatePlaceShipModel(
+            boardNo === 0 ? ele.b1PlaceShipModel : ele.b2PlaceShipModel,
+            boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
+            boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
+        );
+    };
+
+    const createPlaceShipBoxSizeLabelInput = (boardNo, box) => {
+        let label, element, no;
+        no = boardNo + 1;
+        label = createElement(
             "label",
             [`btls-b${no}-place-ship-size-label`],
             box
         );
-        sizeLabel.textContent = "Size";
-        sizeLabel.setAttribute("for", `btls-b${no}-place-ship-size`);
-        sizeInput = createElement(
-            "input",
-            [`btls-b${no}-place-ship-size`],
-            box
-        );
-        sizeInput.setAttribute("id", `btls-b${no}-place-ship-size`);
-        sizeInput.setAttribute("type", "number");
-        sizeInput.setAttribute("min", 1);
-        sizeInput.setAttribute("max", 10);
-        sizeInput.value = boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize;
-        sizeInput.addEventListener("input", () => {
-            sizeInput.value = Math.min(10, Math.max(1, sizeInput.value));
-            if (boardNo === 0) b1PlaceShipSize = sizeInput.value;
-            else b2PlaceShipSize = sizeInput.value;
+        label.textContent = "Size";
+        label.setAttribute("for", `btls-b${no}-place-ship-size`);
+        element = createElement("input", [`btls-b${no}-place-ship-size`], box);
+        element.setAttribute("id", `btls-b${no}-place-ship-size`);
+        element.setAttribute("type", "number");
+        element.value = boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize;
+        element.addEventListener("input", () => {
+            element.value = Math.min(10, Math.max(1, element.value));
+            if (boardNo === 0) b1PlaceShipSize = element.value;
+            else b2PlaceShipSize = element.value;
             updatePlaceShipModel(
-                model,
+                boardNo === 0 ? ele.b1PlaceShipModel : ele.b2PlaceShipModel,
                 boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
                 boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
             );
         });
-        rotationButton = createElement(
+        boardNo === 0
+            ? (ele.b1PlaceShipSizeInput = element)
+            : (ele.b1PlaceShipSizeInput = element);
+    };
+
+    const createPlaceShipBoxCoordLabelInput = (boardNo, axis, box) => {
+        let label, element, no, char;
+        no = boardNo + 1;
+        char = axis === 0 ? "x" : "y";
+        label = createElement(
+            "label",
+            [`btls-b${no}-place-ship-${char}-coord-label`],
+            box
+        );
+        label.textContent = `${char.toUpperCase()}-Coord: `;
+        label.setAttribute("for", `btls-b${no}-place-ship-${char}-coord`);
+        element = createElement(
+            "input",
+            [`btls-b${no}-place-ship-${char}-coord`],
+            box
+        );
+        element.setAttribute("id", `btls-b${no}-place-ship-${char}-coord`);
+        element.setAttribute("type", "number");
+        if (axis === 0)
+            element.value =
+                boardNo === 0 ? b1PlaceShipPosition[0] : b2PlaceShipPosition[0];
+        else
+            element.value =
+                boardNo === 0 ? b1PlaceShipPosition[1] : b2PlaceShipPosition[1];
+        element.addEventListener("input", () => {
+            element.value = Math.min(10, Math.max(1, element.value));
+            if (axis === 0) {
+                if (boardNo === 0) b1PlaceShipPosition[0] = element.value;
+                else b2PlaceShipPosition[0] = element.value;
+            } else {
+                if (boardNo === 0) b1PlaceShipPosition[1] = element.value;
+                else b2PlaceShipPosition[1] = element.value;
+            }
+        });
+        if (axis === 0) {
+            if (boardNo === 0) ele.b1PlaceShipXCoordInput = element;
+            else ele.b2PlaceShipXCoordInput = element;
+        } else {
+            if (boardNo === 0) ele.b1PlaceShipYCoordInput = element;
+            else ele.b2PlaceShipYCoordInput = element;
+        }
+    };
+
+    const createPlaceShipBoxRotationButton = (boardNo, box) => {
+        let element, no;
+        no = boardNo + 1;
+        element = createElement(
             "button",
             [`btls-b${no}-place-ship-rotation`],
             box
         );
-        rotationButton.textContent = "Rotate Ship";
-        rotationButton.addEventListener("click", () => {
+        element.textContent = "Rotate Ship";
+        element.addEventListener("click", () => {
             if (boardNo === 0) b1PlaceShipRotation = !b1PlaceShipRotation;
             else b2PlaceShipRotation = !b2PlaceShipRotation;
             updatePlaceShipModel(
-                model,
+                boardNo === 0 ? ele.b1PlaceShipModel : ele.b2PlaceShipModel,
                 boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
                 boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
             );
         });
-        updatePlaceShipModel(
-            model,
-            boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
-            boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
-        );
+        boardNo === 0
+            ? (ele.b1PlaceShipRotationButton = element)
+            : (ele.b2PlaceShipRotationButton = element);
+    };
+
+    const createPlaceShipBoxPlaceButton = (boardNo, box) => {
+        let element, no;
+        no = boardNo + 1;
+        element = createElement("button", [`btls-b${no}-place-ship`], box);
+        element.textContent = "Place Ship";
+        element.addEventListener("click", () => {
+            if (boardNo === 0) b1PlaceShipRotation = !b1PlaceShipRotation;
+            else b2PlaceShipRotation = !b2PlaceShipRotation;
+        });
+        boardNo === 0
+            ? (ele.b1PlaceShipPlaceButton = element)
+            : (ele.b2PlaceShipPlaceButton = element);
     };
 
     const updatePlaceShipModel = (model, size, rotation) => {
