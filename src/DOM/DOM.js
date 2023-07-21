@@ -80,18 +80,8 @@ const DOM = () => {
 
         ele.infoBox.textContent = "Welcome to Battleship!";
 
-        createPlayerButtons(
-            ele.b2ChangeStyleButton,
-            ele.b2HideBoardButton,
-            1,
-            ele.b2Buttons
-        );
-        createPlayerButtons(
-            ele.b1ChangeStyleButton,
-            ele.b1HideBoardButton,
-            1,
-            ele.b1Buttons
-        );
+        createPlayerButtons(1, ele.b2Buttons);
+        createPlayerButtons(0, ele.b1Buttons);
 
         ele.buttons = createElement("div", ["btls-buttons"], ele.base);
         ele.startButton = createElement("button", ["btls-start"], ele.buttons);
@@ -206,20 +196,28 @@ const DOM = () => {
         parent.appendChild(element);
     };
 
-    const createPlayerButtons = (styleButton, hideButton, boardNo, parent) => {
-        const no = boardNo;
+    const createPlayerButtons = (boardNo, parent) => {
+        let styleButton, hideButton, no;
+        no = boardNo + 1;
         styleButton = createElement(
             "button",
-            [`btls-b${boardNo}-change-style-button`],
+            [`btls-b${no}-change-style-button`],
             parent
         );
         styleButton.textContent = "Change Style";
         hideButton = createElement(
             "button",
-            [`btls-b${boardNo}-hide-board-button`],
+            [`btls-b${no}-hide-board-button`],
             parent
         );
         hideButton.textContent = "Hide Board";
+        if (boardNo === 0) {
+            ele.b1ChangeStyleButton = styleButton;
+            ele.b1HideBoardButton = hideButton;
+        } else {
+            ele.b2ChangeStyleButton = styleButton;
+            ele.b2HideBoardButton = hideButton;
+        }
     };
 
     const createPlaceShipBox = (boardNo, parent) => {
@@ -259,8 +257,9 @@ const DOM = () => {
         element.value = boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize;
         element.addEventListener("input", () => {
             element.value = Math.min(10, Math.max(1, element.value));
-            if (boardNo === 0) b1PlaceShipSize = element.value;
-            else b2PlaceShipSize = element.value;
+            const intValue = parseInt(element.value);
+            if (boardNo === 0) b1PlaceShipSize = intValue;
+            else b2PlaceShipSize = intValue;
             updatePlaceShipModel(
                 boardNo === 0 ? ele.b1PlaceShipModel : ele.b2PlaceShipModel,
                 boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
@@ -298,12 +297,13 @@ const DOM = () => {
                 boardNo === 0 ? b1PlaceShipPosition[1] : b2PlaceShipPosition[1];
         element.addEventListener("input", () => {
             element.value = Math.min(10, Math.max(1, element.value));
+            const intValue = parseInt(element.value);
             if (axis === 0) {
-                if (boardNo === 0) b1PlaceShipPosition[0] = element.value;
-                else b2PlaceShipPosition[0] = element.value;
+                if (boardNo === 0) b1PlaceShipPosition[0] = intValue;
+                else b2PlaceShipPosition[0] = intValue;
             } else {
-                if (boardNo === 0) b1PlaceShipPosition[1] = element.value;
-                else b2PlaceShipPosition[1] = element.value;
+                if (boardNo === 0) b1PlaceShipPosition[1] = intValue;
+                else b2PlaceShipPosition[1] = intValue;
             }
         });
         if (axis === 0) {
@@ -344,8 +344,7 @@ const DOM = () => {
         element = createElement("button", [`btls-b${no}-place-ship`], box);
         element.textContent = "Place Ship";
         element.addEventListener("click", () => {
-            if (boardNo === 0) b1PlaceShipRotation = !b1PlaceShipRotation;
-            else b2PlaceShipRotation = !b2PlaceShipRotation;
+            placeShip(boardNo);
         });
         boardNo === 0
             ? (ele.b1PlaceShipPlaceButton = element)
@@ -367,6 +366,20 @@ const DOM = () => {
             model.style["grid-template-columns"] = `repeat(${size}, auto)`;
             model.style["width"] = `${10 * size}%`;
             model.style["height"] = `10%`;
+        }
+    };
+
+    const placeShip = (boardNo) => {
+        if (!game.isGameStarted() && !game.isGameEnded()) {
+            const boards = game.getGameboards();
+            boards[boardNo].placeShip(
+                boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
+                boardNo === 0 ? b1PlaceShipPosition : b2PlaceShipPosition,
+                boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
+            );
+            boardNo === 0
+                ? createBoard(game.getGameboards()[0], 0, ele.board1)
+                : createBoard(game.getGameboards()[1], 1, ele.board2);
         }
     };
 
