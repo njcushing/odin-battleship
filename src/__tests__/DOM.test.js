@@ -165,6 +165,7 @@ describe("Changing the input value of the place ship y-coordinate... ", () => {
 
 describe("Clicking the 'Change Player Style' button... ", () => {
     const players = UI.game.getPlayers();
+    const boards = UI.game.getGameboards();
     const playerStyleOriginal = players[0].getStyle();
     describe("If the game has NOT yet been started... ", () => {
         test("Should change the style one way", () => {
@@ -174,6 +175,14 @@ describe("Clicking the 'Change Player Style' button... ", () => {
         test("Should change the style back to its original way", () => {
             UI.ele.b1ChangeStyleButton.click();
             expect(players[0].getStyle()).toBe(playerStyleOriginal);
+        });
+        test("Should call the 'resetBoard' method on the Gameboard if switching to 'Computer' style", () => {
+            if (players[1].getStyle() === "Computer")
+                players[1].setStyle("Manual");
+            const spy = jest.spyOn(boards[1], "resetBoard");
+            UI.ele.b2ChangeStyleButton.click();
+            expect(spy).toHaveBeenCalledTimes(1);
+            spy.mockRestore();
         });
     });
 });

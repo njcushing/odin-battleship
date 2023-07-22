@@ -387,7 +387,15 @@ const DOM = () => {
         const currentStyle = players[boardNo].getStyle();
         const newStyle = currentStyle === "Manual" ? "Computer" : "Manual";
         players[boardNo].setStyle(newStyle);
-        if (newStyle === "Computer") toggleBoardHiddenShips(boardNo);
+        if (newStyle === "Computer") {
+            toggleBoardHiddenShips(boardNo);
+            game.getGameboards()[boardNo].resetBoard();
+            createBoard(
+                game.getGameboards()[boardNo],
+                boardNo,
+                boardNo === 0 ? ele.board1 : ele.board2
+            );
+        }
         updatePlayerStyleButtonText(boardNo);
     };
 
