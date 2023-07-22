@@ -236,28 +236,28 @@ describe("Clicking the 'Place Ship' button... ", () => {
             test("Should call the Gameboard's placeShip method with the correct arguments (board 1)", () => {
                 players[0].setStyle("Manual");
                 const spy = jest.spyOn(boards[0], "placeShip");
-                UI.ele.b1PlaceShipSizeInput.value = 3;
+                UI.ele.b1PlaceShipSizeInput.value = 1;
                 UI.ele.b1PlaceShipXCoordInput.value = 5;
                 UI.ele.b1PlaceShipYCoordInput.value = 5;
                 UI.ele.b1PlaceShipSizeInput.dispatchEvent(new Event("input"));
                 UI.ele.b1PlaceShipXCoordInput.dispatchEvent(new Event("input"));
                 UI.ele.b1PlaceShipYCoordInput.dispatchEvent(new Event("input"));
                 UI.ele.b1PlaceShipPlaceButton.click();
-                expect(spy).toHaveBeenCalledWith(3, [5, 5], true || false);
+                expect(spy).toHaveBeenCalledWith(1, [5, 5], true || false);
                 boards[0].resetBoard();
                 spy.mockRestore();
             });
             test("Should call the Gameboard's placeShip method with the correct arguments (board 2)", () => {
                 players[1].setStyle("Manual");
                 const spy = jest.spyOn(boards[1], "placeShip");
-                UI.ele.b2PlaceShipSizeInput.value = 2;
+                UI.ele.b2PlaceShipSizeInput.value = 1;
                 UI.ele.b2PlaceShipXCoordInput.value = 7;
                 UI.ele.b2PlaceShipYCoordInput.value = 6;
                 UI.ele.b2PlaceShipSizeInput.dispatchEvent(new Event("input"));
                 UI.ele.b2PlaceShipXCoordInput.dispatchEvent(new Event("input"));
                 UI.ele.b2PlaceShipYCoordInput.dispatchEvent(new Event("input"));
                 UI.ele.b2PlaceShipPlaceButton.click();
-                expect(spy).toHaveBeenCalledWith(2, [7, 6], true || false);
+                expect(spy).toHaveBeenCalledWith(1, [7, 6], true || false);
                 boards[1].resetBoard();
                 spy.mockRestore();
             });
@@ -276,19 +276,11 @@ describe("Clicking the 'Place Ship' button... ", () => {
 
 describe("Clicking a cell on the board...", () => {
     describe("If the game has NOT yet been started... ", () => {
-        test("Should call the Game module's 'manualAttack' method", () => {
+        test("Should NOT call the Game module's 'manualAttack' method", () => {
             const cell = UI.ele.board1.lastChild;
             const spy = jest.spyOn(UI.game, "manualAttack");
             cell.click();
-            expect(spy).toHaveBeenCalledTimes(1);
-        });
-        test("Should do nothing to the state of the board", () => {
-            const board = UI.game.getGameboards()[0].observeBoard();
-            const cell = UI.ele.board1.lastChild;
-            cell.click();
-            expect(UI.game.getGameboards()[0].observeBoard()).toStrictEqual(
-                board
-            );
+            expect(spy).not.toHaveBeenCalled();
         });
     });
 });
@@ -334,6 +326,23 @@ describe("Clicking the 'Place Ship' button... ", () => {
             const spy = jest.spyOn(boards[0], "placeShip");
             UI.ele.b1PlaceShipPlaceButton.click();
             expect(spy).not.toHaveBeenCalled();
+        });
+    });
+});
+
+describe("Clicking a cell on the board...", () => {
+    describe("If the game has been started... ", () => {
+        test("Should call the Game module's manualAttack method", () => {
+            const cell = UI.ele.board1.lastChild;
+            const spy = jest.spyOn(UI.game, "manualAttack");
+            cell.click();
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+        test("Should call the Game module's isGameEnded method", () => {
+            const cell = UI.ele.board1.lastChild;
+            const spy = jest.spyOn(UI.game, "isGameEnded");
+            cell.click();
+            expect(spy).toHaveBeenCalledTimes(2);
         });
     });
 });

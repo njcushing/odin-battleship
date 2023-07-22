@@ -124,14 +124,18 @@ const DOM = () => {
             return null;
         }
         game.startGame();
+        ele.boardArea.classList.remove("game-ended");
     };
 
-    const endGame = () => {};
+    const endGame = () => {
+        ele.boardArea.classList.add("game-ended");
+    };
 
     const resetGame = () => {
         game.resetGame();
         createBoard(game.getGameboards()[0], 0, ele.board1);
         createBoard(game.getGameboards()[1], 1, ele.board2);
+        ele.boardArea.classList.remove("game-ended");
     };
 
     const createCell = (parent) => {
@@ -449,13 +453,17 @@ const DOM = () => {
     };
 
     const attackCell = (element, position, boardToAttack) => {
-        let currentState, gameboardModule;
-        gameboardModule = game.getGameboards()[boardToAttack];
+        if (game.isGameStarted() && !game.isGameEnded()) {
+            let currentState, gameboardModule;
+            gameboardModule = game.getGameboards()[boardToAttack];
 
-        game.manualAttack(boardToAttack, position);
+            game.manualAttack(boardToAttack, position);
 
-        currentState = gameboardModule.getCellStateAt(position);
-        setCellValueClassName(element, currentState);
+            currentState = gameboardModule.getCellStateAt(position);
+            setCellValueClassName(element, currentState);
+
+            if (game.isGameEnded()) endGame();
+        }
     };
 
     const checkValidGameboard = (gameboardModule) => {
