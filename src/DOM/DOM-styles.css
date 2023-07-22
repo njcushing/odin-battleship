@@ -311,24 +311,38 @@
 }
 .btls-cell:hover {
     outline: 2px solid black;
-    background-color: #ececec;
-}
-.btls-cell:active {
-    background-color: #e2e2e2;
 }
 
 .btls-cell.empty {
     background-color: rgb(255, 255, 255);
 }
+.btls-cell.empty:hover {
+    background-color: #ececec;
+}
+.btls-cell.empty:active {
+    background-color: #d1d1d1;
+}
 .btls-board-one:not(.ships-hidden) > .btls-cell.ship {
     background-color: rgb(50, 171, 187);
+}
+.btls-board-one:not(.ships-hidden) > .btls-cell.ship:hover {
+    background-color: rgb(88, 202, 218);
 }
 .btls-board-two:not(.ships-hidden) > .btls-cell.ship {
     background-color: rgb(50, 171, 187);
 }
+.btls-board-two:not(.ships-hidden) > .btls-cell.ship:hover {
+    background-color: rgb(88, 202, 218);
+}
 .btls-cell.attacked {
     background-color: rgb(194, 76, 76);
 }
+.btls-cell.attacked:hover {
+    background-color: rgb(211, 101, 101);
+}
 .btls-cell.hit {
     background-color: rgb(98, 212, 69);
+}
+.btls-cell.hit:hover {
+    background-color: rgb(124, 236, 96);
 }
