@@ -145,6 +145,8 @@ const DOM = () => {
             case 1:
                 cell.classList.add("ship");
             case 2:
+                cell.classList.add("attacked");
+            case 3:
                 cell.classList.add("hit");
             case 0:
             default:
@@ -435,20 +437,8 @@ const DOM = () => {
     };
 
     const attackCell = (element, position, boardToAttack) => {
-        if (!(element instanceof HTMLElement)) return null;
-        if (
-            !(
-                Number.isInteger(boardToAttack) &&
-                boardToAttack >= 0 &&
-                boardToAttack <= 1
-            )
-        )
-            return null;
-
         let currentState, gameboardModule;
         gameboardModule = game.getGameboards()[boardToAttack];
-        currentState = gameboardModule.getCellStateAt(position);
-        if (currentState === null) return null;
 
         game.manualAttack(boardToAttack, position);
 
@@ -471,7 +461,6 @@ const DOM = () => {
         createElement,
         createCell,
         createBoard,
-        attackCell,
     };
 };
 export default DOM;

@@ -270,40 +270,6 @@ describe("Clicking a cell on the board...", () => {
     });
 });
 
-describe("Calling the attackCell method... ", () => {
-    const mockDOM = DOM();
-    const mockParent = document.createElement("div");
-    const mockCell = UI.createCell(mockParent);
-    describe("If the first argument (cell node)... ", () => {
-        test("Is NOT a valid DOM element, the method should return null", () => {
-            expect(mockDOM.attackCell(null, [0, 0], 0)).toBeNull();
-        });
-    });
-    describe("If the second argument (position)... ", () => {
-        test("Is NOT a valid position on the board, the method should return null", () => {
-            expect(mockDOM.attackCell(mockCell, "test", 0)).toBeNull();
-        });
-    });
-    describe("If the third argument (board number)... ", () => {
-        test("Is NOT an integer, the method should return null", () => {
-            expect(mockDOM.attackCell(mockCell, [0, 0], "test")).toBeNull();
-        });
-        test("Is NOT either 0 or 1, the method should return null", () => {
-            expect(mockDOM.attackCell(mockCell, [0, 0], 2)).toBeNull();
-        });
-    });
-    describe("If the state of the attacked board changes... ", () => {
-        test("The state of the DOM element representing that cell should update accordingly", () => {
-            mockDOM.displayGame();
-            mockDOM.attackCell(mockCell, [1, 1], 1);
-            const classArray = [...mockCell.classList];
-            expect(
-                classArray.includes("empty") || classArray.includes("hit")
-            ).toBeTruthy();
-        });
-    });
-});
-
 describe("Clicking the 'Start Game' button... ", () => {
     test("Should be possible only if the button is an HTML element", () => {
         expect(UI.ele.startButton instanceof HTMLElement).toBe(true);
