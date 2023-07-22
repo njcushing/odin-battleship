@@ -320,7 +320,10 @@
 .btls-cell.empty {
     background-color: rgb(255, 255, 255);
 }
-.btls-cell.ship {
+.btls-board-one:not(.ships-hidden) > .btls-cell.ship {
+    background-color: rgb(50, 171, 187);
+}
+.btls-board-two:not(.ships-hidden) > .btls-cell.ship {
     background-color: rgb(50, 171, 187);
 }
 .btls-cell.attacked {
