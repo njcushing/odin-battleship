@@ -278,7 +278,7 @@ const DOM = () => {
         });
         boardNo === 0
             ? (ele.b1PlaceShipSizeInput = element)
-            : (ele.b1PlaceShipSizeInput = element);
+            : (ele.b2PlaceShipSizeInput = element);
     };
 
     const createPlaceShipBoxCoordLabelInput = (boardNo, axis, box) => {
@@ -380,14 +380,13 @@ const DOM = () => {
     };
 
     const changePlayerStyle = (boardNo) => {
-        if (!game.isGameStarted() && !game.isGameEnded()) {
-            const players = game.getPlayers();
-            const currentStyle = players[boardNo].getStyle();
-            const newStyle = currentStyle === "Manual" ? "Computer" : "Manual";
-            players[boardNo].setStyle(newStyle);
-            if (newStyle === "Computer") toggleBoardHiddenShips(boardNo);
-            updatePlayerStyleButtonText(boardNo);
-        }
+        if (game.isGameStarted() || game.isGameEnded()) return;
+        const players = game.getPlayers();
+        const currentStyle = players[boardNo].getStyle();
+        const newStyle = currentStyle === "Manual" ? "Computer" : "Manual";
+        players[boardNo].setStyle(newStyle);
+        if (newStyle === "Computer") toggleBoardHiddenShips(boardNo);
+        updatePlayerStyleButtonText(boardNo);
     };
 
     const updatePlayerStyleButtonText = (boardNo) => {
@@ -426,17 +425,16 @@ const DOM = () => {
     };
 
     const placeShip = (boardNo) => {
-        if (!game.isGameStarted() && !game.isGameEnded()) {
-            const boards = game.getGameboards();
-            boards[boardNo].placeShip(
-                boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
-                boardNo === 0 ? b1PlaceShipPosition : b2PlaceShipPosition,
-                boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
-            );
-            boardNo === 0
-                ? createBoard(game.getGameboards()[0], 0, ele.board1)
-                : createBoard(game.getGameboards()[1], 1, ele.board2);
-        }
+        if (game.isGameStarted() || game.isGameEnded()) return;
+        const boards = game.getGameboards();
+        boards[boardNo].placeShip(
+            boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
+            boardNo === 0 ? b1PlaceShipPosition : b2PlaceShipPosition,
+            boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
+        );
+        boardNo === 0
+            ? createBoard(game.getGameboards()[0], 0, ele.board1)
+            : createBoard(game.getGameboards()[1], 1, ele.board2);
     };
 
     const attackCell = (element, position, boardToAttack) => {
@@ -470,6 +468,8 @@ const DOM = () => {
     };
 
     return {
+        ele,
+        game,
         displayGame,
         createElement,
         createCell,

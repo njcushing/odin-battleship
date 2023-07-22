@@ -6,7 +6,13 @@ import DOM from "./../DOM/DOM";
 import Gameboard from "./../Gameboard/Gameboard";
 
 const UI = DOM();
-UI.displayGame();
+
+describe("Calling the displayGame method... ", () => {
+    UI.displayGame();
+    test("Should populate the element dictionary's properties with HTML Elements", () => {
+        expect(UI.ele.base instanceof HTMLElement).toBe(true);
+    });
+});
 
 describe("Calling the createElement method... ", () => {
     describe("If the first argument (HTML element type)... ", () => {
@@ -96,6 +102,155 @@ describe("Calling the createBoard method... ", () => {
     });
 });
 
+describe("Changing the input value of the place ship model's size... ", () => {
+    test("Should change the number of child elements in the model to match that value", () => {
+        UI.ele.b1PlaceShipSizeInput.value = 8;
+        UI.ele.b1PlaceShipSizeInput.dispatchEvent(new Event("input"));
+        expect(UI.ele.b1PlaceShipModel.children.length).toBe(8);
+    });
+    test("Should have a maximum value of 10", () => {
+        UI.ele.b1PlaceShipSizeInput.value = 18;
+        UI.ele.b1PlaceShipSizeInput.dispatchEvent(new Event("input"));
+        expect(UI.ele.b1PlaceShipModel.children.length).toBe(10);
+    });
+    test("Should have a minimum value of 1", () => {
+        UI.ele.b2PlaceShipSizeInput.value = -3;
+        UI.ele.b2PlaceShipSizeInput.dispatchEvent(new Event("input"));
+        expect(UI.ele.b2PlaceShipModel.children.length).toBe(1);
+    });
+});
+
+describe("Clicking the 'Rotate Ship' button... ", () => {
+    test("Should update the model without changing its number of child elements (board 1)", () => {
+        const childCount = UI.ele.b1PlaceShipModel.children.length;
+        UI.ele.b1PlaceShipRotationButton.click();
+        expect(UI.ele.b1PlaceShipModel.children.length).toBe(childCount);
+    });
+    test("Should update the model without changing its number of child elements (board 2)", () => {
+        const childCount = UI.ele.b2PlaceShipModel.children.length;
+        UI.ele.b2PlaceShipRotationButton.click();
+        expect(UI.ele.b2PlaceShipModel.children.length).toBe(childCount);
+    });
+});
+
+describe("Changing the input value of the place ship x-coordinate... ", () => {
+    test("Should have a maximum value of 10", () => {
+        UI.ele.b1PlaceShipXCoordInput.value = 18;
+        UI.ele.b1PlaceShipXCoordInput.dispatchEvent(new Event("input"));
+        expect(parseInt(UI.ele.b1PlaceShipXCoordInput.value)).toBe(10);
+    });
+    test("Should have a minimum value of 1", () => {
+        UI.ele.b2PlaceShipXCoordInput.value = -3;
+        UI.ele.b2PlaceShipXCoordInput.dispatchEvent(new Event("input"));
+        expect(parseInt(UI.ele.b2PlaceShipXCoordInput.value)).toBe(1);
+    });
+});
+
+describe("Changing the input value of the place ship y-coordinate... ", () => {
+    test("Should have a maximum value of 10", () => {
+        UI.ele.b1PlaceShipYCoordInput.value = 18;
+        UI.ele.b1PlaceShipYCoordInput.dispatchEvent(new Event("input"));
+        expect(parseInt(UI.ele.b1PlaceShipYCoordInput.value)).toBe(10);
+    });
+    test("Should have a minimum value of 1", () => {
+        UI.ele.b2PlaceShipYCoordInput.value = -3;
+        UI.ele.b2PlaceShipYCoordInput.dispatchEvent(new Event("input"));
+        expect(parseInt(UI.ele.b2PlaceShipYCoordInput.value)).toBe(1);
+    });
+});
+
+describe("Clicking the 'Change Player Style' button... ", () => {
+    const players = UI.game.getPlayers();
+    const playerStyleOriginal = players[0].getStyle();
+    describe("If the game has NOT yet been started... ", () => {
+        test("Should change the style one way", () => {
+            UI.ele.b1ChangeStyleButton.click();
+            expect(players[0].getStyle()).not.toBe(playerStyleOriginal);
+        });
+        test("Should change the style back to its original way", () => {
+            UI.ele.b1ChangeStyleButton.click();
+            expect(players[0].getStyle()).toBe(playerStyleOriginal);
+        });
+    });
+});
+
+describe("Clicking the 'Hide/Show Ships' button... ", () => {
+    const players = UI.game.getPlayers();
+    describe("If the game has NOT yet been started... ", () => {
+        test("Should change the 'hidden' state of a 'Manual' player's board one way", () => {
+            const hidden = UI.ele.board1.classList.contains("ships-hidden");
+            players[0].setStyle("Manual");
+            UI.ele.b1HideShipsButton.click();
+            expect(UI.ele.board1.classList.contains("ships-hidden")).not.toBe(
+                hidden
+            );
+        });
+        test("Should change the 'hidden' state of a 'Manual' player's board back to its original way", () => {
+            const hidden = UI.ele.board1.classList.contains("ships-hidden");
+            UI.ele.b1HideShipsButton.click();
+            expect(UI.ele.board1.classList.contains("ships-hidden")).not.toBe(
+                hidden
+            );
+        });
+        test("Should NOT change the 'hidden' state of a 'Computer' player's board", () => {
+            players[1].setStyle("Computer");
+            UI.ele.b2HideShipsButton.click();
+            expect(UI.ele.board2.classList).toContain("ships-hidden");
+        });
+    });
+});
+
+describe("Clicking the 'Place Ship' button... ", () => {
+    const boards = UI.game.getGameboards();
+    describe("If the game has NOT yet been started... ", () => {
+        test("Should call the Gameboard's placeShip method with the correct arguments (board 1)", () => {
+            const spy = jest.spyOn(boards[0], "placeShip");
+            UI.ele.b1PlaceShipSizeInput.value = 3;
+            UI.ele.b1PlaceShipXCoordInput.value = 5;
+            UI.ele.b1PlaceShipYCoordInput.value = 5;
+            UI.ele.b1PlaceShipSizeInput.dispatchEvent(new Event("input"));
+            UI.ele.b1PlaceShipXCoordInput.dispatchEvent(new Event("input"));
+            UI.ele.b1PlaceShipYCoordInput.dispatchEvent(new Event("input"));
+            UI.ele.b1PlaceShipPlaceButton.click();
+            expect(spy).toHaveBeenCalledWith(3, [5, 5], true || false);
+            boards[0].resetBoard();
+            spy.mockRestore();
+        });
+        test("Should call the Gameboard's placeShip method with the correct arguments (board 2)", () => {
+            const spy = jest.spyOn(boards[1], "placeShip");
+            UI.ele.b2PlaceShipSizeInput.value = 2;
+            UI.ele.b2PlaceShipXCoordInput.value = 7;
+            UI.ele.b2PlaceShipYCoordInput.value = 6;
+            UI.ele.b2PlaceShipSizeInput.dispatchEvent(new Event("input"));
+            UI.ele.b2PlaceShipXCoordInput.dispatchEvent(new Event("input"));
+            UI.ele.b2PlaceShipYCoordInput.dispatchEvent(new Event("input"));
+            UI.ele.b2PlaceShipPlaceButton.click();
+            expect(spy).toHaveBeenCalledWith(2, [7, 6], true || false);
+            boards[1].resetBoard();
+            spy.mockRestore();
+        });
+    });
+});
+
+describe("Clicking a cell on the board...", () => {
+    describe("If the game has NOT yet been started... ", () => {
+        test("Should call the Game module's 'manualAttack' method", () => {
+            const cell = UI.ele.board1.lastChild;
+            const spy = jest.spyOn(UI.game, "manualAttack");
+            cell.click();
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+        test("Should do nothing to the state of the board", () => {
+            const board = UI.game.getGameboards()[0].observeBoard();
+            const cell = UI.ele.board1.lastChild;
+            cell.click();
+            expect(UI.game.getGameboards()[0].observeBoard()).toStrictEqual(
+                board
+            );
+        });
+    });
+});
+
 describe("Calling the attackCell method... ", () => {
     const mockDOM = DOM();
     const mockParent = document.createElement("div");
@@ -118,21 +273,6 @@ describe("Calling the attackCell method... ", () => {
             expect(mockDOM.attackCell(mockCell, [0, 0], 2)).toBeNull();
         });
     });
-    describe("If the cell is clicked... ", () => {
-        test("This method should be called", () => {
-            const spy = jest.spyOn(mockDOM, "attackCell");
-            mockCell.addEventListener("click", () => {
-                mockDOM.attackCell(mockCell, [0, 0], 1);
-            });
-            mockCell.click();
-            expect(spy).toHaveBeenCalledTimes(1);
-        });
-        test("The first argument of this method call should be the clicked cell", () => {
-            const spy = jest.spyOn(mockDOM, "attackCell");
-            mockCell.click();
-            expect(spy).toHaveBeenCalledWith(mockCell, [0, 0], 1);
-        });
-    });
     describe("If the state of the attacked board changes... ", () => {
         test("The state of the DOM element representing that cell should update accordingly", () => {
             mockDOM.displayGame();
@@ -146,27 +286,57 @@ describe("Calling the attackCell method... ", () => {
 });
 
 describe("Clicking the 'Start Game' button... ", () => {
-    test("Should call the startGame method", () => {
-        const funcObj = {
-            startGame: () => {},
-        };
-        const spy = jest.spyOn(funcObj, "startGame");
-        const mockCell = document.createElement("button");
-        mockCell.addEventListener("click", funcObj.startGame());
-        mockCell.click();
-        expect(spy).toHaveBeenCalledTimes(1);
+    test("Should be possible only if the button is an HTML element", () => {
+        expect(UI.ele.startButton instanceof HTMLElement).toBe(true);
+    });
+    describe("If there is NOT at least one ship on both boards... ", () => {
+        test("Should NOT call the Game module's startGame method", () => {
+            const spy = jest.spyOn(UI.game, "startGame");
+            UI.ele.startButton.click();
+            expect(spy).toHaveBeenCalledTimes(0);
+        });
+    });
+    describe("If there is at least one ship on both boards... ", () => {
+        test("Should call the Game module's startGame method", () => {
+            const boards = UI.game.getGameboards();
+            boards[0].placeShip(1, [0, 0], false);
+            boards[1].placeShip(1, [0, 0], false);
+            const spy = jest.spyOn(UI.game, "startGame");
+            UI.ele.startButton.click();
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+    });
+});
+
+describe("Clicking the 'Change Player Style' button... ", () => {
+    const players = UI.game.getPlayers();
+    describe("If the game has been started... ", () => {
+        test("Should NOT change the player style", () => {
+            const playerStyleCurrent = players[0].getStyle();
+            UI.ele.b1ChangeStyleButton.click();
+            expect(players[0].getStyle()).toBe(playerStyleCurrent);
+        });
+    });
+});
+
+describe("Clicking the 'Place Ship' button... ", () => {
+    const boards = UI.game.getGameboards();
+    describe("If the game has been started... ", () => {
+        test("Should NOT call the Gameboard's placeShip method", () => {
+            const spy = jest.spyOn(boards[0], "placeShip");
+            UI.ele.b1PlaceShipPlaceButton.click();
+            expect(spy).not.toHaveBeenCalled();
+        });
     });
 });
 
 describe("Clicking the 'Reset Game' button... ", () => {
-    test("Should call the resetGame method", () => {
-        const funcObj = {
-            resetGame: () => {},
-        };
-        const spy = jest.spyOn(funcObj, "resetGame");
-        const mockCell = document.createElement("button");
-        mockCell.addEventListener("click", funcObj.resetGame());
-        mockCell.click();
+    test("Should be possible only if the button is an HTML element", () => {
+        expect(UI.ele.resetButton instanceof HTMLElement).toBe(true);
+    });
+    test("Should call the Game module's resetGame method", () => {
+        const spy = jest.spyOn(UI.game, "resetGame");
+        UI.ele.resetButton.click();
         expect(spy).toHaveBeenCalledTimes(1);
     });
 });
