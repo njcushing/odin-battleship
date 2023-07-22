@@ -126,6 +126,8 @@ const DOM = () => {
         game.startGame();
     };
 
+    const endGame = () => {};
+
     const resetGame = () => {
         game.resetGame();
         createBoard(game.getGameboards()[0], 0, ele.board1);

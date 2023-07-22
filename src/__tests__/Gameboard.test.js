@@ -480,6 +480,21 @@ describe("Calling the receiveAttack method... ", () => {
                 ]);
             });
         });
+        describe("Should place an 'hit' position on the board... ", () => {
+            test("If the attack lands on a ship", () => {
+                board.receiveAttack([3, 3]);
+                expect(board.observeBoard()).toStrictEqual([
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 1, 1, 3, 1, 1, 0, 0],
+                    [0, 0, 0, 0, 2, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                ]);
+            });
+        });
     });
 });
 

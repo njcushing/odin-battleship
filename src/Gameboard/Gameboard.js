@@ -149,9 +149,13 @@ const Gameboard = (s) => {
         if (!validateCoordinateInput(position)) return false;
 
         if (board[position[1]][position[0]] !== 2) {
-            if (board[position[1]][position[0]] === 1) hits.push(position);
+            if (board[position[1]][position[0]] === 1) {
+                board[position[1]][position[0]] = 3;
+                hits.push(position);
+            } else {
+                board[position[1]][position[0]] = 2;
+            }
             attacks.push(position);
-            board[position[1]][position[0]] = 2;
 
             let startingBoardCopy = JSON.parse(JSON.stringify(startingBoard));
             const getShip = extractShip(startingBoardCopy, position);
