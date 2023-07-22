@@ -64,9 +64,13 @@ describe("Calling the createCell method... ", () => {
 
 describe("Calling the createBoard method... ", () => {
     describe("If the first argument (Gameboard module)... ", () => {
-        test("Is NOT a valid object, the method should return null", () => {
+        test("Is null, the method should return null", () => {
             const mockParent = document.createElement("div");
             expect(UI.createBoard(null, 0, mockParent)).toBeNull();
+        });
+        test("Is NOT a valid object, the method should return null", () => {
+            const mockParent = document.createElement("div");
+            expect(UI.createBoard("test", 0, mockParent)).toBeNull();
         });
         test("Is NOT a valid Gameboard module, the method should return null", () => {
             const mockParent = document.createElement("div");
@@ -177,7 +181,7 @@ describe("Clicking the 'Change Player Style' button... ", () => {
 describe("Clicking the 'Hide/Show Ships' button... ", () => {
     const players = UI.game.getPlayers();
     describe("If the game has NOT yet been started... ", () => {
-        test("Should change the 'hidden' state of a 'Manual' player's board one way", () => {
+        test("Should change the 'hidden' state of a 'Manual' player's board one way (board 1)", () => {
             const hidden = UI.ele.board1.classList.contains("ships-hidden");
             players[0].setStyle("Manual");
             UI.ele.b1HideShipsButton.click();
@@ -185,10 +189,25 @@ describe("Clicking the 'Hide/Show Ships' button... ", () => {
                 hidden
             );
         });
-        test("Should change the 'hidden' state of a 'Manual' player's board back to its original way", () => {
+        test("Should change the 'hidden' state of a 'Manual' player's board back to its original way (board 1)", () => {
             const hidden = UI.ele.board1.classList.contains("ships-hidden");
             UI.ele.b1HideShipsButton.click();
             expect(UI.ele.board1.classList.contains("ships-hidden")).not.toBe(
+                hidden
+            );
+        });
+        test("Should change the 'hidden' state of a 'Manual' player's board one way (board 2)", () => {
+            const hidden = UI.ele.board2.classList.contains("ships-hidden");
+            players[1].setStyle("Manual");
+            UI.ele.b2HideShipsButton.click();
+            expect(UI.ele.board2.classList.contains("ships-hidden")).not.toBe(
+                hidden
+            );
+        });
+        test("Should change the 'hidden' state of a 'Manual' player's board back to its original way (board 2)", () => {
+            const hidden = UI.ele.board2.classList.contains("ships-hidden");
+            UI.ele.b2HideShipsButton.click();
+            expect(UI.ele.board2.classList.contains("ships-hidden")).not.toBe(
                 hidden
             );
         });

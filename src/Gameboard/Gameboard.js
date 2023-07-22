@@ -7,9 +7,9 @@ const Gameboard = (s) => {
 
     const generateBoard = () => {
         let board = [];
-        for (let i = 0; i < size; i++) {
+        for (let i = 0; i < Math.max(1, size); i++) {
             board.push([]);
-            for (let j = 0; j < size; j++) {
+            for (let j = 0; j < Math.max(1, size); j++) {
                 board[i].push(0);
             }
         }

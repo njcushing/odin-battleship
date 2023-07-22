@@ -11,8 +11,22 @@ const DOM = () => {
     let b2PlaceShipPosition = [0, 0];
     let b2HideShips = false;
 
+    const createElement = (type, classes, parent) => {
+        const newElement = document.createElement(type);
+        if (newElement instanceof HTMLUnknownElement) return null;
+        if (Array.isArray(classes)) {
+            classes.forEach((className) => {
+                if (typeof className === "string") {
+                    newElement.classList.add(className);
+                }
+            });
+        }
+        if (parent instanceof HTMLElement) parent.appendChild(newElement);
+        return newElement;
+    };
+
     const ele = {
-        base: null,
+        base: createElement("div", ["btls-base"], document.body),
         title: null,
         boardArea: null,
         board1: null,
@@ -94,6 +108,11 @@ const DOM = () => {
         createPlaceShipBox(1, ele.boardArea);
     };
 
+    const clearDisplay = () => {
+        ele.base.remove();
+        ele.base = createElement("div", ["btls-base"], document.body);
+    };
+
     const startGame = () => {
         const boards = game.getGameboards();
         if (
@@ -107,26 +126,10 @@ const DOM = () => {
         game.startGame();
     };
 
-    const endGame = () => {};
-
     const resetGame = () => {
         game.resetGame();
         createBoard(game.getGameboards()[0], 0, ele.board1);
         createBoard(game.getGameboards()[1], 1, ele.board2);
-    };
-
-    const createElement = (type = "div", classes = [], parent = null) => {
-        const newElement = document.createElement(type);
-        if (newElement instanceof HTMLUnknownElement) return null;
-        if (Array.isArray(classes)) {
-            classes.forEach((className) => {
-                if (typeof className === "string") {
-                    newElement.classList.add(className);
-                }
-            });
-        }
-        if (parent instanceof HTMLElement) parent.appendChild(newElement);
-        return newElement;
     };
 
     const createCell = (parent) => {
@@ -147,10 +150,6 @@ const DOM = () => {
         }
     };
 
-    const clearDisplay = () => {
-        if (ele.base) ele.base.removeElement();
-    };
-
     const createBoard = (gameboardModule, boardToAttack, parent) => {
         if (!checkValidGameboard(gameboardModule)) return null;
         if (
@@ -168,12 +167,10 @@ const DOM = () => {
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
                 const newCell = createCell(parent);
-                if (newCell) {
-                    setCellValueClassName(newCell, board[i][j]);
-                    newCell.addEventListener("click", () => {
-                        attackCell(newCell, [j, i], boardToAttack);
-                    });
-                }
+                setCellValueClassName(newCell, board[i][j]);
+                newCell.addEventListener("click", () => {
+                    attackCell(newCell, [j, i], boardToAttack);
+                });
             }
         }
     };
@@ -187,11 +184,9 @@ const DOM = () => {
                 ele.textContent = i;
             }
         } else {
-            if (obsBoard.length > 0) {
-                for (let i = 0; i < obsBoard[0].length; i++) {
-                    const ele = createElement("div", [`btls-axis-no`], element);
-                    ele.textContent = i;
-                }
+            for (let i = 0; i < obsBoard[0].length; i++) {
+                const ele = createElement("div", [`btls-axis-no`], element);
+                ele.textContent = i;
             }
         }
         parent.appendChild(element);
