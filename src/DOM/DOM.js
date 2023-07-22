@@ -144,10 +144,13 @@ const DOM = () => {
         switch (value) {
             case 1:
                 cell.classList.add("ship");
+                break;
             case 2:
                 cell.classList.add("attacked");
+                break;
             case 3:
                 cell.classList.add("hit");
+                break;
             case 0:
             default:
                 cell.classList.add("empty");
@@ -424,6 +427,7 @@ const DOM = () => {
     };
 
     const placeShip = (boardNo) => {
+        if (game.getPlayers()[boardNo].getStyle() === "Computer") return;
         if (game.isGameStarted() || game.isGameEnded()) return;
         const boards = game.getGameboards();
         boards[boardNo].placeShip(
