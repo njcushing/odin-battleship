@@ -13,6 +13,8 @@ const Game = () => {
         if (gameStarted || gameEnded) return null;
         gameStarted = true;
         gameEnded = false;
+        if (players[0].getStyle() === "Computer") boards[0].randomiseBoard();
+        if (players[1].getStyle() === "Computer") boards[1].randomiseBoard();
         boards[0].startGame();
         boards[1].startGame();
         turn = Math.floor(Math.random() * 2);
@@ -36,7 +38,8 @@ const Game = () => {
         if (!gameStarted || gameEnded) return null;
         if (players[turn].getStyle() === "Computer") return null;
         if (turn === board) return null;
-        const boardToAttack = boards[(turn + 1) % 2];
+        const attackingIndex = (turn + 1) % 2;
+        const boardToAttack = boards[attackingIndex];
         const previousAttacksCount = boardToAttack.previousAttacks().length;
         boardToAttack.receiveAttack(position);
         if (previousAttacksCount !== boardToAttack.previousAttacks().length) {
@@ -48,16 +51,19 @@ const Game = () => {
         }
     };
 
-    const computerAttack = () => {
-        setTimeout(() => {
-            const boardToAttack = boards[(turn + 1) % 2];
-            players[turn].takeComputerTurnRandom(boardToAttack);
+    const computerAttack = async () => {
+        const attacked = await setTimeout(() => {
+            const attackingIndex = (turn + 1) % 2;
+            const boardToAttack = boards[attackingIndex];
+            players[turn].takeComputerTurnRandom(boardToAttack, attackingIndex);
             if (boardToAttack.checkDefeat()) {
                 endGame();
-                return;
+                return true;
             }
             changeTurn();
+            return true;
         }, 3000);
+        if (!attacked) computerAttack();
     };
 
     const isGameStarted = () => {
