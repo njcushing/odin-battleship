@@ -32,6 +32,37 @@ const Gameboard = (s) => {
         sinks = [];
     };
 
+    const randomiseBoard = () => {
+        /* Undoubtedly more efficient ways to do this randomisation, but this works for this project */
+        const numberOfShips = Math.floor(Math.random() * 3) + 4;
+        for (let i = 0; i < numberOfShips; i++) {
+            const minLen = 2;
+            const maxLen = 6;
+            let shipLength = Math.floor(Math.random() * maxLen) + minLen;
+            const rotation = Math.floor(Math.random() * 2) === 0 ? false : true;
+            const possibleLocations = [];
+            while (possibleLocations.length === 0 && shipLength >= minLen) {
+                for (let y = 0; y < board.length; y++) {
+                    for (let x = 0; x < board[0].length; x++) {
+                        if (
+                            validateShipPosition(
+                                board,
+                                shipLength,
+                                [x, y],
+                                rotation
+                            )
+                        ) {
+                            possibleLocations.push([x, y]);
+                        }
+                    }
+                }
+                shipLength--;
+            }
+            const rand = Math.floor(Math.random() * possibleLocations.length);
+            placeShip(shipLength, possibleLocations[rand], rotation);
+        }
+    };
+
     const placeShip = (length, position, rotation) => {
         if (isGameStarted()) return null;
         if (validateShipPosition(board, length, position, rotation)) {
@@ -274,6 +305,7 @@ const Gameboard = (s) => {
     return {
         startGame,
         resetBoard,
+        randomiseBoard,
         placeShip,
         moveShip,
         deleteShip,

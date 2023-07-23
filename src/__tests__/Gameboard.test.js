@@ -641,3 +641,11 @@ describe("Calling the remainingNumberOfShips method... ", () => {
         });
     });
 });
+
+describe("Calling the randomiseBoard method... ", () => {
+    const board = Gameboard(5);
+    test("Should place AT LEAST 1 ship on the board", () => {
+        board.randomiseBoard();
+        expect(board.remainingNumberOfShips()).toBeGreaterThan(0);
+    });
+});
