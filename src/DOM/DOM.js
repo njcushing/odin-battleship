@@ -135,6 +135,12 @@ const DOM = () => {
                         game.getTurn() + 1
                     } to move first.`
                 );
+                if (players[0].getStyle() === "Computer") {
+                    createBoard(game.getGameboards()[0], 0, ele.board1);
+                }
+                if (players[1].getStyle() === "Computer") {
+                    createBoard(game.getGameboards()[1], 1, ele.board2);
+                }
             }
         }
     };
