@@ -179,7 +179,7 @@ const Gameboard = (s) => {
         if (!isGameStarted()) return false;
         if (!validateCoordinateInput(position)) return false;
 
-        if (board[position[1]][position[0]] !== 2) {
+        if (board[position[1]][position[0]] < 2) {
             if (board[position[1]][position[0]] === 1) {
                 board[position[1]][position[0]] = 3;
                 hits.push(position);

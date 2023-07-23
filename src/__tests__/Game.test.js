@@ -145,6 +145,8 @@ describe("Calling the manualAttack method... ", () => {
     describe("If the first argument is valid... ", () => {
         test("Should return null if the game has not yet started", () => {
             expect(game.manualAttack(0, [2, 2])).toBeNull();
+            players[0].setStyle("Manual");
+            players[1].setStyle("Manual");
             game.startGame();
         });
         test("Should return null if current Player's style is set to 'Computer'", () => {
@@ -168,6 +170,7 @@ describe("Calling the manualAttack method... ", () => {
         });
         test("Should NOT change turn if an unsuccessful hit went through", () => {
             if (game.getTurn() === 1) game.changeTurn();
+            console.log(game.getGameboards()[1].observeBoard());
             const currentTurn = game.getTurn();
             game.manualAttack(1, [2, 2]);
             expect(game.getTurn()).toBe(currentTurn);
