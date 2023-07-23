@@ -1,6 +1,7 @@
+import PubSub from "pubsub-js";
+
 const Player = () => {
     let style = "Manual";
-    let previousHits = [];
 
     const setStyle = (s) => {
         if (s !== "Manual" && s !== "Computer") return;
@@ -11,7 +12,7 @@ const Player = () => {
         return style;
     };
 
-    const takeComputerTurnRandom = (board) => {
+    const takeComputerTurnRandom = (board, boardNo) => {
         const possibleAttacks = [];
         const boardArr = board.observeBoard();
         for (let y = 0; y < boardArr.length; y++) {
@@ -22,6 +23,10 @@ const Player = () => {
         const rand =
             possibleAttacks[Math.floor(Math.random() * possibleAttacks.length)];
         board.receiveAttack(rand);
+        PubSub.publish("BATTLESHIP-COMPUTER-ATTACKED-POSITION", [
+            rand,
+            boardNo,
+        ]);
     };
 
     return {
