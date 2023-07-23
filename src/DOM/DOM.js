@@ -1,4 +1,5 @@
 import Game from "./../Game/Game";
+import PubSub from "pubsub-js";
 
 const DOM = () => {
     const game = Game();
@@ -115,20 +116,26 @@ const DOM = () => {
 
     const startGame = () => {
         const boards = game.getGameboards();
+        const players = game.getPlayers();
         if (
-            boards[0].totalNumberOfShips() < 1 ||
-            boards[1].totalNumberOfShips() < 1
+            (boards[0].totalNumberOfShips() < 1 &&
+                players[0].getStyle() === "Manual") ||
+            (boards[1].totalNumberOfShips() < 1 &&
+                players[1].getStyle() === "Manual")
         ) {
             setInfoBoxTextContent(
                 "Please ensure all Manual players have at least one ship before starting the game"
             );
         } else {
             game.startGame();
-            if (game.isGameStarted())
+            if (game.isGameStarted()) {
                 ele.boardArea.classList.remove("game-ended");
-            setInfoBoxTextContent(
-                `Here we go! It's Player ${game.getTurn() + 1} to move first.`
-            );
+                setInfoBoxTextContent(
+                    `Here we go! It's Player ${
+                        game.getTurn() + 1
+                    } to move first.`
+                );
+            }
         }
     };
 
@@ -464,30 +471,44 @@ const DOM = () => {
 
     const attackCell = (element, position, boardToAttack) => {
         if (game.isGameStarted() && !game.isGameEnded()) {
-            let currentState, gameboardModule;
-            gameboardModule = game.getGameboards()[boardToAttack];
-
             game.manualAttack(boardToAttack, position);
+            updateAfterAttack(element, position, boardToAttack);
+        }
+    };
 
-            currentState = gameboardModule.getCellStateAt(position);
-            setCellValueClassName(element, currentState);
+    const computerAttacked = (topic, [...args]) => {
+        const position = args[0];
+        const boardNo = args[1];
+        const cell =
+            boardNo === 0
+                ? ele.board1.children[position[1] * 10 + position[0]]
+                : ele.board2.children[position[1] * 10 + position[0]];
+        updateAfterAttack(cell, position, boardNo);
+    };
+    PubSub.subscribe("BATTLESHIP-COMPUTER-ATTACKED-POSITION", computerAttacked);
 
+    const updateAfterAttack = (element, position, boardAttacked) => {
+        let currentState, gameboardModule;
+        gameboardModule = game.getGameboards()[boardAttacked];
+
+        currentState = gameboardModule.getCellStateAt(position);
+        setCellValueClassName(element, currentState);
+
+        setInfoBoxTextContent(
+            `Player ${((game.getTurn() + 1) % 2) + 1} attacks position [${
+                position[0]
+            }, ${position[1]}]. It is ${
+                currentState === 3 ? "" : "not "
+            } a successful hit. It's Player ${game.getTurn() + 1}'s move.`
+        );
+
+        if (game.isGameEnded()) {
+            endGame();
             setInfoBoxTextContent(
-                `Player ${((game.getTurn() + 1) % 2) + 1} attacks position [${
-                    position[0]
-                }, ${position[1]}]. It is ${
-                    currentState === 3 ? "" : "not "
-                } a successful hit. It's Player ${game.getTurn() + 1}'s move.`
+                `The game has been won! Player ${
+                    game.getTurn() + 1
+                } is the winner!`
             );
-
-            if (game.isGameEnded()) {
-                endGame();
-                setInfoBoxTextContent(
-                    `The game has been won! Player ${
-                        game.getTurn() + 1
-                    } is the winner!`
-                );
-            }
         }
     };
 

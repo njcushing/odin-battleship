@@ -289,14 +289,17 @@ describe("Clicking the 'Start Game' button... ", () => {
     test("Should be possible only if the button is an HTML element", () => {
         expect(UI.ele.startButton instanceof HTMLElement).toBe(true);
     });
-    describe("If there is NOT at least one ship on both boards... ", () => {
+    describe("If there is NOT at least one ship on a 'Manual' player's board... ", () => {
         test("Should NOT call the Game module's startGame method", () => {
+            const players = UI.game.getPlayers();
+            players[0].setStyle("Manual");
+            players[1].setStyle("Manual");
             const spy = jest.spyOn(UI.game, "startGame");
             UI.ele.startButton.click();
             expect(spy).toHaveBeenCalledTimes(0);
         });
     });
-    describe("If there is at least one ship on both boards... ", () => {
+    describe("If there is at least one ship on 'Manual' players' board... ", () => {
         let isGameStartedSpy = jest.spyOn(UI.game, "isGameStarted");
         test("Should call the Game module's startGame method", () => {
             isGameStartedSpy.mockRestore();
