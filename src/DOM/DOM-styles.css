@@ -309,40 +309,44 @@
 .btls-cell {
     outline: 1px solid black;
 }
-.btls-cell:hover {
+.btls-board-area:not(.game-ended) .btls-cell:hover {
     outline: 2px solid black;
 }
 
 .btls-cell.empty {
     background-color: rgb(255, 255, 255);
 }
-.btls-cell.empty:hover {
+.btls-board-area:not(.game-ended) .btls-cell.empty:hover {
     background-color: #ececec;
 }
-.btls-cell.empty:active {
+.btls-board-area:not(.game-ended) .btls-cell.empty:active {
     background-color: #d1d1d1;
 }
-.btls-board-one:not(.ships-hidden) > .btls-cell.ship {
+.btls-board-area:not(.game-ended) .btls-board-one:not(.ships-hidden) > .btls-cell.ship,
+.btls-board-area.game-ended .btls-board-one:not(.ships-hidden) > .btls-cell.ship,
+.btls-board-area.game-ended .btls-board-one.ships-hidden > .btls-cell.ship {
     background-color: rgb(50, 171, 187);
 }
-.btls-board-one:not(.ships-hidden) > .btls-cell.ship:hover {
+.btls-board-area:not(.game-ended) .btls-board-one:not(.ships-hidden) > .btls-cell.ship:hover {
     background-color: rgb(88, 202, 218);
 }
-.btls-board-two:not(.ships-hidden) > .btls-cell.ship {
+.btls-board-area:not(.game-ended) .btls-board-two:not(.ships-hidden) > .btls-cell.ship,
+.btls-board-area.game-ended .btls-board-two:not(.ships-hidden) > .btls-cell.ship,
+.btls-board-area.game-ended .btls-board-two.ships-hidden > .btls-cell.ship {
     background-color: rgb(50, 171, 187);
 }
-.btls-board-two:not(.ships-hidden) > .btls-cell.ship:hover {
+.btls-board-area:not(.game-ended) .btls-board-two:not(.ships-hidden) > .btls-cell.ship:hover {
     background-color: rgb(88, 202, 218);
 }
 .btls-cell.attacked {
     background-color: rgb(194, 76, 76);
 }
-.btls-cell.attacked:hover {
+.btls-board-area:not(.game-ended) .btls-cell.attacked:hover {
     background-color: rgb(211, 101, 101);
 }
 .btls-cell.hit {
     background-color: rgb(98, 212, 69);
 }
-.btls-cell.hit:hover {
+.btls-board-area:not(.game-ended) .btls-cell.hit:hover {
     background-color: rgb(124, 236, 96);
 }

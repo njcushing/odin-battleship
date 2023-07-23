@@ -138,28 +138,28 @@ describe("Clicking the 'Rotate Ship' button... ", () => {
 });
 
 describe("Changing the input value of the place ship x-coordinate... ", () => {
-    test("Should have a maximum value of 10", () => {
+    test("Should have a maximum value of 9", () => {
         UI.ele.b1PlaceShipXCoordInput.value = 18;
         UI.ele.b1PlaceShipXCoordInput.dispatchEvent(new Event("input"));
-        expect(parseInt(UI.ele.b1PlaceShipXCoordInput.value)).toBe(10);
+        expect(parseInt(UI.ele.b1PlaceShipXCoordInput.value)).toBe(9);
     });
-    test("Should have a minimum value of 1", () => {
+    test("Should have a minimum value of 0", () => {
         UI.ele.b2PlaceShipXCoordInput.value = -3;
         UI.ele.b2PlaceShipXCoordInput.dispatchEvent(new Event("input"));
-        expect(parseInt(UI.ele.b2PlaceShipXCoordInput.value)).toBe(1);
+        expect(parseInt(UI.ele.b2PlaceShipXCoordInput.value)).toBe(0);
     });
 });
 
 describe("Changing the input value of the place ship y-coordinate... ", () => {
-    test("Should have a maximum value of 10", () => {
+    test("Should have a maximum value of 9", () => {
         UI.ele.b1PlaceShipYCoordInput.value = 18;
         UI.ele.b1PlaceShipYCoordInput.dispatchEvent(new Event("input"));
-        expect(parseInt(UI.ele.b1PlaceShipYCoordInput.value)).toBe(10);
+        expect(parseInt(UI.ele.b1PlaceShipYCoordInput.value)).toBe(9);
     });
-    test("Should have a minimum value of 1", () => {
+    test("Should have a minimum value of 0", () => {
         UI.ele.b2PlaceShipYCoordInput.value = -3;
         UI.ele.b2PlaceShipYCoordInput.dispatchEvent(new Event("input"));
-        expect(parseInt(UI.ele.b2PlaceShipYCoordInput.value)).toBe(1);
+        expect(parseInt(UI.ele.b2PlaceShipYCoordInput.value)).toBe(0);
     });
 });
 
@@ -266,7 +266,7 @@ describe("Clicking the 'Place Ship' button... ", () => {
             test("Should NOT call the Gameboard's placeShip method", () => {
                 players[1].setStyle("Computer");
                 const spy = jest.spyOn(boards[1], "placeShip");
-                UI.ele.b1PlaceShipPlaceButton.click();
+                UI.ele.b2PlaceShipPlaceButton.click();
                 expect(spy).not.toHaveBeenCalled();
                 spy.mockRestore();
             });
@@ -297,13 +297,19 @@ describe("Clicking the 'Start Game' button... ", () => {
         });
     });
     describe("If there is at least one ship on both boards... ", () => {
+        let isGameStartedSpy = jest.spyOn(UI.game, "isGameStarted");
         test("Should call the Game module's startGame method", () => {
+            isGameStartedSpy.mockRestore();
+            isGameStartedSpy = jest.spyOn(UI.game, "isGameStarted");
             const boards = UI.game.getGameboards();
             boards[0].placeShip(1, [0, 0], false);
             boards[1].placeShip(1, [0, 0], false);
             const spy = jest.spyOn(UI.game, "startGame");
             UI.ele.startButton.click();
             expect(spy).toHaveBeenCalledTimes(1);
+        });
+        test("Should call the Game module's isGameStarted method to ensure the game has started", () => {
+            expect(isGameStartedSpy).toHaveBeenCalledTimes(1);
         });
     });
 });
@@ -331,18 +337,39 @@ describe("Clicking the 'Place Ship' button... ", () => {
 });
 
 describe("Clicking a cell on the board...", () => {
+    const firstCell = UI.ele.board1.firstChild;
+    const lastCell = UI.ele.board1.lastChild;
+    const manualAttackspy = jest.spyOn(UI.game, "manualAttack");
+    let isGameEndedspy = jest.spyOn(UI.game, "isGameEnded");
     describe("If the game has been started... ", () => {
         test("Should call the Game module's manualAttack method", () => {
-            const cell = UI.ele.board1.lastChild;
-            const spy = jest.spyOn(UI.game, "manualAttack");
-            cell.click();
-            expect(spy).toHaveBeenCalledTimes(1);
+            isGameEndedspy.mockRestore();
+            isGameEndedspy = jest.spyOn(UI.game, "isGameEnded");
+            const players = UI.game.getPlayers();
+            players[1].setStyle("Manual");
+            if (UI.game.getTurn() === 0) UI.game.changeTurn();
+            lastCell.click();
+            expect(manualAttackspy).toHaveBeenCalledTimes(1);
         });
         test("Should call the Game module's isGameEnded method", () => {
-            const cell = UI.ele.board1.lastChild;
-            const spy = jest.spyOn(UI.game, "isGameEnded");
-            cell.click();
-            expect(spy).toHaveBeenCalledTimes(2);
+            expect(isGameEndedspy).toHaveBeenCalledTimes(2);
+        });
+        test("Should set the game board area to an 'ended' state if appropriate", () => {
+            if (UI.game.getTurn() === 0) UI.game.changeTurn();
+            firstCell.click();
+            expect(UI.ele.boardArea.classList).toContain("game-ended");
+        });
+    });
+});
+
+describe("Clicking the 'Start Game' button... ", () => {
+    describe("If the game is in an 'ended' state... ", () => {
+        test("Should still call the Game module's 'startGame' method (as Game handles the rejection)", () => {
+            let spy = jest.spyOn(UI.game, "startGame");
+            spy.mockRestore();
+            spy = jest.spyOn(UI.game, "startGame");
+            UI.ele.startButton.click();
+            expect(spy).toHaveBeenCalledTimes(1);
         });
     });
 });

@@ -91,7 +91,7 @@ const DOM = () => {
         updatePlayerStyleButtonText(0);
         updatePlayerStyleButtonText(1);
 
-        ele.infoBox.textContent = "Welcome to Battleship!";
+        setInfoBoxTextContent("Welcome to Battleship!");
 
         createPlayerButtons(1, ele.b2Buttons);
         createPlayerButtons(0, ele.b1Buttons);
@@ -119,12 +119,17 @@ const DOM = () => {
             boards[0].totalNumberOfShips() < 1 ||
             boards[1].totalNumberOfShips() < 1
         ) {
-            ele.infoBox.textContent =
-                "Please ensure all Manual players have at least one ship before starting the game";
-            return null;
+            setInfoBoxTextContent(
+                "Please ensure all Manual players have at least one ship before starting the game"
+            );
+        } else {
+            game.startGame();
+            if (game.isGameStarted())
+                ele.boardArea.classList.remove("game-ended");
+            setInfoBoxTextContent(
+                `Here we go! It's Player ${game.getTurn() + 1} to move first.`
+            );
         }
-        game.startGame();
-        ele.boardArea.classList.remove("game-ended");
     };
 
     const endGame = () => {
@@ -136,6 +141,11 @@ const DOM = () => {
         createBoard(game.getGameboards()[0], 0, ele.board1);
         createBoard(game.getGameboards()[1], 1, ele.board2);
         ele.boardArea.classList.remove("game-ended");
+        setInfoBoxTextContent(`Welcome to Battleship!`);
+    };
+
+    const setInfoBoxTextContent = (text) => {
+        ele.infoBox.textContent = text;
     };
 
     const createCell = (parent) => {
@@ -312,7 +322,7 @@ const DOM = () => {
             element.value =
                 boardNo === 0 ? b1PlaceShipPosition[1] : b2PlaceShipPosition[1];
         element.addEventListener("input", () => {
-            element.value = Math.min(10, Math.max(1, element.value));
+            element.value = Math.min(9, Math.max(0, element.value));
             const intValue = parseInt(element.value);
             if (axis === 0) {
                 if (boardNo === 0) b1PlaceShipPosition[0] = intValue;
@@ -462,7 +472,22 @@ const DOM = () => {
             currentState = gameboardModule.getCellStateAt(position);
             setCellValueClassName(element, currentState);
 
-            if (game.isGameEnded()) endGame();
+            setInfoBoxTextContent(
+                `Player ${((game.getTurn() + 1) % 2) + 1} attacks position [${
+                    position[0]
+                }, ${position[1]}]. It is ${
+                    currentState === 3 ? "" : "not "
+                } a successful hit. It's Player ${game.getTurn() + 1}'s move.`
+            );
+
+            if (game.isGameEnded()) {
+                endGame();
+                setInfoBoxTextContent(
+                    `The game has been won! Player ${
+                        game.getTurn() + 1
+                    } is the winner!`
+                );
+            }
         }
     };
 
