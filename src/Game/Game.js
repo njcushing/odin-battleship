@@ -62,7 +62,7 @@ const Game = () => {
             }
             changeTurn();
             return true;
-        }, 2000);
+        }, 2);
         if (!attacked) computerAttack();
     };
 

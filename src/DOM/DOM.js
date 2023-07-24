@@ -80,8 +80,8 @@ const DOM = () => {
         ele.b1XAxis = createElement("div", ["btls-axis-1-x"], ele.boardArea);
         ele.b1YAxis = createElement("div", ["btls-axis-1-y"], ele.boardArea);
         ele.b1Buttons = createElement("div", ["btls-b1-btns"], ele.boardArea);
-        createBoard(game.getGameboards()[0], 0, ele.board1);
-        createBoard(game.getGameboards()[1], 1, ele.board2);
+        createBoard(game.getGameboards()[0], 0, ele.board1, false);
+        createBoard(game.getGameboards()[1], 1, ele.board2, false);
         createAxis(ele.b1XAxis, 0, 0, ele.boardArea);
         createAxis(ele.b1YAxis, 0, 1, ele.boardArea);
         createAxis(ele.b2XAxis, 1, 0, ele.boardArea);
@@ -136,23 +136,25 @@ const DOM = () => {
                     } to move first.`
                 );
                 if (players[0].getStyle() === "Computer") {
-                    createBoard(game.getGameboards()[0], 0, ele.board1);
+                    createBoard(game.getGameboards()[0], 0, ele.board1, true);
                 }
                 if (players[1].getStyle() === "Computer") {
-                    createBoard(game.getGameboards()[1], 1, ele.board2);
+                    createBoard(game.getGameboards()[1], 1, ele.board2, true);
                 }
             }
         }
     };
 
     const endGame = () => {
+        createBoard(game.getGameboards()[0], 0, ele.board1, false);
+        createBoard(game.getGameboards()[1], 1, ele.board2, false);
         ele.boardArea.classList.add("game-ended");
     };
 
     const resetGame = () => {
         game.resetGame();
-        createBoard(game.getGameboards()[0], 0, ele.board1);
-        createBoard(game.getGameboards()[1], 1, ele.board2);
+        createBoard(game.getGameboards()[0], 0, ele.board1, false);
+        createBoard(game.getGameboards()[1], 1, ele.board2, false);
         ele.boardArea.classList.remove("game-ended");
         setInfoBoxTextContent(`Welcome to Battleship!`);
     };
@@ -184,7 +186,7 @@ const DOM = () => {
         }
     };
 
-    const createBoard = (gameboardModule, boardToAttack, parent) => {
+    const createBoard = (gameboardModule, boardToAttack, parent, empty) => {
         if (!checkValidGameboard(gameboardModule)) return null;
         if (
             !(
@@ -201,7 +203,10 @@ const DOM = () => {
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
                 const newCell = createCell(parent);
-                setCellValueClassName(newCell, board[i][j]);
+                setCellValueClassName(
+                    newCell,
+                    empty && board[i][j] === 1 ? 0 : board[i][j]
+                );
                 newCell.addEventListener("click", () => {
                     attackCell(newCell, [j, i], boardToAttack);
                 });
@@ -420,7 +425,8 @@ const DOM = () => {
             createBoard(
                 game.getGameboards()[boardNo],
                 boardNo,
-                boardNo === 0 ? ele.board1 : ele.board2
+                boardNo === 0 ? ele.board1 : ele.board2,
+                true
             );
         }
         updatePlayerStyleButtonText(boardNo);
@@ -471,8 +477,8 @@ const DOM = () => {
             boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
         );
         boardNo === 0
-            ? createBoard(game.getGameboards()[0], 0, ele.board1)
-            : createBoard(game.getGameboards()[1], 1, ele.board2);
+            ? createBoard(game.getGameboards()[0], 0, ele.board1, false)
+            : createBoard(game.getGameboards()[1], 1, ele.board2, false);
     };
 
     const attackCell = (element, position, boardToAttack) => {
