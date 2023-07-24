@@ -12,7 +12,7 @@ const Player = () => {
         return style;
     };
 
-    const takeComputerTurnRandom = (board, boardNo) => {
+    const takeComputerTurn = (board, boardNo) => {
         const possibleAttacks = [];
         const boardArr = board.observeBoard();
         for (let y = 0; y < boardArr.length; y++) {
@@ -32,7 +32,7 @@ const Player = () => {
     return {
         setStyle,
         getStyle,
-        takeComputerTurnRandom,
+        takeComputerTurn,
     };
 };
 export default Player;

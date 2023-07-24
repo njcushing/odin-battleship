@@ -14,20 +14,20 @@ test("Check setStyle method is changing the style of the Player correctly & only
     expect(player.getStyle()).toBe("Computer");
 });
 
-test("Check that the computer can make a random but not duplicate move using the takeComputerTurnRandom method", () => {
+test("Check that the computer can make a non-duplicate move using the takeComputerTurn method", () => {
     const player = Player();
     const board = Gameboard(3);
     board.startGame();
     player.setStyle("Computer");
-    player.takeComputerTurnRandom(board);
-    player.takeComputerTurnRandom(board);
-    player.takeComputerTurnRandom(board);
-    player.takeComputerTurnRandom(board);
-    player.takeComputerTurnRandom(board);
-    player.takeComputerTurnRandom(board);
-    player.takeComputerTurnRandom(board);
-    player.takeComputerTurnRandom(board);
-    player.takeComputerTurnRandom(board);
+    player.takeComputerTurn(board);
+    player.takeComputerTurn(board);
+    player.takeComputerTurn(board);
+    player.takeComputerTurn(board);
+    player.takeComputerTurn(board);
+    player.takeComputerTurn(board);
+    player.takeComputerTurn(board);
+    player.takeComputerTurn(board);
+    player.takeComputerTurn(board);
     expect(board.observeBoard()).toStrictEqual([
         [2, 2, 2],
         [2, 2, 2],

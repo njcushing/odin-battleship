@@ -170,7 +170,6 @@ describe("Calling the manualAttack method... ", () => {
         });
         test("Should NOT change turn if an unsuccessful hit went through", () => {
             if (game.getTurn() === 1) game.changeTurn();
-            console.log(game.getGameboards()[1].observeBoard());
             const currentTurn = game.getTurn();
             game.manualAttack(1, [2, 2]);
             expect(game.getTurn()).toBe(currentTurn);
@@ -224,5 +223,37 @@ describe("Calling the resetGame method... ", () => {
     test("Should call the resetBoard method on both Gameboard objects", () => {
         expect(spyBoard1ResetBoard).toHaveBeenCalledTimes(1);
         expect(spyBoard2ResetBoard).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe("If the current Player's style is set to 'Computer'... ", () => {
+    const game = Game();
+    const gameboards = game.getGameboards();
+    gameboards[0].placeShip(1, [0, 0], false);
+    gameboards[1].placeShip(1, [0, 0], false);
+    const players = game.getPlayers();
+    players[0].setStyle("Manual");
+    players[1].setStyle("Computer");
+    if (game.getTurn() === 0) game.changeTurn();
+    const spy = jest.spyOn(players[1], "takeComputerTurn");
+    spy.mockImplementationOnce(() => {
+        gameboards[0].receiveAttack([1, 1]);
+    });
+    game.startGame();
+    describe("If a successful hit went through, should check for defeat on the board... ", () => {
+        test("If false, change turn", () => {
+            expect(game.getTurn()).toBe(0);
+            spy.mockImplementationOnce(() => {
+                gameboards[0].receiveAttack([0, 0]);
+            });
+            if (game.getTurn() === 0) game.changeTurn();
+        });
+        test("If true, set the Game's ended state to true", () => {
+            expect(game.isGameEnded()).toBe(true);
+        });
+        test("If true, set the Game's started state to false", () => {
+            expect(game.isGameEnded()).toBe(true);
+            expect(game.isGameStarted()).toBe(false);
+        });
     });
 });

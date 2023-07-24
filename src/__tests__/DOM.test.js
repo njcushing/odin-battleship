@@ -387,3 +387,18 @@ describe("Clicking the 'Reset Game' button... ", () => {
         expect(spy).toHaveBeenCalledTimes(1);
     });
 });
+
+describe("Clicking the 'Start Game' button... ", () => {
+    describe("If there are no 'Manual' players... ", () => {
+        test("Should call the Game module's startGame method", () => {
+            const players = UI.game.getPlayers();
+            players[0].setStyle("Computer");
+            players[1].setStyle("Computer");
+            let spy = jest.spyOn(UI.game, "startGame");
+            spy.mockRestore();
+            spy = jest.spyOn(UI.game, "startGame");
+            UI.ele.startButton.click();
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+    });
+});

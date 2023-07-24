@@ -55,7 +55,7 @@ const Game = () => {
         const attacked = await setTimeout(() => {
             const attackingIndex = (turn + 1) % 2;
             const boardToAttack = boards[attackingIndex];
-            players[turn].takeComputerTurnRandom(boardToAttack, attackingIndex);
+            players[turn].takeComputerTurn(boardToAttack, attackingIndex);
             if (boardToAttack.checkDefeat()) {
                 endGame();
                 return true;
