@@ -477,8 +477,9 @@ const DOM = () => {
 
     const attackCell = (element, position, boardToAttack) => {
         if (game.isGameStarted() && !game.isGameEnded()) {
-            game.manualAttack(boardToAttack, position);
-            updateAfterAttack(element, position, boardToAttack);
+            if (game.manualAttack(boardToAttack, position) !== null) {
+                updateAfterAttack(element, position, boardToAttack);
+            }
         }
     };
 
