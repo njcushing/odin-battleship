@@ -17,7 +17,7 @@ const Player = () => {
         const boardArr = board.observeBoard();
         for (let y = 0; y < boardArr.length; y++) {
             for (let x = 0; x < boardArr[y].length; x++) {
-                if (boardArr[y][x] !== 2) possibleAttacks.push([x, y]);
+                if (boardArr[y][x] < 2) possibleAttacks.push([x, y]);
             }
         }
         const rand =
