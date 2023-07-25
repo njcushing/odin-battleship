@@ -38,7 +38,8 @@ const Gameboard = (s) => {
         for (let i = 0; i < numberOfShips; i++) {
             const minLen = 2;
             const maxLen = 6;
-            let shipLength = Math.floor(Math.random() * maxLen) + minLen;
+            let shipLength =
+                Math.floor(Math.random() * (maxLen - minLen + 1)) + minLen;
             const rotation = Math.floor(Math.random() * 2) === 0 ? false : true;
             const possibleLocations = [];
             while (possibleLocations.length === 0 && shipLength >= minLen) {
@@ -56,7 +57,7 @@ const Gameboard = (s) => {
                         }
                     }
                 }
-                shipLength--;
+                if (possibleLocations.length === 0) shipLength--;
             }
             const rand = Math.floor(Math.random() * possibleLocations.length);
             placeShip(shipLength, possibleLocations[rand], rotation);
