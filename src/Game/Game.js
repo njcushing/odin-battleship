@@ -40,6 +40,7 @@ const Game = () => {
         if (turn === board) return null;
         const attackingIndex = (turn + 1) % 2;
         const boardToAttack = boards[attackingIndex];
+        if (boardToAttack.getCellStateAt(position) >= 2) return null;
         const previousAttacksCount = boardToAttack.previousAttacks().length;
         boardToAttack.receiveAttack(position);
         if (previousAttacksCount !== boardToAttack.previousAttacks().length) {
@@ -62,7 +63,7 @@ const Game = () => {
             }
             changeTurn();
             return true;
-        }, 2);
+        }, 1600);
         if (!attacked) computerAttack();
     };
 
