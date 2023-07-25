@@ -4,6 +4,7 @@ const Gameboard = (s) => {
     let attacks = [];
     let hits = [];
     let sinks = [];
+    let maximumShips = 6;
 
     const generateBoard = () => {
         let board = [];
@@ -34,7 +35,8 @@ const Gameboard = (s) => {
 
     const randomiseBoard = () => {
         /* Undoubtedly more efficient ways to do this randomisation, but this works for this project */
-        const numberOfShips = Math.floor(Math.random() * 3) + 4;
+        const numberOfShips =
+            Math.floor(Math.random() * (maximumShips - 4) + 1) + 4;
         for (let i = 0; i < numberOfShips; i++) {
             const minLen = 2;
             const maxLen = 6;
@@ -66,6 +68,7 @@ const Gameboard = (s) => {
 
     const placeShip = (length, position, rotation) => {
         if (isGameStarted()) return null;
+        if (totalNumberOfShips() >= maximumShips) return "max";
         if (validateShipPosition(board, length, position, rotation)) {
             const bounds = calculateShipArea(length, position, rotation);
             if (rotation) {

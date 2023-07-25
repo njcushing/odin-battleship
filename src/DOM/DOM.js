@@ -471,14 +471,21 @@ const DOM = () => {
         if (game.getPlayers()[boardNo].getStyle() === "Computer") return;
         if (game.isGameStarted() || game.isGameEnded()) return;
         const boards = game.getGameboards();
-        boards[boardNo].placeShip(
-            boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
-            boardNo === 0 ? b1PlaceShipPosition : b2PlaceShipPosition,
-            boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
-        );
-        boardNo === 0
-            ? createBoard(game.getGameboards()[0], 0, ele.board1, false)
-            : createBoard(game.getGameboards()[1], 1, ele.board2, false);
+        if (
+            boards[boardNo].placeShip(
+                boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
+                boardNo === 0 ? b1PlaceShipPosition : b2PlaceShipPosition,
+                boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
+            ) === "max"
+        ) {
+            setInfoBoxTextContent(
+                `Player ${boardNo + 1} cannot place any more ships.`
+            );
+        } else {
+            boardNo === 0
+                ? createBoard(game.getGameboards()[0], 0, ele.board1, false)
+                : createBoard(game.getGameboards()[1], 1, ele.board2, false);
+        }
     };
 
     const attackCell = (element, position, boardToAttack) => {
