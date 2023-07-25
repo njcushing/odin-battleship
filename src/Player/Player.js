@@ -39,19 +39,19 @@ const Player = () => {
             const hit = previousHits[i];
             if (
                 lastSink === null ||
-                (Array.isArray(lastSink) && !(lastSink.findIndex(hit) > -1))
+                (Array.isArray(lastSink) && !(lastSink.indexOf(hit) > -1))
             ) {
                 const adjacentAttacks = [];
                 if (board.getCellStateAt([hit[0] - 1, hit[1]]) < 2) {
                     adjacentAttacks.push([hit[0] - 1, hit[1]]);
                 }
-                if (board.getCellStateAt([hit[0] - 1, hit[1]]) < 2) {
+                if (board.getCellStateAt([hit[0], hit[1] - 1]) < 2) {
                     adjacentAttacks.push([hit[0], hit[1] - 1]);
                 }
-                if (board.getCellStateAt([hit[0] - 1, hit[1]]) < 2) {
+                if (board.getCellStateAt([hit[0] + 1, hit[1]]) < 2) {
                     adjacentAttacks.push([hit[0] + 1, hit[1]]);
                 }
-                if (board.getCellStateAt([hit[0] - 1, hit[1]]) < 2) {
+                if (board.getCellStateAt([hit[0], hit[1] + 1]) < 2) {
                     adjacentAttacks.push([hit[0], hit[1] + 1]);
                 }
                 if (adjacentAttacks.length === 0) continue;
@@ -77,7 +77,10 @@ const Player = () => {
         }
         for (let i = 0; i < previousSinks.length; i++) {
             for (let j = 0; j < previousSinks[i].length; j++) {
-                let key = boardPositionToObjectKey(boardArr.length, [x, y]);
+                let key = boardPositionToObjectKey(
+                    boardArr.length,
+                    previousSinks[i][j]
+                );
                 if (possibleAttacks.has(key)) possibleAttacks.delete(key);
             }
         }
