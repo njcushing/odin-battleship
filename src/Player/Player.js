@@ -12,21 +12,19 @@ const Player = () => {
         return style;
     };
 
-    const takeComputerTurn = (board, boardNo) => {
-        /*
-            Computer 'Smart'-ish AI Play:
-            1.  Find all possible tiles that can be attacked.
-            2.  If there has been a previous successful sink(s), ignore those tiles
-                and all adjacent and diagonal tiles.
-            3.  If there has been a previous successful hit(s), find adjacent tiles
-                to the most recent one and attack as priority.
-            4.  Otherwise, attack a random position.
-            5.  If the position attacked is a successful hit, check if it has sunk
-                the ship. If so, add that to the list of sunken ships, and remove all
-                tiles that comprise ship from the previous hits set. 
-        */
+    const findIndexInLastSink = (position, lastSink) => {
+        for (let i = 0; i < lastSink.length; i++) {
+            if (
+                position[0] === lastSink[i][0] &&
+                position[1] === lastSink[i][1]
+            ) {
+                return i;
+            }
+        }
+        return -1;
+    };
 
-        const previousAttacks = board.previousAttacks();
+    const takeComputerTurn = (board, boardNo) => {
         const previousHits = board.previousHits();
         const previousSinks = board.previousSinks();
         const lastSink =
@@ -36,23 +34,90 @@ const Player = () => {
         const boardArr = board.observeBoard();
 
         for (let i = previousHits.length - 1; i >= 0; i--) {
-            const hit = previousHits[i];
+            const a = previousHits[i];
             if (
                 lastSink === null ||
-                (Array.isArray(lastSink) && !(lastSink.indexOf(hit) > -1))
+                (Array.isArray(lastSink) &&
+                    findIndexInLastSink(a, lastSink) === -1)
             ) {
                 const adjacentAttacks = [];
-                if (board.getCellStateAt([hit[0] - 1, hit[1]]) < 2) {
-                    adjacentAttacks.push([hit[0] - 1, hit[1]]);
+                let attackDirection = null;
+                for (let j = i - 1; j >= 0; j--) {
+                    const b = previousHits[j];
+                    if (
+                        lastSink === null ||
+                        (Array.isArray(lastSink) &&
+                            findIndexInLastSink(b, lastSink) === -1)
+                    ) {
+                        if (a[0] !== b[0]) {
+                            attackDirection = 0;
+                            if (
+                                board.getCellStateAt([b[0] - 1, b[1]]) !==
+                                    null &&
+                                board.getCellStateAt([b[0] - 1, b[1]]) < 2
+                            ) {
+                                adjacentAttacks.push([b[0] - 1, b[1]]);
+                            }
+                            if (
+                                board.getCellStateAt([b[0] + 1, b[1]]) !==
+                                    null &&
+                                board.getCellStateAt([b[0] + 1, b[1]]) < 2
+                            ) {
+                                adjacentAttacks.push([b[0] + 1, b[1]]);
+                            }
+                        } else if (a[1] !== b[1]) {
+                            attackDirection = 1;
+                            if (
+                                board.getCellStateAt([b[0], b[1] - 1]) !==
+                                    null &&
+                                board.getCellStateAt([b[0], b[1] - 1]) < 2
+                            ) {
+                                adjacentAttacks.push([b[0], b[1] - 1]);
+                            }
+                            if (
+                                board.getCellStateAt([b[0], b[1] + 1]) !==
+                                    null &&
+                                board.getCellStateAt([b[0], b[1] + 1]) < 2
+                            ) {
+                                adjacentAttacks.push([b[0], b[1] + 1]);
+                            }
+                        }
+                        if (adjacentAttacks.length > 0) break;
+                    }
+                    if (
+                        Array.isArray(lastSink) &&
+                        findIndexInLastSink(b, lastSink) > -1
+                    ) {
+                        break;
+                    }
                 }
-                if (board.getCellStateAt([hit[0], hit[1] - 1]) < 2) {
-                    adjacentAttacks.push([hit[0], hit[1] - 1]);
+                if (
+                    (attackDirection === null || attackDirection === 0) &&
+                    board.getCellStateAt([a[0] - 1, a[1]]) !== null &&
+                    board.getCellStateAt([a[0] - 1, a[1]]) < 2
+                ) {
+                    adjacentAttacks.push([a[0] - 1, a[1]]);
                 }
-                if (board.getCellStateAt([hit[0] + 1, hit[1]]) < 2) {
-                    adjacentAttacks.push([hit[0] + 1, hit[1]]);
+                if (
+                    (attackDirection === null || attackDirection === 1) &&
+                    board.getCellStateAt([a[0], a[1] - 1]) !== null &&
+                    board.getCellStateAt([a[0], a[1] - 1]) < 2
+                ) {
+                    adjacentAttacks.push([a[0], a[1] - 1]);
                 }
-                if (board.getCellStateAt([hit[0], hit[1] + 1]) < 2) {
-                    adjacentAttacks.push([hit[0], hit[1] + 1]);
+                if (
+                    (attackDirection === null || attackDirection === 0) &&
+                    board.getCellStateAt([a[0] + 1, a[1]]) !== null &&
+                    board.getCellStateAt([a[0] + 1, a[1]]) < 2
+                ) {
+                    adjacentAttacks.push([a[0] + 1, a[1]]);
+                }
+                if (
+                    (attackDirection === null || attackDirection === 1) &&
+                    board.getCellStateAt([a[0], a[1] + 1]) !== null &&
+                    board.getCellStateAt([a[0], a[1] + 1]) < 2
+                ) {
+                    adjacentAttacks.push([a[0], a[1] + 1]);
                 }
                 if (adjacentAttacks.length === 0) continue;
                 const rand = Math.floor(Math.random() * adjacentAttacks.length);
@@ -63,7 +128,7 @@ const Player = () => {
                 ]);
                 return;
             }
-            return;
+            break;
         }
 
         const possibleAttacks = new Set();
