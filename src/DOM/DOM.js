@@ -287,7 +287,10 @@ const DOM = () => {
         boardNo === 0 ? (ele.b1PlaceShipBox = box) : (ele.b2PlaceShipBox = box);
         let model = createElement("div", [`btls-b${no}-place-ship-model`], box);
         model.style["display"] = "grid";
-        model.addEventListener("mousedown", () => (holdingShip = boardNo));
+        model.addEventListener("mousedown", () => {
+            holdingShip = boardNo;
+            drawMouseTrackModel();
+        });
         boardNo === 0
             ? (ele.b1PlaceShipModel = model)
             : (ele.b2PlaceShipModel = model);
@@ -302,7 +305,6 @@ const DOM = () => {
             boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
         );
     };
-
     window.addEventListener("mouseup", () => (holdingShip = null));
 
     const createPlaceShipBoxSizeLabelInput = (boardNo, box) => {
@@ -438,6 +440,10 @@ const DOM = () => {
         }
     };
 
+    const drawMouseTrackModel = () => {};
+
+    const hideMouseTrackModel = () => {};
+
     const changePlayerStyle = (boardNo) => {
         if (game.isGameStarted() || game.isGameEnded()) return;
         const players = game.getPlayers();
@@ -530,14 +536,16 @@ const DOM = () => {
     };
 
     const computerAttacked = (topic, [...args]) => {
-        const position = args[0];
-        const boardNo = args[1];
-        const sunk = args[2];
-        const cell =
-            boardNo === 0
-                ? ele.board1.children[position[1] * 10 + position[0]]
-                : ele.board2.children[position[1] * 10 + position[0]];
-        updateAfterAttack(cell, position, boardNo, sunk);
+        if (game.isGameStarted() && !game.isGameEnded()) {
+            const position = args[0];
+            const boardNo = args[1];
+            const sunk = args[2];
+            const cell =
+                boardNo === 0
+                    ? ele.board1.children[position[1] * 10 + position[0]]
+                    : ele.board2.children[position[1] * 10 + position[0]];
+            updateAfterAttack(cell, position, boardNo, sunk);
+        }
     };
     PubSub.subscribe("BATTLESHIP-COMPUTER-ATTACKED-POSITION", computerAttacked);
 
