@@ -173,19 +173,27 @@ describe("Calling the placeShip method... ", () => {
                     [0, 0, 0, 0, 0, 0, 0, 0],
                 ]);
             });
+            test("If it exceeds the maximum number of ships allowed (6)", () => {
+                board.placeShip(1, [0, 7], false);
+                board.placeShip(1, [2, 7], false);
+                board.placeShip(1, [4, 7], false);
+                board.placeShip(1, [0, 5], false);
+                expect(board.placeShip(1, [2, 5], false)).toBe("max");
+            });
         });
     });
     describe("If the game has been started... ", () => {
         describe("Should NOT place a ship at the given position... ", () => {
             test("Even if that position is valid", () => {
+                board.resetBoard();
                 board.startGame();
                 board.placeShip(3, [2, 1], false);
                 expect(board.observeBoard()).toStrictEqual([
                     [0, 0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0, 1],
-                    [0, 0, 0, 0, 0, 0, 0, 1],
-                    [0, 1, 1, 1, 1, 1, 0, 1],
-                    [0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0, 0, 0, 0],

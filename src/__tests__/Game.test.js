@@ -70,12 +70,14 @@ describe("Calling the changeTurn method... ", () => {
         });
     });
     describe("If the new current turn is for a Player object whose style is set to 'Computer'... ", () => {
-        test("The async computerAttack method SHOULD be called", () => {
-            players[0].setStyle("Computer");
-            players[1].setStyle("Computer");
-            const spyGlobalSetTimeout = jest.spyOn(global, "setTimeout");
-            game.changeTurn();
-            expect(spyGlobalSetTimeout).toHaveBeenCalledTimes(1);
+        describe("If the game is NOT yet started... ", () => {
+            test("The async computerAttack method SHOULD NOT be called", () => {
+                players[0].setStyle("Computer");
+                players[1].setStyle("Computer");
+                const spyGlobalSetTimeout = jest.spyOn(global, "setTimeout");
+                game.changeTurn();
+                expect(spyGlobalSetTimeout).toHaveBeenCalledTimes(0);
+            });
         });
     });
 });
@@ -121,6 +123,24 @@ describe("Calling the startGame method... ", () => {
             const spyGlobalSetTimeout = jest.spyOn(global, "setTimeout");
             game.startGame();
             expect(spyGlobalSetTimeout).toHaveBeenCalledTimes(1);
+        });
+    });
+});
+
+describe("Calling the changeTurn method... ", () => {
+    const game = Game();
+    const players = game.getPlayers();
+    let turn = game.getTurn();
+    describe("If the new current turn is for a Player object whose style is set to 'Computer'... ", () => {
+        describe("If the game has started... ", () => {
+            test("The async computerAttack method SHOULD be called", () => {
+                players[0].setStyle("Computer");
+                players[1].setStyle("Computer");
+                game.startGame();
+                const spyGlobalSetTimeout = jest.spyOn(global, "setTimeout");
+                game.changeTurn();
+                expect(spyGlobalSetTimeout).toHaveBeenCalledTimes(1);
+            });
         });
     });
 });
@@ -240,6 +260,7 @@ describe("If the current Player's style is set to 'Computer'... ", () => {
         gameboards[0].receiveAttack([1, 1]);
     });
     game.startGame();
+    if (game.getTurn() === 0) game.changeTurn();
     describe("If a successful hit went through, should check for defeat on the board... ", () => {
         test("If false, change turn", () => {
             expect(game.getTurn()).toBe(0);
@@ -252,7 +273,6 @@ describe("If the current Player's style is set to 'Computer'... ", () => {
             expect(game.isGameEnded()).toBe(true);
         });
         test("If true, set the Game's started state to false", () => {
-            expect(game.isGameEnded()).toBe(true);
             expect(game.isGameStarted()).toBe(false);
         });
     });
