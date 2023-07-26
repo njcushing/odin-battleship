@@ -490,8 +490,11 @@ const DOM = () => {
 
     const attackCell = (element, position, boardToAttack) => {
         if (game.isGameStarted() && !game.isGameEnded()) {
+            const board = game.getGameboards()[boardToAttack];
+            const sinks = board.previousSinks().length;
             if (game.manualAttack(boardToAttack, position) !== null) {
-                updateAfterAttack(element, position, boardToAttack);
+                const sunkShip = sinks !== board.previousSinks().length;
+                updateAfterAttack(element, position, boardToAttack, sunkShip);
             }
         }
     };
@@ -499,27 +502,32 @@ const DOM = () => {
     const computerAttacked = (topic, [...args]) => {
         const position = args[0];
         const boardNo = args[1];
+        const sunk = args[2];
         const cell =
             boardNo === 0
                 ? ele.board1.children[position[1] * 10 + position[0]]
                 : ele.board2.children[position[1] * 10 + position[0]];
-        updateAfterAttack(cell, position, boardNo);
+        updateAfterAttack(cell, position, boardNo, sunk);
     };
     PubSub.subscribe("BATTLESHIP-COMPUTER-ATTACKED-POSITION", computerAttacked);
 
-    const updateAfterAttack = (element, position, boardAttacked) => {
+    const updateAfterAttack = (element, position, boardAttacked, sunk) => {
         let currentState, gameboardModule;
         gameboardModule = game.getGameboards()[boardAttacked];
 
         currentState = gameboardModule.getCellStateAt(position);
         setCellValueClassName(element, currentState);
 
+        const sunkText = "The battleship was sunk!";
+
         setInfoBoxTextContent(
             `Player ${((game.getTurn() + 1) % 2) + 1} attacks position [${
                 position[0]
             }, ${position[1]}]. It is ${
                 currentState === 3 ? "" : "not "
-            } a successful hit. It's Player ${game.getTurn() + 1}'s move.`
+            } a successful hit. ${sunk ? sunkText : ""} It's Player ${
+                game.getTurn() + 1
+            }'s move.`
         );
 
         if (game.isGameEnded()) {

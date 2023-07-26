@@ -125,6 +125,7 @@ const Player = () => {
                 PubSub.publish("BATTLESHIP-COMPUTER-ATTACKED-POSITION", [
                     adjacentAttacks[rand],
                     boardNo,
+                    previousSinks.length !== board.previousSinks().length,
                 ]);
                 return;
             }
@@ -156,6 +157,7 @@ const Player = () => {
         PubSub.publish("BATTLESHIP-COMPUTER-ATTACKED-POSITION", [
             randPosition,
             boardNo,
+            previousSinks.length !== board.previousSinks().length,
         ]);
     };
 
