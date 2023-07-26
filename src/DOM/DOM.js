@@ -11,6 +11,7 @@ const DOM = () => {
     let b2PlaceShipRotation = false;
     let b2PlaceShipPosition = [0, 0];
     let b2HideShips = false;
+    let holdingShip = null;
 
     const createElement = (type, classes, parent) => {
         const newElement = document.createElement(type);
@@ -209,6 +210,22 @@ const DOM = () => {
                 );
                 newCell.addEventListener("click", () => {
                     attackCell(newCell, [j, i], boardToAttack);
+                    deleteShip([j, i], boardToAttack);
+                });
+                newCell.addEventListener("mouseup", () => {
+                    if (holdingShip === boardToAttack) {
+                        placeShip(
+                            boardToAttack,
+                            boardToAttack === 0
+                                ? b1PlaceShipSize
+                                : b2PlaceShipSize,
+                            [j, i],
+                            boardToAttack === 0
+                                ? b1PlaceShipRotation
+                                : b2PlaceShipRotation
+                        );
+                        holdingShip = null;
+                    }
                 });
             }
         }
@@ -270,6 +287,7 @@ const DOM = () => {
         boardNo === 0 ? (ele.b1PlaceShipBox = box) : (ele.b2PlaceShipBox = box);
         let model = createElement("div", [`btls-b${no}-place-ship-model`], box);
         model.style["display"] = "grid";
+        model.addEventListener("mousedown", () => (holdingShip = boardNo));
         boardNo === 0
             ? (ele.b1PlaceShipModel = model)
             : (ele.b2PlaceShipModel = model);
@@ -284,6 +302,8 @@ const DOM = () => {
             boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
         );
     };
+
+    window.addEventListener("mouseup", () => (holdingShip = null));
 
     const createPlaceShipBoxSizeLabelInput = (boardNo, box) => {
         let label, element, no;
@@ -388,7 +408,12 @@ const DOM = () => {
         element = createElement("button", [`btls-b${no}-place-ship`], box);
         element.textContent = "Place Ship";
         element.addEventListener("click", () => {
-            placeShip(boardNo);
+            placeShip(
+                boardNo,
+                boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
+                boardNo === 0 ? b1PlaceShipPosition : b2PlaceShipPosition,
+                boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
+            );
         });
         boardNo === 0
             ? (ele.b1PlaceShipPlaceButton = element)
@@ -467,17 +492,11 @@ const DOM = () => {
         else button.textContent = "Hide Ships";
     };
 
-    const placeShip = (boardNo) => {
+    const placeShip = (boardNo, size, position, rotation) => {
         if (game.getPlayers()[boardNo].getStyle() === "Computer") return;
         if (game.isGameStarted() || game.isGameEnded()) return;
         const boards = game.getGameboards();
-        if (
-            boards[boardNo].placeShip(
-                boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
-                boardNo === 0 ? b1PlaceShipPosition : b2PlaceShipPosition,
-                boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
-            ) === "max"
-        ) {
+        if (boards[boardNo].placeShip(size, position, rotation) === "max") {
             setInfoBoxTextContent(
                 `Player ${boardNo + 1} cannot place any more ships.`
             );
@@ -486,6 +505,17 @@ const DOM = () => {
                 ? createBoard(game.getGameboards()[0], 0, ele.board1, false)
                 : createBoard(game.getGameboards()[1], 1, ele.board2, false);
         }
+    };
+
+    const deleteShip = (position, boardNo) => {
+        if (game.isGameStarted() || game.isGameEnded()) return;
+        if (boardNo === 0 && b1HideShips) return null;
+        if (boardNo === 1 && b2HideShips) return null;
+        const boards = game.getGameboards();
+        boards[boardNo].deleteShip(position);
+        boardNo === 0
+            ? createBoard(game.getGameboards()[0], 0, ele.board1, false)
+            : createBoard(game.getGameboards()[1], 1, ele.board2, false);
     };
 
     const attackCell = (element, position, boardToAttack) => {

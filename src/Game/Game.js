@@ -64,7 +64,7 @@ const Game = () => {
             }
             changeTurn();
             return true;
-        }, 1600);
+        }, 2000);
         if (!attacked) computerAttack();
     };
 
