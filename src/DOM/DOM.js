@@ -67,7 +67,6 @@ const DOM = () => {
 
     const displayGame = () => {
         clearDisplay();
-        ele.base = createElement("div", ["btls-base"], document.body);
         ele.title = createElement("div", ["btls-title"], ele.base);
         ele.boardArea = createElement("div", ["btls-board-area"], ele.base);
         ele.board2 = createElement("div", ["btls-board-two"], ele.boardArea);
