@@ -63,6 +63,7 @@ const DOM = () => {
         buttons: null,
         startButton: null,
         resetButton: null,
+        mouseTrackModel: null,
     };
 
     const displayGame = () => {
@@ -224,6 +225,7 @@ const DOM = () => {
                                 : b2PlaceShipRotation
                         );
                         holdingShip = null;
+                        hideMouseTrackModel();
                     }
                 });
             }
@@ -288,7 +290,10 @@ const DOM = () => {
         model.style["display"] = "grid";
         model.addEventListener("mousedown", () => {
             holdingShip = boardNo;
-            drawMouseTrackModel();
+            drawMouseTrackModel(
+                boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
+                boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
+            );
         });
         boardNo === 0
             ? (ele.b1PlaceShipModel = model)
@@ -300,11 +305,15 @@ const DOM = () => {
         createPlaceShipBoxPlaceButton(boardNo, box);
         updatePlaceShipModel(
             boardNo === 0 ? ele.b1PlaceShipModel : ele.b2PlaceShipModel,
+            ["btls-model-cell"],
             boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
             boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
         );
     };
-    window.addEventListener("mouseup", () => (holdingShip = null));
+    window.addEventListener("mouseup", () => {
+        holdingShip = null;
+        hideMouseTrackModel();
+    });
 
     const createPlaceShipBoxSizeLabelInput = (boardNo, box) => {
         let label, element, no;
@@ -327,6 +336,7 @@ const DOM = () => {
             else b2PlaceShipSize = intValue;
             updatePlaceShipModel(
                 boardNo === 0 ? ele.b1PlaceShipModel : ele.b2PlaceShipModel,
+                ["btls-model-cell"],
                 boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
                 boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
             );
@@ -394,6 +404,7 @@ const DOM = () => {
             else b2PlaceShipRotation = !b2PlaceShipRotation;
             updatePlaceShipModel(
                 boardNo === 0 ? ele.b1PlaceShipModel : ele.b2PlaceShipModel,
+                ["btls-model-cell"],
                 boardNo === 0 ? b1PlaceShipSize : b2PlaceShipSize,
                 boardNo === 0 ? b1PlaceShipRotation : b2PlaceShipRotation
             );
@@ -421,10 +432,10 @@ const DOM = () => {
             : (ele.b2PlaceShipPlaceButton = element);
     };
 
-    const updatePlaceShipModel = (model, size, rotation) => {
+    const updatePlaceShipModel = (model, classes, size, rotation) => {
         model.replaceChildren();
         for (let i = 0; i < size; i++) {
-            createElement("div", ["btls-model-cell"], model);
+            createElement("div", classes, model);
         }
         if (rotation) {
             model.style["grid-template-rows"] = `repeat(${size}, auto)`;
@@ -439,9 +450,31 @@ const DOM = () => {
         }
     };
 
-    const drawMouseTrackModel = () => {};
+    const drawMouseTrackModel = (size, rotation) => {
+        ele.mouseTrackModel = createElement(
+            "div",
+            ["btls-mouse-track-model"],
+            ele.base
+        );
+        updatePlaceShipModel(
+            ele.mouseTrackModel,
+            ["btls-mouse-track-model-cell"],
+            size,
+            rotation
+        );
+    };
+    window.addEventListener("mousemove", (e) => {
+        if (ele.mouseTrackModel instanceof HTMLElement) {
+            ele.mouseTrackModel.style["left"] = `${e.clientX}px`;
+            ele.mouseTrackModel.style["top"] = `${e.clientY}px`;
+        }
+    });
 
-    const hideMouseTrackModel = () => {};
+    const hideMouseTrackModel = () => {
+        if (ele.mouseTrackModel instanceof HTMLElement) {
+            ele.mouseTrackModel.remove();
+        }
+    };
 
     const changePlayerStyle = (boardNo) => {
         if (game.isGameStarted() || game.isGameEnded()) return;

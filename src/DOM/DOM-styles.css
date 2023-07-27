@@ -188,6 +188,16 @@
     outline: 1px solid black;
 }
 
+.btls-mouse-track-model {
+    position: absolute;
+}
+
+.btls-mouse-track-model-cell {
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid #000;
+}
+
 .btls-b1-place-ship-size-label,
 .btls-b2-place-ship-size-label,
 .btls-b1-place-ship-x-coord-label,
