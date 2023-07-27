@@ -12,6 +12,7 @@ const DOM = () => {
     let b2PlaceShipPosition = [0, 0];
     let b2HideShips = false;
     let holdingShip = null;
+    let cursorPosition = [0, 0];
 
     const createElement = (type, classes, parent) => {
         const newElement = document.createElement(type);
@@ -456,19 +457,65 @@ const DOM = () => {
             ["btls-mouse-track-model"],
             ele.base
         );
-        updatePlaceShipModel(
-            ele.mouseTrackModel,
-            ["btls-mouse-track-model-cell"],
-            size,
-            rotation
-        );
+        for (let i = 0; i < size; i++) {
+            createElement(
+                "div",
+                ["btls-mouse-track-model-cell"],
+                ele.mouseTrackModel
+            );
+        }
+        ele.mouseTrackModel.style["display"] = "grid";
+        if (rotation) {
+            ele.mouseTrackModel.style[
+                "grid-template-rows"
+            ] = `repeat(${size}, auto)`;
+            ele.mouseTrackModel.style["grid-template-columns"] = "auto";
+        } else {
+            ele.mouseTrackModel.style["grid-template-rows"] = "auto";
+            ele.mouseTrackModel.style[
+                "grid-template-columns"
+            ] = `repeat(${size}, auto)`;
+        }
+        ele.mouseTrackModel.style["position"] = "absolute";
+        setMouseTrackModelPosition();
     };
     window.addEventListener("mousemove", (e) => {
-        if (ele.mouseTrackModel instanceof HTMLElement) {
-            ele.mouseTrackModel.style["left"] = `${e.clientX}px`;
-            ele.mouseTrackModel.style["top"] = `${e.clientY}px`;
-        }
+        cursorPosition = [e.pageX, e.pageY];
+        setMouseTrackModelPosition();
     });
+
+    const setMouseTrackModelPosition = () => {
+        if (ele.mouseTrackModel instanceof HTMLElement) {
+            let rotation, cellCountOffset;
+
+            if (holdingShip === null) return;
+            if (holdingShip === 0) rotation = b1PlaceShipRotation;
+            if (holdingShip === 1) rotation = b2PlaceShipRotation;
+
+            cellCountOffset =
+                (ele.mouseTrackModel.children.length -
+                    ((ele.mouseTrackModel.children.length + 1) % 2)) /
+                (ele.mouseTrackModel.children.length * 2);
+
+            if (!rotation) {
+                ele.mouseTrackModel.style["left"] = `${
+                    cursorPosition[0] -
+                    ele.mouseTrackModel.offsetWidth * cellCountOffset
+                }px`;
+                ele.mouseTrackModel.style["top"] = `${
+                    cursorPosition[1] - ele.mouseTrackModel.offsetHeight / 2
+                }px`;
+            } else {
+                ele.mouseTrackModel.style["left"] = `${
+                    cursorPosition[0] - ele.mouseTrackModel.offsetWidth / 2
+                }px`;
+                ele.mouseTrackModel.style["top"] = `${
+                    cursorPosition[1] -
+                    ele.mouseTrackModel.offsetHeight * cellCountOffset
+                }px`;
+            }
+        }
+    };
 
     const hideMouseTrackModel = () => {
         if (ele.mouseTrackModel instanceof HTMLElement) {
