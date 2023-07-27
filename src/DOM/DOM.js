@@ -464,6 +464,7 @@ const DOM = () => {
                 ele.mouseTrackModel
             );
         }
+        ele.mouseTrackModel.style["pointer-events"] = "none";
         ele.mouseTrackModel.style["display"] = "grid";
         if (rotation) {
             ele.mouseTrackModel.style[
