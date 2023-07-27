@@ -20,6 +20,8 @@
 
 - Ships can also be dragged on to the board from their model.
 
+- Ships must have at least ONE empty space around them (including the diagonals).
+
 
 - Ships can be deleted from the board before the game starts (and as long as the game is not in its 'ended' state) by clicking them on the board.
 
